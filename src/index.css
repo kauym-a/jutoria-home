@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    /* ওয়েবসাইটের ডিফল্ট লেখার রঙ এখন থেকে লোগোর গাঢ় সবুজ হবে */
+    @apply text-brand-navy font-sans antialiased;
+
+    /* সাইটজুড়ে পাটের আঁশ/বুননের সূক্ষ্ম টেক্সচার — আগে এখানে একটা bg-pattern.png রেফার করা
+       ছিল যেটা public/ ফোল্ডারে আসলে ছিলই না (ব্রোকেন), তাই কিছুই দেখা যাচ্ছিল না। এখন CSS
+       দিয়েই সরাসরি প্যাটার্ন আঁকা হচ্ছে — কোনো ইমেজ ফাইলের উপর নির্ভর করে না, তাই ভাঙবে না। */
+    background-color: #FAF9F6;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(11, 79, 42, 0.05) 0px, rgba(11, 79, 42, 0.05) 1px, transparent 1px, transparent 10px),
+      repeating-linear-gradient(-45deg, rgba(11, 79, 42, 0.05) 0px, rgba(11, 79, 42, 0.05) 1px, transparent 1px, transparent 10px);
+    background-attachment: fixed;
+
+    /* মোবাইল ডিভাইসের স্ক্রিন ঠিক রাখার জন্য সেফ-এরিয়া সাপোর্ট */
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* ওয়েবসাইটের সব হেডলাইন/টাইটেল প্রিমিয়াম ফন্টে দেখানোর জন্য */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}

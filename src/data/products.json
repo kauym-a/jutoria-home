@@ -1,0 +1,1094 @@
+[
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "name": "Round Woven Placemats ",
+    "image_folder": "sea-grass-natura",
+    "images": [
+      {
+        "filename": "sea-grass-natural-closeup.png",
+        "role": "closeup",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-closeup.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "sea-grass-natural-dm.png",
+        "role": "dm",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-dm.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "sea-grass-natural-lifestyle.png",
+        "role": "lifestyle",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-lifestyle.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "sea-grass-natural-pk.png",
+        "role": "packaging",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-pk.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "sea-grass-natural-set.png",
+        "role": "set",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-set.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "sea-grass-natural.png",
+        "role": "primary",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural.png",
+        "confidence": "high"
+      }
+    ],
+    "excel_fields": {
+      "SKU": "JTR-SPM-NAT-RND-14-S6",
+      "Product Name": "Round Woven Placemats ",
+      "Material Composition": "Sea-grass \r\n Cotton ",
+      "Primary Material %": "Sea-grass 95% \r\nCotton 5%",
+      "Color": "Natural",
+      "Border Color": "No",
+      "Shape": "Round",
+      "Size (LxW/Diameter)": "14 inch",
+      "Thickness (mm)": "5mm",
+      "Weight per Piece (g)": "0.090(g)",
+      "Pieces per Set": "06 PCS",
+      "Weaving Type": "Braied & Sewing",
+      "Edge Finish": "YES",
+      "Reversible (Yes/No)": "YES",
+      "Heat Resistant": "YES",
+      "Indoor/Outdoor": "Indoor",
+      "EXW = Factory Price": "USD 2.93 / SET",
+      "FOB = Export Cost": "USD 2.93 / SET",
+      "CFR COST USD\r\nBD to Amazon Stor": "USD 4.33 / SET",
+      "Care Instructions": "Spot Clean Only.\r\nWipe with a damp cloth when needed.\r\nKeep dry and air dry if wet. \r\nDo not machine wash or bleach. \r\nStore in a cool, dry place",
+      "Country of Origin": "Bangladesh",
+      "HS Code": "4602.19.00",
+      "EXW Price (USD)": "USD 2.93 / SET",
+      "MOQ": "500 SET",
+      "Production Lead Time": "20 DAYS",
+      "Individual Pack Size": "38 x 38 x 4 CM",
+      "Individual Pack Weight": "0.645(g)",
+      "Master Carton Qty": "\r\n14 Set\r\n84 Pcs  ",
+      "Master Carton Size": "L-29 X W-15 X H-10 Inch",
+      "Master Carton Gross Weight": "9.66 kg",
+      "Barcode/UPC": "",
+      "Features": "Heat Resistant\r\nHandmade\r\nEco-Friendly\r\nDurable\r\nEasy to Clean\r\nReusable\r\nNatural Material",
+      "Remarks": ""
+    },
+    "sku_row_index": 2,
+    "notes": {
+      "image_matching_confidence": "high",
+      "unverified": []
+    },
+    "category": "Placemats",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "active": true,
+    "featured": false,
+    "amazonUrl": "",
+    "relatedSkus": []
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "name": "Round Woven Placemats ",
+    "image_folder": "jute-cotton-black-natural",
+    "images": [
+      {
+        "filename": "jute-cotton-black-natural-closeup.png",
+        "role": "closeup",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-dm.png",
+        "role": "dm",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-lifestyle.png",
+        "role": "lifestyle",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-pk.png",
+        "role": "packaging",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-set.png",
+        "role": "set",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-single.png",
+        "role": "primary",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+        "confidence": "high"
+      }
+    ],
+    "excel_fields": {
+      "SKU": "JTR-SPM-CB-RND-14-S6",
+      "Product Name": "Round Woven Placemats ",
+      "Material Composition": "Sea-grass \r\nJute \r\n Cotton ",
+      "Primary Material %": "Sea-grass 80% \r\nJute 15%\r\nCotton 5%",
+      "Color": "Natural\r\nBlack",
+      "Border Color": "Black",
+      "Shape": "Round",
+      "Size (LxW/Diameter)": "14 inch",
+      "Thickness (mm)": "5mm",
+      "Weight per Piece (g)": "0.125(g)",
+      "Pieces per Set": "06 PCS",
+      "Weaving Type": "Braied & Sewing",
+      "Edge Finish": "YES",
+      "Reversible (Yes/No)": "YES",
+      "Heat Resistant": "YES",
+      "Indoor/Outdoor": "Indoor",
+      "EXW = Factory Price": "USD 2.93 / SET",
+      "FOB = Export Cost": "USD 2.93 / SET",
+      "CFR COST USD\r\nBD to Amazon Stor": "USD 4.33 / SET",
+      "Care Instructions": "Spot Clean Only.\r\nWipe with a damp cloth when needed.\r\nKeep dry and air dry if wet. \r\nDo not machine wash or bleach. \r\nStore in a cool, dry place",
+      "Country of Origin": "Bangladesh",
+      "HS Code": "4602.19.00",
+      "EXW Price (USD)": "USD 2.93 / SET",
+      "MOQ": "500 SET",
+      "Production Lead Time": "20 DAYS",
+      "Individual Pack Size": "38 x 38 x 4 CM",
+      "Individual Pack Weight": "0.780 (g)",
+      "Master Carton Qty": "\r\n14 Set\r\n84 Pcs  ",
+      "Master Carton Size": "L-29 X W-15 X H-10 Inch",
+      "Master Carton Gross Weight": "12.13  Kg",
+      "Barcode/UPC": "",
+      "Features": "Heat Resistant\r\nHandmade\r\nEco-Friendly\r\nDurable\r\nEasy to Clean\r\nReusable\r\nNatural Material",
+      "Remarks": ""
+    },
+    "sku_row_index": 3,
+    "notes": {
+      "image_matching_confidence": "high",
+      "unverified": []
+    },
+    "category": "Placemats",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "active": true,
+    "featured": false,
+    "amazonUrl": "",
+    "relatedSkus": []
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "name": "Round Woven Placemats ",
+    "image_folder": "jute-cotton-natural",
+    "images": [
+      {
+        "filename": "jute-cotton-natural-closeup.png",
+        "role": "closeup",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-closeup.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-natural-dm.png",
+        "role": "dm",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-dm.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-natural-lifestyle.png",
+        "role": "lifestyle",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-natural-pk.png",
+        "role": "packaging",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-pk.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-natural-set.png",
+        "role": "set",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-set.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-natural-single.png",
+        "role": "primary",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-single.png",
+        "confidence": "high"
+      }
+    ],
+    "excel_fields": {
+      "SKU": "JTR-JPM-NAT-RND-14-S6",
+      "Product Name": "Round Woven Placemats ",
+      "Material Composition": "Jute Braided \r\n Cotton ",
+      "Primary Material %": "Jute 95%\r\nCotton 5%",
+      "Color": "Natural",
+      "Border Color": "No",
+      "Shape": "Round",
+      "Size (LxW/Diameter)": "14 inch",
+      "Thickness (mm)": "3mm",
+      "Weight per Piece (g)": "0.240(g)",
+      "Pieces per Set": "06 PCS",
+      "Weaving Type": "Braied & Sewing",
+      "Edge Finish": "YES",
+      "Reversible (Yes/No)": "YES",
+      "Heat Resistant": "YES",
+      "Indoor/Outdoor": "Indoor",
+      "EXW = Factory Price": "USD 5.47 / SET",
+      "FOB = Export Cost": "USD 5.47 / SET",
+      "CFR COST USD\r\nBD to Amazon Stor": "USD 6.47 / SET",
+      "Care Instructions": "Spot Clean Only.\r\nWipe with a damp cloth when needed.\r\nKeep dry and air dry if wet. \r\nDo not machine wash or bleach. \r\nStore in a cool, dry place",
+      "Country of Origin": "Bangladesh",
+      "HS Code": "6304.99.99",
+      "EXW Price (USD)": "USD 5.47 / SET",
+      "MOQ": "500 SET",
+      "Production Lead Time": "20 DAYS",
+      "Individual Pack Size": "38 x 38 x 4 CM",
+      "Individual Pack Weight": "1.260 (g)",
+      "Master Carton Qty": "\r\n14 Set\r\n84 Pcs  ",
+      "Master Carton Size": "L-29 X W-15 X H-10 Inch",
+      "Master Carton Gross Weight": "19.400 Kg",
+      "Barcode/UPC": "",
+      "Features": "Heat Resistant\r\nHandmade\r\nEco-Friendly\r\nDurable\r\nEasy to Clean\r\nReusable\r\nNatural Material",
+      "Remarks": ""
+    },
+    "sku_row_index": 4,
+    "notes": {
+      "image_matching_confidence": "high",
+      "unverified": []
+    },
+    "category": "Placemats",
+    "materialSlugs": [
+      "jute"
+    ],
+    "active": true,
+    "featured": false,
+    "amazonUrl": "",
+    "relatedSkus": []
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "name": "Round Woven Placemats ",
+    "image_folder": "jute-cotton-black-natural",
+    "images": [
+      {
+        "filename": "jute-cotton-black-natural-closeup.png",
+        "role": "closeup",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-dm.png",
+        "role": "dm",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-lifestyle.png",
+        "role": "lifestyle",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-pk.png",
+        "role": "packaging",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-set.png",
+        "role": "set",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+        "confidence": "high"
+      },
+      {
+        "filename": "jute-cotton-black-natural-single.png",
+        "role": "primary",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+        "confidence": "high"
+      }
+    ],
+    "excel_fields": {
+      "SKU": "JTR-JPM-CB-RND-14-S6",
+      "Product Name": "Round Woven Placemats ",
+      "Material Composition": "Jute Braided \r\n Cotton ",
+      "Primary Material %": "Jute 95%\r\nCotton 5%",
+      "Color": "Natural\r\nBlack",
+      "Border Color": "Black",
+      "Shape": "Round",
+      "Size (LxW/Diameter)": "14 inch",
+      "Thickness (mm)": "3mm",
+      "Weight per Piece (g)": "0.240(g)",
+      "Pieces per Set": "06 PCS",
+      "Weaving Type": "Braied & Sewing",
+      "Edge Finish": "YES",
+      "Reversible (Yes/No)": "YES",
+      "Heat Resistant": "YES",
+      "Indoor/Outdoor": "Indoor",
+      "EXW = Factory Price": "USD 5.47 / SET",
+      "FOB = Export Cost": "USD 5.47 / SET",
+      "CFR COST USD\r\nBD to Amazon Stor": "USD 6.47 / SET",
+      "Care Instructions": "Spot Clean Only.\r\nWipe with a damp cloth when needed.\r\nKeep dry and air dry if wet. \r\nDo not machine wash or bleach. \r\nStore in a cool, dry place",
+      "Country of Origin": "Bangladesh",
+      "HS Code": "6304.99.99",
+      "EXW Price (USD)": "USD 5.47 / SET",
+      "MOQ": "500 SET",
+      "Production Lead Time": "20 DAYS",
+      "Individual Pack Size": "38 x 38 x 4 CM",
+      "Individual Pack Weight": "1.400 (g)",
+      "Master Carton Qty": "\r\n14 Set\r\n84 Pcs  ",
+      "Master Carton Size": "L-29 X W-15 X H-10 Inch",
+      "Master Carton Gross Weight": "20.470 Kg",
+      "Barcode/UPC": "",
+      "Features": "Heat Resistant\r\nHandmade\r\nEco-Friendly\r\nDurable\r\nEasy to Clean\r\nReusable\r\nNatural Material",
+      "Remarks": ""
+    },
+    "sku_row_index": 5,
+    "notes": {
+      "image_matching_confidence": "high",
+      "unverified": []
+    },
+    "category": "Placemats",
+    "materialSlugs": [
+      "jute"
+    ],
+    "active": true,
+    "featured": false,
+    "amazonUrl": "",
+    "relatedSkus": []
+  },
+  {
+    "sku": "JTR-ECOP-501",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D27xH18 / D24xH17 / D21xH16 cm",
+      "Color": "Natural + White",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.73 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-501",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-502",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D24 / D23 / D20 cm (cube)",
+      "Color": "Natural + White",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.41 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-502",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-503",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D24xH20 / D21xH18 / D18xH17 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.57 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-503",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-504",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D21xH18 / D19xH17 / D17xH15 cm",
+      "Color": "Natural",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.25 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-504",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-505",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D18 / D16 / D14 cm (cube)",
+      "Color": "Natural",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.25 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-505",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-506",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D21xH19 / D18xH16 / D16xH14 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.99 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-506",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-507",
+    "name": "Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass with Poly",
+      "Size": "D21xH19 / D20xH17 / D17xH13 cm",
+      "Color": "Natural + Bleach",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.99 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-507",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-508",
+    "name": "Planter Basket, Handled (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute with Poly",
+      "Size": "D22xH19 / D20xH16 / D18xH14 cm",
+      "Color": "Natural + Bleach",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.99 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-508",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-401",
+    "name": "Laundry Basket",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "D32xB24xH30 cm",
+      "Color": "Natural + White",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.75 / pc",
+      "MOQ": "1500 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-401",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-402",
+    "name": "Laundry Basket",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "D32xB24xH30 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.75 / pc",
+      "MOQ": "1500 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-402",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-403",
+    "name": "Laundry Basket",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "D32xB24xH30 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 2.99 / pc",
+      "MOQ": "1500 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-403",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-404",
+    "name": "Laundry Basket (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "D27xH22 / D24xH20 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 3.35 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-404",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-405",
+    "name": "Laundry Basket, Square (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "L31xW31xH30 / L30xW30xH28 cm",
+      "Color": "Natural",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 5.95 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-405",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1101",
+    "name": "Laundry Basket",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Cotton",
+      "Size": "D32xB28xH30 / D30xB26xH28 cm",
+      "Color": "Natural + White",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 7.50 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1101",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1102",
+    "name": "Laundry Basket",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Cotton",
+      "Size": "D32xB28xH30 / D30xB26xH28 cm",
+      "Color": "Natural + White",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 7.30 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1102",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1103",
+    "name": "Laundry Basket (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass",
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Jute",
+      "Size": "D30xH30 / D28xH28 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 6.59 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1103",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1104",
+    "name": "Laundry Basket (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Cotton",
+      "Size": "D30xH30 / D28xH28 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 6.59 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1104",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1105",
+    "name": "Laundry Basket (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass",
+      "Size": "D30xH30 / D28xH28 cm",
+      "Color": "Natural + Any Color",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 7.49 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1105",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1106-LB",
+    "name": "Laundry Basket (Set of 2)",
+    "category": "Laundry Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass",
+      "Size": "D30xH30 / D28xH28 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 7.49 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1106-lb",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1106-OB1",
+    "name": "Organizer Basket (Set of 3)",
+    "category": "Organizer Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Iron",
+      "Size": "D30xH30 / D28xH28 / D26xH28 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 8.99 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1106-ob1",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-ECOP-1106-OB2",
+    "name": "Organizer / Bread Basket (Set of 2)",
+    "category": "Organizer Baskets",
+    "materialSlugs": [
+      "seagrass"
+    ],
+    "excel_fields": {
+      "Material Composition": "Sea-grass + Cotton",
+      "Size": "D30xH26 / D28xH24 cm",
+      "Color": "Natural + Black",
+      "Weave Type": "Hand + Sewing Made",
+      "FOB (CTG)": "USD 7.49 / set",
+      "MOQ": "500 set"
+    },
+    "images": [],
+    "image_folder": "jtr-ecop-1106-ob2",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JPM-RND38",
+    "name": "Dining Table Place Mat",
+    "category": "Placemats",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute Braid",
+      "Size": "Round 38 cm",
+      "Color": "Natural",
+      "Weave Type": "Hand Made",
+      "FOB (CTG)": "USD 1.15 / pc",
+      "MOQ": "2000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jpm-rnd38",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JPB-A",
+    "name": "Jute Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute Braid Basket",
+      "Size": "D25xH25 / D20xH20 / D15xH15 cm",
+      "Color": "Natural",
+      "Weave Type": "Sewing Made",
+      "FOB (CTG)": "USD 6.55 / set",
+      "MOQ": "1000 set"
+    },
+    "images": [],
+    "image_folder": "jtr-jpb-a",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JPB-B",
+    "name": "Jute Planter Basket (Set of 3)",
+    "category": "Planter Baskets",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute Braid Basket",
+      "Size": "D25xH25 / D20xH20 / D15xH15 cm",
+      "Color": "Natural",
+      "Weave Type": "Sewing Made",
+      "FOB (CTG)": "USD 6.85 / set",
+      "MOQ": "1000 set"
+    },
+    "images": [],
+    "image_folder": "jtr-jpb-b",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-RND90",
+    "name": "Jute Floor Mat / Rug, Round 90cm",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute Braid",
+      "Size": "Round 90x90 cm",
+      "Color": "Natural",
+      "Weave Type": "Sewing Made",
+      "FOB (CTG)": "USD 5.85 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-rnd90",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-RND100",
+    "name": "Jute Floor Mat / Rug, Round 100cm",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute Braid",
+      "Size": "Round 100x100 cm",
+      "Color": "Natural",
+      "Weave Type": "Sewing Made",
+      "FOB (CTG)": "USD 7.85 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-rnd100",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-6090-JC",
+    "name": "Jute-Cotton Floor Mat / Rug 60x90",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Jute + Cotton",
+      "Size": "60x90 cm",
+      "Color": "Black + Natural",
+      "Weave Type": "Hand Made",
+      "FOB (CTG)": "USD 4.35 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-6090-jc",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-70120-JC",
+    "name": "Jute-Cotton Floor Mat / Rug 70x120",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "Jute + Cotton",
+      "Size": "70x120 cm",
+      "Color": "Black + Natural",
+      "Weave Type": "Hand Made",
+      "FOB (CTG)": "USD 5.55 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-70120-jc",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-6090-J",
+    "name": "100% Jute Floor Mat / Rug 60x90",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute",
+      "Size": "60x90 cm",
+      "Color": "Black + Natural",
+      "Weave Type": "Hand Made",
+      "FOB (CTG)": "USD 5.35 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-6090-j",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  },
+  {
+    "sku": "JTR-JFR-70120-J",
+    "name": "100% Jute Floor Mat / Rug 70x120",
+    "category": "Floor Mats / Rugs",
+    "materialSlugs": [
+      "jute"
+    ],
+    "excel_fields": {
+      "Material Composition": "100% Jute",
+      "Size": "70x120 cm",
+      "Color": "Black + Natural",
+      "Weave Type": "Hand Made",
+      "FOB (CTG)": "USD 6.55 / pc",
+      "MOQ": "1000 pcs"
+    },
+    "images": [],
+    "image_folder": "jtr-jfr-70120-j",
+    "amazonUrl": "",
+    "featured": false,
+    "active": true,
+    "relatedSkus": [],
+    "description": "",
+    "_source": "reference/product-catalog PDFs (Eco Ville Bd brochure) — images not yet supplied, add via Admin > Edit"
+  }
+]

@@ -1,0 +1,382 @@
+import { Helmet } from 'react-helmet-async';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { fetchProduct, upsertProduct, uploadProductImage, type Product, type ProductImage } from '../../services/firebase/products';
+import { materials } from '../../data/materials';
+
+const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
+
+const EMPTY_PRODUCT: Product = {
+  sku: '',
+  name: '',
+  category: CATEGORIES[0],
+  description: '',
+  materialSlugs: [],
+  images: [],
+  amazonUrl: '',
+  featured: false,
+  active: true,
+  relatedSkus: [],
+  excel_fields: {},
+};
+
+export default function AdminProductForm() {
+  const { sku } = useParams<{ sku: string }>();
+  const isEditing = Boolean(sku);
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState<Product>(EMPTY_PRODUCT);
+  const [loading, setLoading] = useState(isEditing);
+  const [saving, setSaving] = useState(false);
+  const [specRows, setSpecRows] = useState<[string, string][]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isEditing || !sku) return;
+    fetchProduct(decodeURIComponent(sku))
+      .then((data) => {
+        if (data) {
+          setProduct(data);
+          setSpecRows(Object.entries(data.excel_fields || {}));
+        } else {
+          toast.error('প্রোডাক্ট পাওয়া যায়নি।');
+          navigate('/admin/products');
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [sku, isEditing, navigate]);
+
+  const update = <K extends keyof Product>(key: K, value: Product[K]) => {
+    setProduct((p) => ({ ...p, [key]: value }));
+  };
+
+  const toggleMaterial = (slug: string) => {
+    setProduct((p) => {
+      const current = p.materialSlugs || [];
+      const next = current.includes(slug) ? current.filter((s) => s !== slug) : [...current, slug];
+      return { ...p, materialSlugs: next };
+    });
+  };
+
+  const updateImage = (index: number, field: keyof ProductImage, value: string) => {
+    setProduct((p) => {
+      const images = [...p.images];
+      images[index] = { ...images[index], [field]: value };
+      return { ...p, images };
+    });
+  };
+
+  const addImage = () => {
+    setProduct((p) => ({
+      ...p,
+      // প্রথম ছবিই শুধু ডিফল্টভাবে 'primary' হবে — এরপরেরগুলো 'gallery',
+      // যাতে একাধিক ছবি ভুলবশত 'primary' role নিয়ে সেভ না হয়ে যায়
+      images: [...p.images, { url: '', role: p.images.length === 0 ? 'primary' : 'gallery' }],
+    }));
+  };
+
+  const removeImage = (index: number) => {
+    setProduct((p) => ({ ...p, images: p.images.filter((_, i) => i !== index) }));
+  };
+
+  /**
+   * কম্পিউটার থেকে সরাসরি একাধিক ছবি সিলেক্ট করে Firebase Storage-এ আপলোড করে।
+   * আপলোড শেষ হলে প্রতিটার জন্য একটা নতুন image row (URL সহ) স্বয়ংক্রিয়ভাবে যোগ হয় —
+   * তাই আর হাতে কোনো path টাইপ করার দরকার নেই, তাই নাম-মিসম্যাচ (501 বনাম 502-এর মতো
+   * টাইপো) হওয়ার সুযোগই থাকে না।
+   */
+  const handleFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = ''; // একই ফাইল আবার সিলেক্ট করলেও যেন onChange ফায়ার হয়
+    if (files.length === 0) return;
+
+    if (!product.sku.trim()) {
+      toast.error('আপলোডের আগে SKU লিখুন — ছবি এই SKU-এর নামেই সংরক্ষিত হবে।');
+      return;
+    }
+
+    setUploading(true);
+    let uploaded = 0;
+    try {
+      for (const file of files) {
+        try {
+          const url = await uploadProductImage(product.sku, file);
+          setProduct((p) => ({
+            ...p,
+            images: [
+              ...p.images,
+              { url, role: p.images.length === 0 ? 'primary' : 'gallery', filename: file.name },
+            ],
+          }));
+          uploaded += 1;
+        } catch (err) {
+          console.error(err);
+          toast.error(`"${file.name}" আপলোড ব্যর্থ হয়েছে।`);
+        }
+      }
+      if (uploaded > 0) {
+        toast.success(`${uploaded}টা ছবি আপলোড হয়েছে। এখন "Save Product" চাপুন।`);
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const updateSpecRow = (index: number, keyOrValue: 'key' | 'value', val: string) => {
+    setSpecRows((rows) => {
+      const next = [...rows];
+      next[index] = keyOrValue === 'key' ? [val, next[index][1]] : [next[index][0], val];
+      return next;
+    });
+  };
+
+  const addSpecRow = () => setSpecRows((rows) => [...rows, ['', '']]);
+  const removeSpecRow = (index: number) => setSpecRows((rows) => rows.filter((_, i) => i !== index));
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!product.sku.trim() || !product.name.trim()) {
+      toast.error('SKU ও Product Name আবশ্যক।');
+      return;
+    }
+    setSaving(true);
+    try {
+      const excel_fields = Object.fromEntries(specRows.filter(([k]) => k.trim() !== ''));
+      await upsertProduct({ ...product, excel_fields });
+      toast.success(isEditing ? 'প্রোডাক্ট আপডেট হয়েছে।' : 'নতুন প্রোডাক্ট তৈরি হয়েছে।');
+      navigate('/admin/products');
+    } catch (err) {
+      console.error(err);
+      toast.error('সেভ করতে সমস্যা হয়েছে — Firestore নিয়ম/লগইন চেক করুন।');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="max-w-4xl mx-auto py-16 text-center text-brand-navy/50">Loading…</div>;
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>{isEditing ? `Edit ${product.name}` : 'Add Product'} | JUTORIA Admin</title>
+      </Helmet>
+
+      <div className="max-w-4xl mx-auto space-y-6">
+        <Link to="/admin/products" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-navy/60 hover:text-brand-gold transition-colors">
+          <ArrowLeft size={16} /> Back to Products
+        </Link>
+
+        <h1 className="text-3xl font-serif font-bold text-brand-navy">
+          {isEditing ? `Edit: ${product.name || product.sku}` : 'Add New Product'}
+        </h1>
+
+        <form onSubmit={handleSave} className="space-y-8 font-sans">
+          {/* Basic Info */}
+          <div className="bg-white border border-brand-navy/10 rounded-lg p-6 space-y-4">
+            <h2 className="text-lg font-serif font-bold text-brand-navy mb-2">Basic Information</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">
+                  SKU {isEditing && '(locked)'}
+                </label>
+                <input
+                  type="text"
+                  value={product.sku}
+                  disabled={isEditing}
+                  onChange={(e) => update('sku', e.target.value)}
+                  className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold disabled:bg-brand-offwhite disabled:text-brand-navy/50"
+                  placeholder="e.g. JTR-SPM-NAT-RND-14-S6"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Product Name</label>
+                <input
+                  type="text"
+                  value={product.name}
+                  onChange={(e) => update('name', e.target.value)}
+                  className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Category</label>
+                <select
+                  value={product.category}
+                  onChange={(e) => update('category', e.target.value)}
+                  className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Amazon URL</label>
+                <input
+                  type="url"
+                  value={product.amazonUrl}
+                  onChange={(e) => update('amazonUrl', e.target.value)}
+                  className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+                  placeholder="https://amazon.com/..."
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Description</label>
+              <textarea
+                value={product.description}
+                onChange={(e) => update('description', e.target.value)}
+                rows={3}
+                className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+              />
+            </div>
+            <div className="flex gap-6">
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={product.active !== false} onChange={(e) => update('active', e.target.checked)} />
+                Active (visible on site)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={!!product.featured} onChange={(e) => update('featured', e.target.checked)} />
+                Featured
+              </label>
+            </div>
+          </div>
+
+          {/* Materials */}
+          <div className="bg-white border border-brand-navy/10 rounded-lg p-6">
+            <h2 className="text-lg font-serif font-bold text-brand-navy mb-4">Materials</h2>
+            <div className="flex flex-wrap gap-3">
+              {materials.map((m) => (
+                <button
+                  type="button"
+                  key={m.slug}
+                  onClick={() => toggleMaterial(m.slug)}
+                  className={`px-4 py-2 rounded-full text-sm border transition-colors ${
+                    product.materialSlugs?.includes(m.slug)
+                      ? 'bg-brand-navy text-brand-gold border-brand-navy'
+                      : 'border-brand-navy/20 text-brand-navy/70 hover:border-brand-gold'
+                  }`}
+                >
+                  {m.name}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-brand-navy/40 mt-3">
+              এখানে যা সিলেক্ট করবেন সেই ম্যাটেরিয়াল পেজে ("/materials/{'{slug}'}") এই প্রোডাক্ট স্বয়ংক্রিয়ভাবে দেখাবে।
+            </p>
+          </div>
+
+          {/* Images */}
+          <div className="bg-white border border-brand-navy/10 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-serif font-bold text-brand-navy">Images</h2>
+              <div className="flex items-center gap-4">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleFilesSelected}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center gap-1.5 text-sm font-semibold bg-brand-navy text-brand-gold px-3 py-1.5 rounded hover:bg-brand-gold hover:text-brand-navy transition-colors disabled:opacity-50"
+                >
+                  {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
+                  {uploading ? 'আপলোড হচ্ছে…' : 'Upload Images'}
+                </button>
+                <button type="button" onClick={addImage} className="flex items-center gap-1.5 text-sm font-semibold text-brand-gold hover:text-brand-navy">
+                  <Plus size={16} /> Add URL manually
+                </button>
+              </div>
+            </div>
+            <p className="text-xs text-brand-navy/40 -mt-2 mb-3">
+              কম্পিউটার থেকে একসাথে একাধিক ছবি সিলেক্ট করে <strong>Upload Images</strong>-এ ক্লিক করুন — সরাসরি সার্ভারে আপলোড হয়ে URL নিজে থেকে বসে যাবে।
+              Hostinger-এ আলাদাভাবে ফাইল রাখা বা path হাতে টাইপ করার দরকার নেই।
+            </p>
+            <div className="space-y-3">
+              {product.images.map((img, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  {img.url && <img src={img.url} alt="" className="w-12 h-12 object-cover rounded border border-brand-navy/10 flex-shrink-0" />}
+                  <input
+                    type="text"
+                    value={img.url}
+                    onChange={(e) => updateImage(i, 'url', e.target.value)}
+                    placeholder="/product-master/.../image.png"
+                    className="flex-grow border border-brand-navy/15 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                  />
+                  <input
+                    type="text"
+                    value={img.role || ''}
+                    onChange={(e) => updateImage(i, 'role', e.target.value)}
+                    placeholder="role (primary, lifestyle...)"
+                    className="w-40 border border-brand-navy/15 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                  />
+                  <button type="button" onClick={() => removeImage(i)} className="text-brand-navy/40 hover:text-red-500 flex-shrink-0">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+              {product.images.length === 0 && (
+                <p className="text-sm text-brand-navy/40">প্রথম ছবি ("primary" role) সবার আগে দেওয়াই ভালো — এটাই মূল থাম্বনেইল হিসেবে দেখাবে।</p>
+              )}
+            </div>
+          </div>
+
+          {/* Specifications */}
+          <div className="bg-white border border-brand-navy/10 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-serif font-bold text-brand-navy">Specifications</h2>
+              <button type="button" onClick={addSpecRow} className="flex items-center gap-1.5 text-sm font-semibold text-brand-gold hover:text-brand-navy">
+                <Plus size={16} /> Add Row
+              </button>
+            </div>
+            <div className="space-y-3">
+              {specRows.map(([k, v], i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={k}
+                    onChange={(e) => updateSpecRow(i, 'key', e.target.value)}
+                    placeholder="Field (e.g. MOQ)"
+                    className="w-52 border border-brand-navy/15 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                  />
+                  <input
+                    type="text"
+                    value={v}
+                    onChange={(e) => updateSpecRow(i, 'value', e.target.value)}
+                    placeholder="Value"
+                    className="flex-grow border border-brand-navy/15 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
+                  />
+                  <button type="button" onClick={() => removeSpecRow(i)} className="text-brand-navy/40 hover:text-red-500 flex-shrink-0">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Link to="/admin/products" className="px-6 py-3 border border-brand-navy/20 text-brand-navy text-sm font-semibold hover:border-brand-navy transition-colors">
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex items-center gap-2 bg-brand-navy text-brand-gold px-6 py-3 text-sm font-bold hover:bg-brand-gold hover:text-brand-navy transition-colors disabled:opacity-50"
+            >
+              <Save size={16} /> {saving ? 'Saving…' : 'Save Product'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
+  );
+}

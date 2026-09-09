@@ -1,0 +1,218 @@
+[
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural-closeup.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural-closeup.png",
+    "role": "closeup",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural-dm.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural-dm.png",
+    "role": "dm",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural-lifestyle.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural-lifestyle.png",
+    "role": "lifestyle",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural-pk.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural-pk.png",
+    "role": "packaging",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural-set.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural-set.png",
+    "role": "set",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-NAT-RND-14-S6",
+    "folder": "sea-grass-natura",
+    "filename": "sea-grass-natural.png",
+    "url": "/product-master/sea-grass-natura/sea-grass-natural.png",
+    "role": "primary",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-closeup.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+    "role": "closeup",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-dm.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+    "role": "dm",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-lifestyle.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+    "role": "lifestyle",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-pk.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+    "role": "packaging",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-set.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+    "role": "set",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-SPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-single.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+    "role": "primary",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-closeup.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-closeup.png",
+    "role": "closeup",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-dm.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-dm.png",
+    "role": "dm",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-lifestyle.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.png",
+    "role": "lifestyle",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-pk.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-pk.png",
+    "role": "packaging",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-set.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-set.png",
+    "role": "set",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-NAT-RND-14-S6",
+    "folder": "jute-cotton-natural",
+    "filename": "jute-cotton-natural-single.png",
+    "url": "/product-master/jute-cotton-natural/jute-cotton-natural-single.png",
+    "role": "primary",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-closeup.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+    "role": "closeup",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-dm.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+    "role": "dm",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-lifestyle.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+    "role": "lifestyle",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-pk.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+    "role": "packaging",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-set.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+    "role": "set",
+    "confidence": "high",
+    "accessible": true
+  },
+  {
+    "sku": "JTR-JPM-CB-RND-14-S6",
+    "folder": "jute-cotton-black-natural",
+    "filename": "jute-cotton-black-natural-single.png",
+    "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+    "role": "primary",
+    "confidence": "high",
+    "accessible": true
+  }
+]
