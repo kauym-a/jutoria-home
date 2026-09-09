@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X, ChevronDown } from 'lucide-react';
+import { Menu as MenuIcon, X, ChevronDown, Mail, Phone } from 'lucide-react';
 import JutoriaAssistantWidget from '../components/chat/JutoriaAssistant';
 
 function SocialBrandIcon({ platform }: { platform: string }) {
@@ -68,6 +68,9 @@ function SocialBrandIcon({ platform }: { platform: string }) {
 
 export default function PublicLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // ফুটারের "Get In Touch" মোবাইলে অ্যাকর্ডিয়ন — ডেস্কটপে (sm+) সবসময় খোলা,
+  // এই state শুধু মোবাইলে কাজে লাগে (নিচে sm:block দিয়ে ওভাররাইড করা হয়েছে)
+  const [contactOpen, setContactOpen] = useState(false);
   const location = useLocation();
 
   const closeMenu = () => setIsMobileMenuOpen(false);
@@ -110,8 +113,21 @@ export default function PublicLayout() {
     { name: 'Contact', path: '/contact' },
   ];
 
-  // Flat list of every real link, used for the footer nav column
-  const footerLinks = navLinks.flatMap((l) => (l.children ? l.children : [{ name: l.name, path: l.path! }]));
+  // Footer nav split into two short columns (Company / Shop) so the list no
+  // longer needs a max-h scrollbar. Kept in sync manually with navLinks above.
+  const footerCompanyLinks = [
+    { name: 'Company Profile', path: '/company-profile' },
+    { name: 'Our Story', path: '/our-story' },
+    { name: 'People / Artisans', path: '/people' },
+    { name: 'Global Clients', path: '/clients-markets' },
+    { name: 'Corporate Information', path: '/corporate-information' },
+  ];
+  const footerShopLinks = [
+    { name: 'All Products', path: '/products' },
+    { name: 'Categories', path: '/categories' },
+    { name: 'Materials', path: '/materials' },
+    { name: 'Wholesale Overview', path: '/wholesale' },
+  ];
 
   const [openDesktopMenu, setOpenDesktopMenu] = useState<string | null>(null);
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
@@ -125,6 +141,29 @@ export default function PublicLayout() {
     { name: 'Pinterest', href: 'https://www.pinterest.com/jutoriahome', platform: 'pinterest', label: 'JUTORIA on Pinterest' },
     { name: 'LinkedIn', href: 'https://linkedin.com/company/jutoriahome', platform: 'linkedin', label: 'JUTORIA on LinkedIn' },
     { name: 'X', href: 'https://x.com/jutoriahomecom', platform: 'x', label: 'JUTORIA on X' },
+  ];
+
+  // Get In Touch — যাচাই করা ইমেইল ও ফোন/WhatsApp (single source of truth এখানেই)
+  const contactEmails = [
+    { label: 'Wholesale & B2B', address: 'wholesale@jutoriahome.com' },
+    { label: 'Support', address: 'support@jutoriahome.com' },
+    { label: 'Sales', address: 'sales@jutoriahome.com' },
+  ];
+  const contactPhones = [
+    {
+      region: 'United Kingdom',
+      numbers: [
+        { display: '+44 7311 127176', tel: '+447311127176', wa: '447311127176' },
+        { display: '+44 7435 945500', tel: '+447435945500', wa: '447435945500' },
+      ],
+    },
+    {
+      region: 'Bangladesh',
+      numbers: [
+        { display: '+880 1833-093349', tel: '+8801833093349', wa: '8801833093349' },
+        { display: '+880 13 2443 8566', tel: '+8801324438566', wa: '8801324438566' },
+      ],
+    },
   ];
 
   return (
@@ -394,12 +433,7 @@ export default function PublicLayout() {
                 69 Wingfield Road<br />
                 Great Barr<br />
                 Birmingham B42 2QB<br />
-                United Kingdom<br />
-                <a href="tel:+447435945500" className="hover:text-brand-gold transition-colors">+44 7435 945500</a>
-                {' '}·{' '}
-                <a href="https://wa.me/447435945500" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-brand-gold transition-colors align-middle">
-                  <SocialBrandIcon platform="whatsapp" /> WhatsApp
-                </a>
+                United Kingdom
               </p>
             </div>
 
@@ -420,82 +454,96 @@ export default function PublicLayout() {
                 Manufacturing Partner
               </p>
               <p className="font-sans text-sm text-brand-navy/80 leading-relaxed">
-                Eco Ville BD<br />
-                House #13, Block #G, Road # E/3<br />
-                Eastern Housing, Pallabi (2nd Phase)<br />
-                Mirpur-12, Dhaka-1216<br />
-                Bangladesh
+                Eco Ville BD — Bangladesh
               </p>
             </div>
           </div>
 
-          {/* Get In Touch — all verified business emails & phone/WhatsApp contact points */}
+          {/* Get In Touch — all verified business emails & phone/WhatsApp contact points.
+              মোবাইলে অ্যাকর্ডিয়ন (contactOpen), sm+ এ কার্ডগুলো সবসময় দৃশ্যমান। */}
           <div className="mt-12 pt-8 border-t border-brand-navy/10">
-            <p className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-6 text-center">
+            <button
+              type="button"
+              onClick={() => setContactOpen((v) => !v)}
+              aria-expanded={contactOpen}
+              className="w-full flex items-center justify-center gap-2 font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-6 sm:mb-8 sm:pointer-events-none"
+            >
               Get In Touch
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-center sm:text-left">
-              <div>
-                <p className="font-sans text-[10px] text-brand-navy/40 uppercase mb-1">Wholesale &amp; B2B</p>
-                <a href="mailto:wholesale@jutoriahome.com" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">
-                  wholesale@jutoriahome.com
-                </a>
+              <ChevronDown
+                size={14}
+                className={`sm:hidden transition-transform duration-300 ${contactOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            <div className={contactOpen ? 'block' : 'hidden sm:block'}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-6 md:mb-8">
+                {contactEmails.map(({ label, address }) => (
+                  <div key={address} className="bg-white border border-brand-navy/10 rounded-[2px] p-5 shadow-premium">
+                    <div className="flex items-start gap-3">
+                      <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-brand-ivory text-brand-navy/70">
+                        <Mail size={16} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-sans text-[10px] text-brand-navy/40 uppercase tracking-wider mb-1">{label}</p>
+                        <a href={`mailto:${address}`} className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors break-all">
+                          {address}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="font-sans text-[10px] text-brand-navy/40 uppercase mb-1">Support</p>
-                <a href="mailto:support@jutoriahome.com" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">
-                  support@jutoriahome.com
-                </a>
-              </div>
-              <div>
-                <p className="font-sans text-[10px] text-brand-navy/40 uppercase mb-1">Sales</p>
-                <a href="mailto:sales@jutoriahome.com" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">
-                  sales@jutoriahome.com
-                </a>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto text-center sm:text-left">
-              <div>
-                <p className="font-sans text-[10px] text-brand-navy/40 uppercase mb-2">United Kingdom</p>
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-4 gap-y-1 mb-1.5">
-                  <a href="tel:+447311127176" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">+44 7311 127176</a>
-                  <a href="https://wa.me/447311127176" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
-                    <SocialBrandIcon platform="whatsapp" /> WhatsApp
-                  </a>
-                </div>
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-4 gap-y-1">
-                  <a href="tel:+447435945500" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">+44 7435 945500</a>
-                  <a href="https://wa.me/447435945500" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
-                    <SocialBrandIcon platform="whatsapp" /> WhatsApp
-                  </a>
-                </div>
-              </div>
-              <div>
-                <p className="font-sans text-[10px] text-brand-navy/40 uppercase mb-2">Bangladesh</p>
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-4 gap-y-1 mb-1.5">
-                  <a href="tel:+8801833093349" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">+880 1833-093349</a>
-                  <a href="https://wa.me/8801833093349" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
-                    <SocialBrandIcon platform="whatsapp" /> WhatsApp
-                  </a>
-                </div>
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-4 gap-y-1">
-                  <a href="tel:+8801324438566" className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">+880 13 2443 8566</a>
-                  <a href="https://wa.me/8801324438566" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
-                    <SocialBrandIcon platform="whatsapp" /> WhatsApp
-                  </a>
-                </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
+                {contactPhones.map(({ region, numbers }) => (
+                  <div key={region} className="bg-white border border-brand-navy/10 rounded-[2px] p-5 shadow-premium">
+                    <div className="flex items-start gap-3">
+                      <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-brand-ivory text-brand-navy/70">
+                        <Phone size={16} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-sans text-[10px] text-brand-navy/40 uppercase tracking-wider mb-2">{region}</p>
+                        <div className="space-y-2">
+                          {numbers.map(({ display, tel, wa }) => (
+                            <div key={tel} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                              <a href={`tel:${tel}`} className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">{display}</a>
+                              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
+                                <SocialBrandIcon platform="whatsapp" /> WhatsApp
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-brand-navy/10 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-12 pt-8 border-t border-brand-navy/10 grid gap-8 md:grid-cols-2 xl:grid-cols-5">
             <div>
               <p className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">
-                Footer Navigation
+                Company
               </p>
-              <ul className="font-sans text-sm text-brand-navy/80 space-y-2 max-h-64 overflow-y-auto pr-2">
-                {footerLinks.map((link) => (
-                  <li key={`${link.path}-${link.name}`}>
+              <ul className="font-sans text-sm text-brand-navy/80 space-y-2">
+                {footerCompanyLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link to={link.path} onClick={() => window.scrollTo(0, 0)} className="transition-colors hover:text-brand-gold">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">
+                Shop
+              </p>
+              <ul className="font-sans text-sm text-brand-navy/80 space-y-2">
+                {footerShopLinks.map((link) => (
+                  <li key={link.path}>
                     <Link to={link.path} onClick={() => window.scrollTo(0, 0)} className="transition-colors hover:text-brand-gold">
                       {link.name}
                     </Link>
