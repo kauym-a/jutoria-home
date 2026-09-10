@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X, ChevronDown, Mail, Phone } from 'lucide-react';
+import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download } from 'lucide-react';
 import JutoriaAssistantWidget from '../components/chat/JutoriaAssistant';
 
 function SocialBrandIcon({ platform }: { platform: string }) {
@@ -65,6 +65,11 @@ function SocialBrandIcon({ platform }: { platform: string }) {
       return null;
   }
 }
+
+// Wholesale product catalog (PDF). Drop the file at `public/jutoria-catalog.pdf`
+// — until then this link 404s gracefully. Kept as one const so the desktop bar
+// and the mobile drawer stay in sync.
+const CATALOG_URL = '/jutoria-catalog.pdf';
 
 export default function PublicLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -265,10 +270,35 @@ export default function PublicLayout() {
 
           {/* Desktop CTA & Mobile Toggle */}
           <div className="flex items-center gap-4">
-            
+
+            {/* Secondary CTA — outlined icon button that complements the primary
+                without competing. Icon-only in the bar (header content is capped
+                at max-w-7xl, so a full text button would crowd the nav); the
+                mobile drawer carries the fully-labelled "Download Catalog" button.
+                Branded CSS tooltip on hover/focus — no native `title` delay. */}
+            <div className="group relative hidden md:block">
+              <a
+                href={CATALOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                aria-label="Download Catalog"
+                className="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
+              >
+                <Download size={16} strokeWidth={2} className="shrink-0" />
+              </a>
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-brand-navy px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.15em] text-brand-ivory opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-brand-navy" />
+                Download Catalog
+              </span>
+            </div>
+
             {/* Premium CTA Button */}
-            <Link 
-              to="/wholesale" 
+            <Link
+              to="/wholesale"
               className="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-brand-navy text-brand-gold font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 rounded-[2px]"
             >
               Wholesale Inquiry
@@ -366,14 +396,25 @@ export default function PublicLayout() {
           })}
 
           {/* Mobile CTA */}
-          <div className="pt-6 mt-4 border-t border-brand-navy/10">
-            <Link 
-              to="/wholesale" 
+          <div className="flex flex-col gap-3 pt-6 mt-4 border-t border-brand-navy/10">
+            <Link
+              to="/wholesale"
               onClick={closeMenu}
               className="flex items-center justify-center w-full px-6 py-4 bg-brand-navy text-brand-gold font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 rounded-[2px]"
             >
               Wholesale Inquiry
             </Link>
+            <a
+              href={CATALOG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              onClick={closeMenu}
+              className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
+            >
+              <Download size={15} strokeWidth={2} className="shrink-0" />
+              Download Catalog
+            </a>
           </div>
         </nav>
         
