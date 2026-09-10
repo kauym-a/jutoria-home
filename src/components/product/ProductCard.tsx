@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Package } from 'lucide-react';
 
 type ImageEntry = { filename: string; role: string; url: string; confidence?: string };
 
@@ -15,6 +16,13 @@ export default function ProductCard({ product }:{ product: Product }) {
   const imageUrl = primary?.url || '/placemat-product.jpg';
 
   const productPath = `/product/${encodeURIComponent(product.sku)}`;
+
+  // B2B wholesale — MOQ দেখানো বাধ্যতামূলক। ডাটায় থাকলে সেটা, নাহলে placeholder।
+  // "500 SET" / "500 set" / "1500 pcs" — ইউনিটটা একটু পরিপাটি করে দেখানো হয়।
+  const rawMoq = product.excel_fields?.['MOQ'];
+  const moq = typeof rawMoq === 'string' && rawMoq.trim()
+    ? rawMoq.trim().replace(/\bsets?\b/i, 'Sets').replace(/\bpcs\b/i, 'pcs')
+    : '300 Sets';
 
   return (
     <div className="group h-full cursor-pointer">
@@ -39,6 +47,10 @@ export default function ProductCard({ product }:{ product: Product }) {
         <h3 className="text-lg font-serif font-bold text-brand-navy mb-2">
           <Link to={productPath}>{product.name}</Link>
         </h3>
+        <span className="mx-auto mb-3 flex w-fit items-center gap-1.5 rounded-full bg-brand-navy/[0.06] px-3 py-1 font-sans text-xs font-bold tracking-wide text-brand-navy">
+          <Package size={13} strokeWidth={2} className="shrink-0 text-brand-gold" />
+          MOQ: {moq}
+        </span>
         <span className="text-sm font-sans text-brand-navy/60 border border-brand-navy/20 px-3 py-1 rounded-full inline-block">
           SKU: {product.sku}
         </span>
