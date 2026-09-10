@@ -42,6 +42,7 @@ import AdminProducts from './pages/admin/Products';
 import AdminProductForm from './pages/admin/ProductForm';
 import AdminCategories from './pages/admin/Categories';
 import AdminCategoryForm from './pages/admin/CategoryForm';
+import AdminLeads from './pages/admin/Leads';
 
 function App() {
   return (
@@ -116,7 +117,9 @@ function App() {
                 <Route path="/admin/categories/new" element={<AdminCategoryForm />} />
                 <Route path="/admin/categories/:slug/edit" element={<AdminCategoryForm />} />
 
-                {/* ভবিষ্যতে Admin এর Leads, RFQ পেজগুলো এখানে যুক্ত হবে */}
+                <Route path="/admin/leads" element={<AdminLeads />} />
+
+                {/* ভবিষ্যতে Admin এর RFQ, CMS পেজগুলো এখানে যুক্ত হবে */}
               </Route>
             </Route>
           </Routes>

@@ -13,7 +13,9 @@ import {
   ClipboardCheck,
   Handshake,
   ChevronDown,
+  CheckCircle2,
 } from 'lucide-react';
+import { useLeadForm } from '../../hooks/useLeadForm';
 
 // ============================================================
 // এই পেজের কনটেন্ট প্ল্যান অনুযায়ী তৈরি: Hero → Who We Serve → What We Offer →
@@ -149,6 +151,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Wholesale() {
+  const { values, setField, submitting, submitted, handleSubmit } = useLeadForm('wholesale');
+
   return (
     <>
       <Helmet>
@@ -390,60 +394,71 @@ export default function Wholesale() {
             </p>
           </div>
 
-          {/* Form UI — connect to Firestore/email in a later phase, same as the Contact page */}
-          <form className="bg-white p-8 md:p-10 rounded-[2px] space-y-6" onSubmit={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Your Name *</label>
-                <input type="text" required placeholder="Jane Doe" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
-              </div>
-              <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Company Name</label>
-                <input type="text" placeholder="Company Ltd." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
-              </div>
+          {/* সাবমিট করলে ডেটা Firestore-এর 'leads' কালেকশনে সেভ হয় (source: 'wholesale')।
+              Admin এ দেখা যায় /admin/leads পেজে। */}
+          {submitted ? (
+            <div className="bg-white p-8 md:p-12 rounded-[2px] text-center">
+              <CheckCircle2 size={40} className="mx-auto text-brand-gold mb-4" strokeWidth={1.5} />
+              <h3 className="text-xl font-serif font-bold text-brand-navy mb-2">Thank you — your inquiry is in.</h3>
+              <p className="font-sans text-sm text-brand-navy/60 max-w-md mx-auto">
+                Our team will review your requirements and get back to you with the appropriate next steps.
+              </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Email *</label>
-                <input type="email" required placeholder="jane@company.com" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+          ) : (
+            <form className="bg-white p-8 md:p-10 rounded-[2px] space-y-6" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Your Name *</label>
+                  <input type="text" required value={values.name} onChange={(e) => setField('name', e.target.value)} placeholder="Jane Doe" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Company Name</label>
+                  <input type="text" value={values.company} onChange={(e) => setField('company', e.target.value)} placeholder="Company Ltd." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
               </div>
-              <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Country *</label>
-                <input type="text" required placeholder="United Kingdom" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Email *</label>
+                  <input type="email" required value={values.email} onChange={(e) => setField('email', e.target.value)} placeholder="jane@company.com" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Country *</label>
+                  <input type="text" required value={values.country} onChange={(e) => setField('country', e.target.value)} placeholder="United Kingdom" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Type *</label>
-                <select required defaultValue="" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm text-brand-navy">
-                  <option value="" disabled>Select an option</option>
-                  {BUSINESS_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Type *</label>
+                  <select required value={values.type} onChange={(e) => setField('type', e.target.value)} className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm text-brand-navy">
+                    <option value="" disabled>Select an option</option>
+                    {BUSINESS_TYPES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Estimated Quantity</label>
+                  <input type="text" value={values.quantity} onChange={(e) => setField('quantity', e.target.value)} placeholder="e.g. 500 units" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
               </div>
+
               <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Estimated Quantity</label>
-                <input type="text" placeholder="e.g. 500 units" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Product Interest</label>
+                <input type="text" value={values.productInterest} onChange={(e) => setField('productInterest', e.target.value)} placeholder="e.g. Jute placemats, planter baskets" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
               </div>
-            </div>
 
-            <div>
-              <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Product Interest</label>
-              <input type="text" placeholder="e.g. Jute placemats, planter baskets" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
-            </div>
+              <div>
+                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Message</label>
+                <textarea rows={4} value={values.message} onChange={(e) => setField('message', e.target.value)} placeholder="Tell us more about what you're looking for..." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm resize-none" />
+              </div>
 
-            <div>
-              <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Message</label>
-              <textarea rows={4} placeholder="Tell us more about what you're looking for..." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm resize-none" />
-            </div>
-
-            <button type="submit" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-10 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
-              Submit Wholesale Inquiry <ArrowRight size={16} />
-            </button>
-          </form>
+              <button type="submit" disabled={submitting} className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-10 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px] disabled:opacity-60">
+                {submitting ? 'Submitting…' : 'Submit Wholesale Inquiry'} <ArrowRight size={16} />
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
