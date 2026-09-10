@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download, MessageCircle } from 'lucide-react';
+import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download, Send } from 'lucide-react';
 import JutoriaAssistantWidget from '../components/chat/JutoriaAssistant';
 
 function SocialBrandIcon({ platform }: { platform: string }) {
@@ -524,8 +524,10 @@ export default function PublicLayout() {
               className="group mb-6 flex w-full items-center gap-3 rounded-[2px] border border-brand-navy/15 bg-brand-ivory px-4 py-3.5 text-left shadow-premium transition-colors hover:border-brand-gold/60
                          sm:mb-8 sm:block sm:border-0 sm:bg-transparent sm:p-0 sm:text-center sm:shadow-none sm:pointer-events-none"
             >
-              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-navy text-brand-gold sm:hidden">
-                <MessageCircle size={16} strokeWidth={2} />
+              {/* চিপ স্টাইল ভেতরের কন্টাক্ট কার্ডের আইকন-বক্সের মতো (rounded-[2px], square) —
+                  ফ্লোটিং AI Assistant বাটনের গোল navy আইকনের সাথে যাতে গুলিয়ে না যায়। */}
+              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-white text-brand-navy sm:hidden">
+                <Send size={15} strokeWidth={2} />
               </span>
 
               <span className="min-w-0 flex-1 sm:flex-none">
