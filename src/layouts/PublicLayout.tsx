@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download } from 'lucide-react';
+import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download, MessageCircle } from 'lucide-react';
 import JutoriaAssistantWidget from '../components/chat/JutoriaAssistant';
 
 function SocialBrandIcon({ platform }: { platform: string }) {
@@ -513,19 +513,36 @@ export default function PublicLayout() {
           </div>
 
           {/* Get In Touch — all verified business emails & phone/WhatsApp contact points.
-              মোবাইলে অ্যাকর্ডিয়ন (contactOpen), sm+ এ কার্ডগুলো সবসময় দৃশ্যমান। */}
+              মোবাইলে: আকর্ষণীয় tappable কার্ড-বাটন (আইকন + সাব-লেবেল + চেভরন) যাতে
+              ট্যাপ করার আগ্রহ বাড়ে। sm+ এ এটা সাধারণ ছোট হেডিং-এ ফিরে যায় (বাকি
+              ফুটার হেডিংগুলোর সাথে মিল) এবং কার্ডগুলো সবসময় দৃশ্যমান। */}
           <div className="mt-12 pt-8 border-t border-brand-navy/10">
             <button
               type="button"
               onClick={() => setContactOpen((v) => !v)}
               aria-expanded={contactOpen}
-              className="w-full flex items-center justify-center gap-2 font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-6 sm:mb-8 sm:pointer-events-none"
+              className="group mb-6 flex w-full items-center gap-3 rounded-[2px] border border-brand-navy/15 bg-brand-ivory px-4 py-3.5 text-left shadow-premium transition-colors hover:border-brand-gold/60
+                         sm:mb-8 sm:block sm:border-0 sm:bg-transparent sm:p-0 sm:text-center sm:shadow-none sm:pointer-events-none"
             >
-              Get In Touch
-              <ChevronDown
-                size={14}
-                className={`sm:hidden transition-transform duration-300 ${contactOpen ? 'rotate-180' : ''}`}
-              />
+              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-brand-navy text-brand-gold sm:hidden">
+                <MessageCircle size={16} strokeWidth={2} />
+              </span>
+
+              <span className="min-w-0 flex-1 sm:flex-none">
+                <span className="block font-sans text-[12px] font-bold uppercase tracking-[0.2em] text-brand-navy sm:text-[11px] sm:text-brand-navy/70">
+                  Get In Touch
+                </span>
+                <span className="mt-0.5 block font-sans text-[11px] normal-case tracking-normal text-brand-navy/50 sm:hidden">
+                  Email, phone &amp; WhatsApp — tap to view
+                </span>
+              </span>
+
+              <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-brand-navy/15 text-brand-navy/60 transition-colors group-hover:border-brand-gold/60 sm:hidden">
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${contactOpen ? 'rotate-180' : ''}`}
+                />
+              </span>
             </button>
 
             <div className={contactOpen ? 'block' : 'hidden sm:block'}>
