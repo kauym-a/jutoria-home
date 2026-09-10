@@ -14,6 +14,9 @@ function InstagramIcon({ size = 16, className = '' }: { size?: number; className
 }
 import { useEffect, useRef, useState } from 'react';
 
+// অফিশিয়াল Instagram প্রোফাইল — হ্যান্ডেল লিংক ও নিচের ৩টা ছবি সবই এখানে পয়েন্ট করে
+const INSTAGRAM_URL = 'https://www.instagram.com/jutoriahome/';
+
 // Materials Data (shared with /materials and /materials/:slug pages — see src/data/materials.ts)
 import { materials } from '../../data/materials';
 
@@ -669,12 +672,12 @@ export default function Home() {
               </h2>
             </div>
             <a
-              href="https://instagram.com/jutoria.home"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-sans font-bold tracking-[0.15em] text-[11px] uppercase text-brand-navy hover:text-brand-gold transition-colors"
+              className="inline-flex items-center gap-2 font-sans font-bold tracking-normal text-sm normal-case text-brand-navy hover:text-brand-gold transition-colors"
             >
-              <InstagramIcon size={16} /> @jutoria.home
+              <InstagramIcon size={16} /> @jutoriahome
             </a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
@@ -683,9 +686,24 @@ export default function Home() {
               { src: '/jutoria-instagram-dining-table.jpg', alt: 'JUTORIA woven placemats and baskets on a dining table' },
               { src: '/jutoria-instagram-modern-home.jpg', alt: 'JUTORIA natural fiber basket in a modern home' },
             ].map((img) => (
-              <div key={img.src} className="relative aspect-square overflow-hidden rounded-[2px]">
-                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-              </div>
+              <a
+                key={img.src}
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View JUTORIA on Instagram"
+                className="group relative block aspect-square overflow-hidden rounded-[2px]"
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+                {/* subtle overlay + Instagram glyph so visitors realise the tile links out */}
+                <span className="absolute inset-0 flex items-center justify-center bg-brand-navy/0 text-brand-ivory opacity-0 transition-all duration-300 group-hover:bg-brand-navy/25 group-hover:opacity-100">
+                  <InstagramIcon size={26} />
+                </span>
+              </a>
             ))}
           </div>
         </div>
