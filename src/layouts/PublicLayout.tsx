@@ -77,7 +77,7 @@ export default function PublicLayout() {
 
   // Desktop & Mobile Navigation — approved menu structure (10 sections).
   // Each top-level item is either a direct link (path only) or a group with children (dropdown).
-  const navLinks: { name: string; path?: string; children?: { name: string; path: string }[] }[] = [
+  const navLinks: { name: string; path?: string; badge?: string; children?: { name: string; path: string }[] }[] = [
     { name: 'Home', path: '/' },
     {
       name: 'Company',
@@ -108,7 +108,9 @@ export default function PublicLayout() {
         { name: 'Wholesale Inquiry', path: '/contact' },
       ],
     },
-    { name: 'Shop on Amazon', path: '/amazon-usa' },
+    // Amazon seller account is Amazon Business (B2B) — the badge signals to
+    // wholesale buyers that this storefront is for bulk / business purchasing.
+    { name: 'Amazon Business', path: '/amazon-usa', badge: 'B2B' },
 
     { name: 'Contact', path: '/contact' },
   ];
@@ -207,6 +209,11 @@ export default function PublicLayout() {
                     }`}
                   >
                     {link.name}
+                    {link.badge && (
+                      <span className="ml-1.5 inline-flex items-center rounded-[2px] border border-brand-gold/50 px-1 text-[8px] font-bold leading-[1.45] tracking-[0.08em] text-brand-gold align-middle">
+                        {link.badge}
+                      </span>
+                    )}
                   </Link>
                 );
               }
@@ -320,6 +327,11 @@ export default function PublicLayout() {
                   }`}
                 >
                   {link.name}
+                  {link.badge && (
+                    <span className="ml-1.5 inline-flex items-center rounded-[2px] border border-brand-gold/50 px-1 text-[9px] font-bold leading-[1.45] tracking-[0.08em] text-brand-gold align-middle">
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               );
             }

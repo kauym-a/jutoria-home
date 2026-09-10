@@ -55,7 +55,7 @@ export default function ProductDetail(){
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-brand-navy text-brand-ivory px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors rounded-[2px]"
               >
-                Shop on Amazon
+                Shop on Amazon Business
               </a>
             )}
             <Link

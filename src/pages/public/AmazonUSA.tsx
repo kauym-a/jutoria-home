@@ -13,7 +13,7 @@ const AMAZON_STOREFRONT_LIVE = false; // storefront রেডি হলে true 
 const AMAZON_STOREFRONT_URL = ''; // যেমন: 'https://www.amazon.com/shops/jutoria'
 
 const SHOP_CONFIDENCE = [
-  { icon: ShoppingBag, title: 'Convenient Shopping', desc: 'Browse and purchase JUTORIA products through Amazon USA.' },
+  { icon: ShoppingBag, title: 'Convenient Shopping', desc: 'Browse and purchase JUTORIA products through Amazon Business.' },
   { icon: ShieldCheck, title: 'Secure Checkout', desc: "Complete your purchase through Amazon's established shopping platform." },
   { icon: Truck, title: 'Reliable Fulfillment', desc: 'Enjoy Amazon-supported delivery and order tracking where available.' },
 ];
@@ -27,7 +27,7 @@ const WHY_JUTORIA = [
 const JOURNEY_STEPS = [
   { icon: Compass, label: 'Discover JUTORIA' },
   { icon: PackageSearch, label: 'Explore the Collection' },
-  { icon: Store, label: 'Shop on Amazon USA' },
+  { icon: Store, label: 'Shop on Amazon Business' },
   { icon: HomeIcon, label: 'Enjoy Your Natural Home' },
 ];
 
@@ -35,10 +35,10 @@ export default function AmazonUSA() {
   return (
     <>
       <Helmet>
-        <title>Shop JUTORIA on Amazon USA</title>
+        <title>Shop JUTORIA on Amazon Business</title>
         <meta
           name="description"
-          content="Discover JUTORIA's natural-fiber home décor collection on Amazon USA, with convenient shopping, secure checkout, and reliable delivery."
+          content="Discover JUTORIA's natural-fiber home décor collection on Amazon Business, with convenient shopping, secure checkout, and reliable delivery for wholesale and business buyers."
         />
       </Helmet>
 
@@ -47,13 +47,13 @@ export default function AmazonUSA() {
         <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
           <div className="relative z-10 px-4 sm:px-8 lg:px-16 py-20 md:py-28 flex flex-col justify-center">
             <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
-              Shop JUTORIA on Amazon
+              Shop JUTORIA on Amazon Business
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.05] tracking-[-0.02em] text-brand-ivory mb-6 max-w-lg">
-              JUTORIA on <br /> Amazon USA
+              JUTORIA on <br /> Amazon Business
             </h1>
             <p className="font-sans text-base md:text-lg text-brand-ivory/75 font-light leading-relaxed mb-10 max-w-md">
-              Discover JUTORIA's natural-fiber home décor collection on Amazon USA, with convenient shopping, secure checkout, and reliable delivery.
+              Discover JUTORIA's natural-fiber home décor collection on Amazon Business — our B2B storefront for wholesale and bulk buyers, with convenient ordering, secure checkout, and reliable fulfillment.
             </p>
 
             {AMAZON_STOREFRONT_LIVE ? (
@@ -63,7 +63,7 @@ export default function AmazonUSA() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px] w-fit"
               >
-                Shop JUTORIA on Amazon <ArrowRight size={16} />
+                Shop JUTORIA on Amazon Business <ArrowRight size={16} />
               </a>
             ) : (
               <div>
@@ -71,7 +71,7 @@ export default function AmazonUSA() {
                   Amazon Storefront Coming Soon
                 </span>
                 <p className="font-sans text-sm text-brand-ivory/60 mt-4 max-w-sm">
-                  Our Amazon USA storefront is being prepared. In the meantime, explore our collections or contact us for product information.
+                  Our Amazon Business storefront is being prepared. In the meantime, explore our collections or contact us for wholesale pricing and product information.
                 </p>
                 <div className="flex flex-wrap gap-4 mt-6">
                   <Link to="/products" className="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-7 py-3.5 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
@@ -198,7 +198,7 @@ export default function AmazonUSA() {
             Bring Natural Living Home.
           </h2>
           <p className="font-sans text-brand-ivory/70 font-light leading-relaxed mb-10">
-            Explore JUTORIA's collection on Amazon USA.
+            Explore JUTORIA's collection on Amazon Business.
           </p>
           {AMAZON_STOREFRONT_LIVE ? (
             <a
@@ -207,7 +207,7 @@ export default function AmazonUSA() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]"
             >
-              Shop JUTORIA on Amazon <ArrowRight size={16} />
+              Shop JUTORIA on Amazon Business <ArrowRight size={16} />
             </a>
           ) : (
             <div className="flex flex-col items-center gap-4">

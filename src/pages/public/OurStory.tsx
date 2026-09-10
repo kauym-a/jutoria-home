@@ -381,7 +381,7 @@ export default function OurStory() {
               to="/amazon-usa"
               className="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/30 text-brand-navy px-9 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy/5 rounded-[2px]"
             >
-              Shop on Amazon <ArrowRight size={14} />
+              Shop on Amazon Business <ArrowRight size={14} />
             </Link>
           </div>
         </div>
