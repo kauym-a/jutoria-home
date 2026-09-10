@@ -275,12 +275,15 @@ export default function Home() {
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7 lg:gap-5">
               {certificationLogos.map((logo) => (
-                <div key={logo.name} className="flex h-16 items-center justify-center rounded-[14px] border border-brand-navy/5 bg-[#fbfaf7] px-3 py-2 sm:h-20 lg:h-24">
+                <div key={logo.name} className="flex h-16 items-center justify-center rounded-[14px] border border-brand-navy/5 bg-[#fbfaf7] p-3 sm:h-20 lg:h-24">
+                  {/* সব লোগোর দৃশ্যমান উচ্চতা এক (h-9 → sm:h-11 → lg:60px), w-auto + object-contain
+                      দিয়ে aspect ratio ঠিক থাকে। mix-blend-multiply সাদা JPEG ব্যাকগ্রাউন্ডকে
+                      টাইলের সাথে মিশিয়ে দেয়, grayscale টোন এক করে — hover-এ আসল রং ফিরে আসে। */}
                   <img
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
-                    className="h-full w-full object-contain"
+                    className="h-9 w-auto max-w-full object-contain opacity-70 grayscale mix-blend-multiply transition duration-300 ease-out hover:opacity-100 hover:grayscale-0 sm:h-11 lg:h-[60px]"
                   />
                 </div>
               ))}
