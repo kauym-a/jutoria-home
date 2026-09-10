@@ -33,7 +33,7 @@ const LEADERSHIP_TEAM = [
     location: 'Bangladesh',
     phone: '+880 1745-249997',
     email: 'rashed@jutoriahome.com',
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/company/jutoriahome',
     photo: '/team/founder-managing-director.jpg',
   },
   {
@@ -363,16 +363,19 @@ export default function CorporateInformation() {
                 <div className="p-6">
                   <h3 className="font-serif font-bold text-brand-navy leading-snug mb-1">{person.name}</h3>
                   <p className="font-sans text-xs font-bold text-brand-gold uppercase tracking-wide mb-2">{person.title}</p>
-                  {/* LinkedIn — designation-এর ঠিক নিচে। এখন '#', পরে person.linkedin
-                      ফিল্ডে আসল URL বসালে সেটাই ব্যবহার হবে। hover-এ LinkedIn ব্র্যান্ড ব্লু। */}
-                  <a
-                    href={person.linkedin || '#'}
-                    {...(person.linkedin ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                    aria-label={`${person.name} on LinkedIn`}
-                    className="mx-auto mb-3 flex w-fit items-center justify-center p-1 text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]"
-                  >
-                    <LinkedInIcon className="h-4 w-4" />
-                  </a>
+                  {/* LinkedIn — শুধু যাদের `linkedin` URL সেট করা আছে (এখন শুধু Founder)।
+                      target/rel দেওয়া, তাই নতুন ট্যাবে খোলে ও কখনো পেজ টপে স্ক্রল করে না। */}
+                  {person.linkedin && (
+                    <a
+                      href={person.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${person.name} on LinkedIn`}
+                      className="mx-auto mb-3 flex w-fit items-center justify-center p-1 text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]"
+                    >
+                      <LinkedInIcon className="h-4 w-4" />
+                    </a>
+                  )}
                   <p className="font-sans text-xs text-brand-navy/60 leading-relaxed mb-3">{person.desc}</p>
                   <span className="inline-block font-sans text-[10px] font-bold tracking-[0.15em] uppercase text-brand-navy/50 mb-4">
                     {person.location}
