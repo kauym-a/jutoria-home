@@ -17,8 +17,10 @@ import { useEffect, useRef, useState } from 'react';
 // অফিশিয়াল Instagram প্রোফাইল — হ্যান্ডেল লিংক ও নিচের ৩টা ছবি সবই এখানে পয়েন্ট করে
 const INSTAGRAM_URL = 'https://www.instagram.com/jutoriahome/';
 
-// Materials Data (shared with /materials and /materials/:slug pages — see src/data/materials.ts)
-import { materials } from '../../data/materials';
+// "Our Materials" গ্রিড এখন Firestore-এর 'categories' কালেকশন থেকে ডাইনামিকভাবে লোড হয়
+// (admin: /admin/categories)। Firestore খালি/অফলাইন হলে src/data/materials.ts fallback।
+import { useCategories } from '../../hooks/useCategories';
+import { displayNumber } from '../../services/firebase/categories';
 
 // Featured Products Data
 const featuredProducts = [
@@ -63,6 +65,9 @@ const certificationLogos = [
 ];
 
 export default function Home() {
+  // "Our Materials" গ্রিডের ডেটা (Firestore 'categories' → fallback materials.ts)
+  const { categories } = useCategories();
+
   // Hooks for Cinematic Artisan Animation
   const artisanRef = useRef<HTMLDivElement>(null);
   const [isArtisanVisible, setIsArtisanVisible] = useState(false);
@@ -334,12 +339,12 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {materials.map((material, index) => {
+            {categories.map((material, index) => {
               const isFeatured = index === 0;
               return (
                 <Link
                   to={`/materials/${material.slug}`}
-                  key={material.id}
+                  key={material.slug}
                   className={`group relative p-8 md:p-12 border-2 transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[300px] md:min-h-[350px] shadow-premium hover:shadow-premium-hover ${isFeatured ? 'md:col-span-2 lg:col-span-2 border-brand-navy/10 hover:border-brand-gold' : 'border-brand-navy/10 hover:border-brand-gold'}`}
                   style={{
                     backgroundImage: `linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%), url(${material.image})`,
@@ -349,7 +354,7 @@ export default function Home() {
                   }}
                 >
                   <span className="absolute top-6 right-8 font-serif text-6xl md:text-7xl font-bold transition-colors duration-500 text-brand-ivory/25 group-hover:text-brand-gold/60">
-                    {material.id}
+                    {displayNumber(material.order)}
                   </span>
                   <div className="relative z-10 mt-auto">
                     <span className="block font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -4,7 +4,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchProduct, upsertProduct, uploadProductImage, type Product, type ProductImage } from '../../services/firebase/products';
-import { materials } from '../../data/materials';
+import { useCategories } from '../../hooks/useCategories';
 
 const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
 
@@ -26,6 +26,8 @@ export default function AdminProductForm() {
   const { sku } = useParams<{ sku: string }>();
   const isEditing = Boolean(sku);
   const navigate = useNavigate();
+  // ম্যাটেরিয়াল-পিকারের অপশন এখন Firestore 'categories' থেকে (admin: /admin/categories)
+  const { categories: materials } = useCategories();
 
   const [product, setProduct] = useState<Product>(EMPTY_PRODUCT);
   const [loading, setLoading] = useState(isEditing);

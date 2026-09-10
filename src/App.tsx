@@ -40,6 +40,8 @@ import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/Products';
 import AdminProductForm from './pages/admin/ProductForm';
+import AdminCategories from './pages/admin/Categories';
+import AdminCategoryForm from './pages/admin/CategoryForm';
 
 function App() {
   return (
@@ -110,7 +112,11 @@ function App() {
                 <Route path="/admin/products/new" element={<AdminProductForm />} />
                 <Route path="/admin/products/:sku/edit" element={<AdminProductForm />} />
 
-                {/* ভবিষ্যতে Admin এর Categories, Leads পেজগুলো এখানে যুক্ত হবে */}
+                <Route path="/admin/categories" element={<AdminCategories />} />
+                <Route path="/admin/categories/new" element={<AdminCategoryForm />} />
+                <Route path="/admin/categories/:slug/edit" element={<AdminCategoryForm />} />
+
+                {/* ভবিষ্যতে Admin এর Leads, RFQ পেজগুলো এখানে যুক্ত হবে */}
               </Route>
             </Route>
           </Routes>

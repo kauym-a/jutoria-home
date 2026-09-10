@@ -15,6 +15,13 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // categories — হোমপেজের "Our Materials" গ্রিড ও /materials পেজগুলোর ডেটা।
+    // সবাই পড়তে পারবে; লেখা/এডিট/ডিলিট শুধু লগইন করা Admin।
+    match /categories/{slug} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
     // অন্য কোনো কালেকশন (leads, rfqs ইত্যাদি) থাকলে সেগুলোর জন্য নিয়ম আলাদাভাবে যোগ করতে হবে —
     // ডিফল্টে সবকিছু বন্ধ থাকে, যা পর্যন্ত না স্পষ্টভাবে allow করা হয়।
   }

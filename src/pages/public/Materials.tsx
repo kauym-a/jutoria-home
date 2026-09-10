@@ -1,9 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { materials } from '../../data/materials';
+import { useCategories } from '../../hooks/useCategories';
+import { displayNumber } from '../../services/firebase/categories';
 
 export default function Materials() {
+  // Firestore 'categories' কালেকশন থেকে (admin: /admin/categories) — fallback materials.ts
+  const { categories: materials } = useCategories();
+
   return (
     <>
       <Helmet>
@@ -31,7 +35,7 @@ export default function Materials() {
             {materials.map((material) => (
               <Link
                 to={`/materials/${material.slug}`}
-                key={material.id}
+                key={material.slug}
                 className="group relative p-8 md:p-10 border-2 border-brand-navy/10 hover:border-brand-gold transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[320px] shadow-premium hover:shadow-premium-hover"
                 style={{
                   backgroundImage: `linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%), url(${material.image})`,
@@ -40,7 +44,7 @@ export default function Materials() {
                 }}
               >
                 <span className="absolute top-6 right-8 font-serif text-6xl font-bold text-brand-ivory/25 group-hover:text-brand-gold/60 transition-colors duration-500">
-                  {material.id}
+                  {displayNumber(material.order)}
                 </span>
                 <div className="relative z-10">
                   <h3 className="text-2xl font-serif font-bold mb-3 text-brand-ivory flex items-center gap-3">

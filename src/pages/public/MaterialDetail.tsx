@@ -1,21 +1,29 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { materials } from '../../data/materials';
+import { useCategories } from '../../hooks/useCategories';
+import { displayNumber } from '../../services/firebase/categories';
 import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/product/ProductCard';
 
 export default function MaterialDetail() {
   const { slug } = useParams<{ slug: string }>();
+  // Firestore 'categories' কালেকশন থেকে (admin: /admin/categories) — fallback materials.ts
+  const { categories: materials, loading: materialsLoading } = useCategories();
   const material = materials.find((m) => m.slug === slug);
   const { products } = useProducts(); // Firestore-backed, static ডেটায় fallback করে
+
+  // Firestore এখনো লোড হচ্ছে — সিদ্ধান্ত নেওয়ার আগে অপেক্ষা করি (নাহলে নতুন slug-এ ভুল করে 404)
+  if (materialsLoading && !material) {
+    return <div className="py-32 text-center font-sans text-sm text-brand-navy/50">Loading…</div>;
+  }
 
   if (!material) {
     return <Navigate to="/materials" replace />;
   }
 
   const currentIndex = materials.findIndex((m) => m.slug === slug);
-  const next = materials[(currentIndex + 1) % materials.length];
+  const next = materials[(currentIndex + 1) % materials.length] || material;
 
   // টেক্সট-ম্যাচিং নয় — প্রতিটা প্রোডাক্টের structured materialSlugs ফিল্ড দিয়ে মেলানো হয়
   const relatedProducts = products.filter((p) => p.materialSlugs?.includes(material.slug));
@@ -38,7 +46,7 @@ export default function MaterialDetail() {
             <ArrowLeft size={14} /> All Materials
           </Link>
           <span className="block font-serif text-7xl md:text-8xl font-bold text-brand-ivory/20 mb-2">
-            {material.id}
+            {displayNumber(material.order)}
           </span>
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-brand-ivory leading-tight max-w-2xl">
             {material.name}
