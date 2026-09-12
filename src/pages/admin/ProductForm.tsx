@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { fetchProduct, upsertProduct, uploadProductImage, type Product, type ProductImage } from '../../services/firebase/products';
+import { fetchProduct, fetchAllProducts, upsertProduct, uploadProductImage, type Product, type ProductImage } from '../../services/firebase/products';
 import { useCategories } from '../../hooks/useCategories';
 
 const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
@@ -35,6 +35,41 @@ export default function AdminProductForm() {
   const [specRows, setSpecRows] = useState<[string, string][]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // কাস্টম ক্যাটাগরি — ডিফল্ট ৫টার বাইরে অ্যাডমিন যেকোনো নাম টাইপ করে যোগ করতে পারবে।
+  // এর জন্য আলাদা Firestore কালেকশন লাগেনি — বিদ্যমান প্রোডাক্টগুলোতে যা যা category
+  // ব্যবহার হয়েছে, সেগুলোই ডিফল্ট লিস্টের সাথে যোগ হয়ে ড্রপডাউন বানায়। তাই একবার কোনো
+  // প্রোডাক্টে নতুন ক্যাটাগরি সেভ হলে, পরের যেকোনো প্রোডাক্টের ফর্মেই সেটা ড্রপডাউনে দেখাবে।
+  const [knownCategories, setKnownCategories] = useState<string[]>(CATEGORIES);
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+
+  useEffect(() => {
+    fetchAllProducts()
+      .then((all) => {
+        const used = all.map((p) => p.category).filter((c): c is string => !!c && c.trim() !== '');
+        setKnownCategories((prev) => Array.from(new Set([...prev, ...used])));
+      })
+      .catch(() => {
+        /* dropdown শুধু ডিফল্ট ৫টা দেখাবে — সমস্যা হলে চুপচাপ fallback করে, ফর্ম আটকাবে না */
+      });
+  }, []);
+
+  const categoryOptions = Array.from(
+    new Set([...knownCategories, ...(product.category ? [product.category] : [])]),
+  );
+
+  const confirmNewCategory = () => {
+    const name = newCategoryName.trim();
+    if (!name) {
+      toast.error('ক্যাটাগরির নাম লিখুন।');
+      return;
+    }
+    update('category', name);
+    setKnownCategories((prev) => Array.from(new Set([...prev, name])));
+    setAddingCategory(false);
+    setNewCategoryName('');
+  };
 
   useEffect(() => {
     if (!isEditing || !sku) return;
@@ -206,15 +241,60 @@ export default function AdminProductForm() {
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Category</label>
-                <select
-                  value={product.category}
-                  onChange={(e) => update('category', e.target.value)}
-                  className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
-                >
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+                {addingCategory ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          confirmNewCategory();
+                        }
+                      }}
+                      placeholder="e.g. Wall Décor"
+                      className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+                    />
+                    <button
+                      type="button"
+                      onClick={confirmNewCategory}
+                      className="px-3 rounded bg-brand-navy text-brand-gold text-sm font-semibold hover:bg-brand-gold hover:text-brand-navy transition-colors flex-shrink-0"
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setAddingCategory(false); setNewCategoryName(''); }}
+                      className="px-3 rounded border border-brand-navy/20 text-brand-navy/60 text-sm hover:border-brand-navy transition-colors flex-shrink-0"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <select
+                    value={product.category}
+                    onChange={(e) => {
+                      if (e.target.value === '__new__') {
+                        setAddingCategory(true);
+                        setNewCategoryName('');
+                      } else {
+                        update('category', e.target.value);
+                      }
+                    }}
+                    className="w-full border border-brand-navy/15 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-brand-gold"
+                  >
+                    {categoryOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                    <option value="__new__">+ Add New Category…</option>
+                  </select>
+                )}
+                <p className="text-xs text-brand-navy/40 mt-1">
+                  নতুন নাম যোগ করলে এই ও ভবিষ্যতের প্রোডাক্ট ফর্মে ড্রপডাউনে দেখাবে। তবে "/categories" পেজে
+                  আলাদা কার্ড/পেজ পেতে হলে সেটা কোডে (src/data/categories.ts) আলাদাভাবে যোগ করতে হবে।
+                </p>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wide text-brand-navy/50 mb-1.5">Amazon URL</label>
