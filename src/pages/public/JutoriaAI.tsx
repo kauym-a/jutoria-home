@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { JutoriaAssistantPanel } from '../../components/chat/JutoriaAssistant';
+import { absoluteUrl } from '../../lib/seo';
 
 export default function JutoriaAI() {
   return (
@@ -7,6 +8,7 @@ export default function JutoriaAI() {
       <Helmet>
         <title>JUTORIA AI Assistant</title>
         <meta name="description" content="Ask the JUTORIA AI Assistant about product pricing, MOQ, materials and the wholesale process." />
+        <link rel="canonical" href={absoluteUrl('/jutoria-ai')} />
       </Helmet>
 
       <section className="border-b border-brand-navy/10 bg-[#f7f4ee]">

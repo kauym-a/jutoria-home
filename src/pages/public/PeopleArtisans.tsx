@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { absoluteUrl } from '../../lib/seo';
 
 /* ─────────────────────────────────────────────────────────────
    JUTORIA — PEOPLE & ARTISANS PAGE
@@ -38,6 +39,7 @@ export default function PeopleArtisans() {
           name="description"
           content="Meet the skilled Bangladeshi women artisans and workshop teams whose hands transform natural materials into handcrafted home décor for modern living."
         />
+        <link rel="canonical" href={absoluteUrl('/people')} />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════

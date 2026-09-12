@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCategories } from '../../hooks/useCategories';
+import { absoluteUrl } from '../../lib/seo';
 import { displayNumber } from '../../services/firebase/categories';
 
 export default function Materials() {
@@ -13,6 +14,7 @@ export default function Materials() {
       <Helmet>
         <title>Our Materials | JUTORIA - Natural Fibers of Bangladesh</title>
         <meta name="description" content="Jute, seagrass, bamboo, hogla leaf, cane & rattan, water hyacinth and kans grass — the natural fibers behind every JUTORIA piece." />
+        <link rel="canonical" href={absoluteUrl('/materials')} />
       </Helmet>
 
       <section className="border-b border-brand-navy/10 bg-[#f7f4ee]">

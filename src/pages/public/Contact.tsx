@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { materials } from '../../data/materials';
 import { useLeadForm } from '../../hooks/useLeadForm';
+import { absoluteUrl } from '../../lib/seo';
 
 /* WhatsApp brand mark — lucide-react has no official WhatsApp glyph, so this is
    the same inline-SVG pattern already used for social icons in PublicLayout.tsx. */
@@ -72,6 +73,7 @@ export default function Contact() {
       <Helmet>
         <title>Contact Us | JUTORIA - Request a Quote</title>
         <meta name="description" content="Contact JUTORIA for wholesale inquiries, custom orders, or retail support. Get in touch with our UK and Bangladesh business contact points." />
+        <link rel="canonical" href={absoluteUrl('/contact')} />
       </Helmet>
 
       {/* 1. HERO — no image by design (matches the rest of JUTORIA's B2B pages, avoids over-decoration) */}

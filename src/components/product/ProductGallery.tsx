@@ -2,8 +2,19 @@ import { useState } from 'react';
 
 type ImageEntry = { filename?: string; role?: string; url: string; confidence?: string };
 
-export default function ProductGallery({ images }:{ images: ImageEntry[] }) {
+export default function ProductGallery({ images, productName }:{ images: ImageEntry[]; productName?: string }) {
   if (!images || images.length === 0) return <div className="bg-brand-offwhite p-8 text-center">No images available</div>;
+
+  // অল্ট টেক্সট বানানোর হেল্পার — আপলোড করা raw filename (যেমন "1699999999-IMG_0231.jpg")
+  // কখনো ব্যবহারযোগ্য অল্ট টেক্সট না, তাই প্রোডাক্টের নাম + view নম্বর/role দিয়ে বর্ণনামূলক
+  // অল্ট বানানো হয় — filename শুধু productName-ও না থাকলে শেষ ফলব্যাক হিসেবে থাকে।
+  const buildAlt = (img: ImageEntry, index: number) => {
+    if (productName) {
+      const roleLabel = img.role && img.role !== 'primary' ? ` — ${img.role}` : '';
+      return `${productName}${roleLabel || ` — view ${index + 1}`}`;
+    }
+    return img.filename || `Product image ${index + 1}`;
+  };
 
   // NOTE: ইনডেক্স দিয়ে identify করা হয়, url বা role দিয়ে নয় — কারণ দুইটা ভিন্ন
   // ছবির url ভুলবশত হুবহু এক হয়ে গেলে (যেমন কপি-পেস্ট করে সেভ করার সময়), আগে এই
@@ -22,7 +33,7 @@ export default function ProductGallery({ images }:{ images: ImageEntry[] }) {
       <div className="flex min-h-[420px] items-center justify-center overflow-hidden rounded-lg border border-brand-navy/10 bg-brand-offwhite p-4 sm:min-h-[480px] lg:min-h-[560px]">
         <img
           src={activeImage.url}
-          alt={activeImage.filename || ''}
+          alt={buildAlt(activeImage, selectedIndex)}
           className="max-h-[560px] w-full object-contain object-center"
         />
       </div>
@@ -38,7 +49,7 @@ export default function ProductGallery({ images }:{ images: ImageEntry[] }) {
           >
             <img loading="lazy" decoding="async"
               src={img.url}
-              alt={img.filename || ''}
+              alt={buildAlt(img, i)}
               className="h-24 w-full object-contain object-center"
             />
           </button>

@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { categories } from '../../data/categories';
+import { absoluteUrl } from '../../lib/seo';
 
 export default function Categories() {
   return (
@@ -12,6 +13,7 @@ export default function Categories() {
           name="description"
           content="Browse the JUTORIA range by product type — placemats, planter baskets, laundry baskets, organizer baskets and floor mats & rugs."
         />
+        <link rel="canonical" href={absoluteUrl('/categories')} />
       </Helmet>
 
       <section className="border-b border-brand-navy/10 bg-[#f7f4ee]">

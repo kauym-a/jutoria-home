@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { categories } from '../../data/categories';
 import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/product/ProductCard';
+import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
 
 export default function CategoryDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -25,6 +26,16 @@ export default function CategoryDetail() {
       <Helmet>
         <title>{category.name} | JUTORIA Categories</title>
         <meta name="description" content={category.desc} />
+        <link rel="canonical" href={absoluteUrl(`/categories/${category.slug}`)} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: 'Categories', path: '/categories' },
+              { name: category.name, path: `/categories/${category.slug}` },
+            ]),
+          )}
+        </script>
       </Helmet>
 
       <section

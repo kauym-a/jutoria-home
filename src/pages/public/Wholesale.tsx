@@ -16,6 +16,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useLeadForm } from '../../hooks/useLeadForm';
+import { absoluteUrl } from '../../lib/seo';
 
 // ============================================================
 // এই পেজের কনটেন্ট প্ল্যান অনুযায়ী তৈরি: Hero → Who We Serve → What We Offer →
@@ -161,6 +162,7 @@ export default function Wholesale() {
           name="description"
           content="JUTORIA supplies natural-fiber home décor — jute and seagrass placemats, baskets and floor décor — to retailers, importers, designers and hospitality businesses."
         />
+        <link rel="canonical" href={absoluteUrl('/wholesale')} />
       </Helmet>
 
       {/* 1. HERO */}

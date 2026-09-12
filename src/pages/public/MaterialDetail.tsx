@@ -5,6 +5,7 @@ import { useCategories } from '../../hooks/useCategories';
 import { displayNumber } from '../../services/firebase/categories';
 import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/product/ProductCard';
+import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
 
 export default function MaterialDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -33,6 +34,16 @@ export default function MaterialDetail() {
       <Helmet>
         <title>{material.name} | JUTORIA Materials</title>
         <meta name="description" content={material.desc} />
+        <link rel="canonical" href={absoluteUrl(`/materials/${material.slug}`)} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: 'Materials', path: '/materials' },
+              { name: material.name, path: `/materials/${material.slug}` },
+            ]),
+          )}
+        </script>
       </Helmet>
 
       <section className="relative w-full min-h-[55vh] flex items-end bg-brand-navy overflow-hidden">

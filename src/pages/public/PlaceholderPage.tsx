@@ -17,6 +17,9 @@ export default function PlaceholderPage({ title, eyebrow, description }: Props) 
     <>
       <Helmet>
         <title>{title} | JUTORIA</title>
+        {/* এই পেজগুলো এখনো "শীঘ্রই আসছে" — real content না থাকা পর্যন্ত thin/duplicate
+            content হিসেবে ইনডেক্স না হওয়াই ভালো। আসল কনটেন্ট বসলে এই লাইনটা সরিয়ে দিতে হবে। */}
+        <meta name="robots" content="noindex" />
       </Helmet>
 
       <section className="relative min-h-[60vh] flex items-center bg-brand-ivory">

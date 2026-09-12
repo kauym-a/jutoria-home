@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingBag, ShieldCheck, Truck, Leaf, Hand, Sparkles, Compass, Store, PackageSearch, Home as HomeIcon } from 'lucide-react';
+import { absoluteUrl } from '../../lib/seo';
 
 // ============================================================
 // Amazon storefront এখনো live না। তাই এই পেজে কোথাও fake Amazon URL, fake
@@ -40,6 +41,7 @@ export default function AmazonUSA() {
           name="description"
           content="Discover JUTORIA's natural-fiber home décor collection on Amazon Business, with convenient shopping, secure checkout, and reliable delivery for wholesale and business buyers."
         />
+        <link rel="canonical" href={absoluteUrl('/amazon-usa')} />
       </Helmet>
 
       {/* 1. HERO */}

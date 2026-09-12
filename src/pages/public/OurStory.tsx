@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { absoluteUrl } from '../../lib/seo';
 
 /* ─────────────────────────────────────────────────────────────
    JUTORIA — OUR STORY PAGE
@@ -17,6 +18,7 @@ export default function OurStory() {
           name="description"
           content="Discover the JUTORIA story, from natural materials and Bangladeshi craftsmanship to thoughtfully designed home décor for modern living."
         />
+        <link rel="canonical" href={absoluteUrl('/our-story')} />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════

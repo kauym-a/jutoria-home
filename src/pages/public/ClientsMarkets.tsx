@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Store, PenTool, Building2, Package, Leaf, Hammer, Layers, Handshake, Star } from 'lucide-react';
 import { marketRegions, testimonials } from '../../data/globalMarkets';
+import { absoluteUrl } from '../../lib/seo';
 
 // ============================================================
 // এই পেজে কোথাও অ-যাচাইকৃত claim ("largest market", "X years experience",
@@ -59,6 +60,7 @@ export default function ClientsMarkets() {
           name="description"
           content="From Bangladesh to international markets, JUTORIA connects natural-fiber craftsmanship with retailers, designers, hospitality businesses and wholesale buyers worldwide."
         />
+        <link rel="canonical" href={absoluteUrl('/clients-markets')} />
       </Helmet>
 
       {/* 01. HERO */}

@@ -1,7 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowRight } from 'lucide-react';
 import ProductGallery from '../../components/product/ProductGallery';
 import { useProducts } from '../../hooks/useProducts';
+import { absoluteUrl, breadcrumbJsonLd, productJsonLd } from '../../lib/seo';
 
 export default function ProductDetail(){
   const params = useParams();
@@ -16,6 +18,10 @@ export default function ProductDetail(){
   if(!product) {
     return (
       <div className="container mx-auto py-16">
+        <Helmet>
+          <title>Product Not Found | JUTORIA</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
         <h1 className="text-2xl font-serif font-bold text-brand-navy">Product not found</h1>
         <p className="mt-4 text-brand-navy/70">The product with SKU <strong>{sku}</strong> was not found in the product data.</p>
         <Link to="/products" className="text-brand-gold mt-4 inline-block font-semibold">Back to products</Link>
@@ -24,12 +30,50 @@ export default function ProductDetail(){
   }
 
   const images = product.images || [];
+  const canonicalPath = `/product/${encodeURIComponent(product.sku)}`;
+  const pageTitle = `${product.name} | JUTORIA - Premium Eco-Friendly Home Décor`;
+  const pageDescription =
+    product.description ||
+    `${product.name} (SKU: ${product.sku}) — premium eco-friendly, handmade home décor from JUTORIA, available for international wholesale.`;
+  const socialImage = images[0]?.url;
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-12 md:py-16">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={absoluteUrl(canonicalPath)} />
+
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="product" />
+        <meta property="og:site_name" content="JUTORIA" />
+        <meta property="og:url" content={absoluteUrl(canonicalPath)} />
+        {socialImage && <meta property="og:image" content={socialImage} />}
+        {socialImage && <meta property="og:image:alt" content={product.name} />}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        {socialImage && <meta name="twitter:image" content={socialImage} />}
+
+        <script type="application/ld+json">
+          {JSON.stringify(productJsonLd(product, canonicalPath))}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              { name: 'Products', path: '/products' },
+              { name: product.name, path: canonicalPath },
+            ]),
+          )}
+        </script>
+      </Helmet>
+
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_0.9fr] lg:items-start">
         <div className="w-full">
-          <ProductGallery images={images} />
+          <ProductGallery images={images} productName={product.name} />
         </div>
 
         <div className="w-full lg:pt-2">

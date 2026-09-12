@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { absoluteUrl } from '../../lib/seo';
 
 export default function Sustainability() {
   return (
@@ -7,6 +8,7 @@ export default function Sustainability() {
       <Helmet>
         <title>Sustainability | JUTORIA - Responsible Natural-Fiber Home Goods</title>
         <meta name="description" content="JUTORIA's sustainability commitments: responsible sourcing, artisan empowerment, and careful stewardship of natural materials." />
+        <link rel="canonical" href={absoluteUrl('/sustainability')} />
       </Helmet>
 
       <section className="bg-brand-navy text-brand-offwhite py-20">

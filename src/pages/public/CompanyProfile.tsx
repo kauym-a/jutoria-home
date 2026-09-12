@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, Hammer, PenTool, Globe2 } from 'lucide-react';
+import { absoluteUrl } from '../../lib/seo';
 
 const APPROACH_STEPS = [
   { icon: Leaf, label: 'Natural Materials' },
@@ -20,6 +21,7 @@ export default function CompanyProfile() {
           name="description"
           content="JUTORIA is a premium eco-friendly natural home décor brand, operated by Sircommerce Group Ltd (UK Company No. 17029469)."
         />
+        <link rel="canonical" href={absoluteUrl('/company-profile')} />
       </Helmet>
 
       {/* 1. HERO */}

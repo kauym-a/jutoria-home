@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, Mail } from 'lucide-react';
+import { absoluteUrl } from '../../lib/seo';
 
 /* WhatsApp brand mark — matches the inline-SVG pattern already used for social icons
    in PublicLayout.tsx (lucide-react has no official WhatsApp glyph). */
@@ -88,6 +89,7 @@ export default function CorporateInformation() {
           name="description"
           content="Corporate information for JUTORIA, a premium natural home décor brand operated by SIRCOMMERCE GROUP LTD."
         />
+        <link rel="canonical" href={absoluteUrl('/corporate-information')} />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════

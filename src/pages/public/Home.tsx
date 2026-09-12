@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { absoluteUrl, organizationJsonLd } from '../../lib/seo';
 
 // lucide-react-এর এই ভার্সনে 'Instagram' নামে কোনো আইকন নেই (তাই আগে build error হয়েছিল) —
 // তার বদলে হুবহু official shape-এর ছোট inline SVG ব্যবহার করা হচ্ছে, PublicLayout.tsx-এর
@@ -212,22 +213,25 @@ export default function Home() {
       <Helmet>
         <title>JUTORIA | Premium Eco-Friendly Handmade Home Décor</title>
         <meta name="description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
+        <link rel="canonical" href={absoluteUrl('/')} />
 
-        {/* Open Graph */}
+        {/* Open Graph — og:url/og:image must be absolute, social crawlers (WhatsApp/LinkedIn/Facebook) don't resolve relative paths */}
         <meta property="og:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
         <meta property="og:description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="JUTORIA" />
-        <meta property="og:url" content="/" />
-        <meta property="og:image" content="/laundry-basket-lifestyle.jpg" />
+        <meta property="og:url" content={absoluteUrl('/')} />
+        <meta property="og:image" content={absoluteUrl('/laundry-basket-lifestyle.jpg')} />
         <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
         <meta name="twitter:description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
-        <meta name="twitter:image" content="/laundry-basket-lifestyle.jpg" />
+        <meta name="twitter:image" content={absoluteUrl('/laundry-basket-lifestyle.jpg')} />
         <meta name="twitter:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
+
+        <script type="application/ld+json">{JSON.stringify(organizationJsonLd())}</script>
       </Helmet>
 
       {/* =========================================

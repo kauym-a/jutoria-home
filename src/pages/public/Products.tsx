@@ -4,6 +4,7 @@ import { Search, Filter, X } from 'lucide-react';
 import ProductCard from '../../components/product/ProductCard';
 import { useProducts } from '../../hooks/useProducts';
 import { materials } from '../../data/materials';
+import { absoluteUrl } from '../../lib/seo';
 
 export default function Products() {
   const { products } = useProducts(); // Firestore-backed, static ডেটায় fallback করে
@@ -30,6 +31,7 @@ export default function Products() {
       <Helmet>
         <title>Products | JUTORIA - Premium Eco-Friendly Home Décor</title>
         <meta name="description" content="Browse the complete JUTORIA product catalogue — filter by material or search by name and SKU. Available for international wholesale and retail." />
+        <link rel="canonical" href={absoluteUrl('/products')} />
       </Helmet>
 
       {/* Page Header */}
