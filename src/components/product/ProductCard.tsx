@@ -26,8 +26,8 @@ export default function ProductCard({ product }:{ product: Product }) {
 
   return (
     <div className="group h-full cursor-pointer">
-      <Link to={productPath} className="block relative mb-4 overflow-hidden border border-brand-navy/10 bg-brand-offwhite">
-        <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-brand-offwhite">
+      <Link to={productPath} className="block relative mb-4 overflow-hidden border border-brand-navy/10 bg-white">
+        <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-white">
           <img loading="lazy" decoding="async"
             src={imageUrl}
             alt={product.name}
