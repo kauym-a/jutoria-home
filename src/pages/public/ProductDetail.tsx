@@ -35,7 +35,9 @@ export default function ProductDetail(){
   const pageDescription =
     product.description ||
     `${product.name} (SKU: ${product.sku}) — premium eco-friendly, handmade home décor from JUTORIA, available for international wholesale.`;
-  const socialImage = images[0]?.url;
+  // "primary" role ম্যাচ করলে সেটাই, নাহলে প্রথম ছবি — ProductCard.tsx-এর মূল ছবি
+  // বাছাই করার একই কনভেনশন, যাতে কার্ড আর সোশ্যাল প্রিভিউ একই ছবি দেখায়।
+  const socialImage = (images.find((i) => i.role === 'primary') || images[0])?.url;
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-12 md:py-16">
@@ -49,13 +51,13 @@ export default function ProductDetail(){
         <meta property="og:type" content="product" />
         <meta property="og:site_name" content="JUTORIA" />
         <meta property="og:url" content={absoluteUrl(canonicalPath)} />
-        {socialImage && <meta property="og:image" content={socialImage} />}
+        {socialImage && <meta property="og:image" content={absoluteUrl(socialImage)} />}
         {socialImage && <meta property="og:image:alt" content={product.name} />}
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        {socialImage && <meta name="twitter:image" content={socialImage} />}
+        {socialImage && <meta name="twitter:image" content={absoluteUrl(socialImage)} />}
 
         <script type="application/ld+json">
           {JSON.stringify(productJsonLd(product, canonicalPath))}
