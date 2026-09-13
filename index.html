@@ -18,6 +18,19 @@
     
     <title>JUTORIA | Premium Eco-Friendly Handmade Home Décor</title>
 
+    <!-- Open Graph — static fallback for crawlers that don't execute JS (e.g. Facebook's
+         Sharing Debugger), so every URL still gets a real preview card even before
+         React/Helmet ever mounts. Per-page <Helmet> tags (see src/pages/public/Home.tsx,
+         ProductDetail.tsx) override these once the client-side render completes for
+         crawlers that DO run JS. Keep this in sync with src/lib/seo.ts's SITE_URL. -->
+    <meta property="og:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
+    <meta property="og:description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="JUTORIA" />
+    <meta property="og:url" content="https://jutoriahome.com/" />
+    <meta property="og:image" content="https://jutoriahome.com/laundry-basket-lifestyle.jpg" />
+    <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
+
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X"></script>
     <script>
