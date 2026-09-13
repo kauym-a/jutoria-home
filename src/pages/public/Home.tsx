@@ -62,7 +62,7 @@ const certificationLogos = [
  { name: 'EPB', src: '/epb.png' },
  { name: 'Expo', src: '/EXPO%20LOGO.png' },
  { name: 'JDPC', src: '/JDPC.png' },
- { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate.jpg' }
+ { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate-logo.png' }
 ];
 
 export default function Home() {
