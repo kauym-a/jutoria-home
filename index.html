@@ -10,12 +10,23 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    
-    <!-- ওয়েবসাইটের প্রিমিয়াম ফন্টগুলো (Google Fonts) সরাসরি এখানে যুক্ত করা হয়েছে -->
+
+    <!-- ওয়েবসাইটের প্রিমিয়াম ফন্টগুলো (Google Fonts) সরাসরি এখানে যুক্ত করা হয়েছে।
+         একটা সাধারণ <link rel="stylesheet"> এখানে render-blocking (browser CSSOM
+         কমপ্লিট হওয়ার আগে ফার্স্ট পেইন্ট আটকে থাকে fonts.googleapis.com থেকে এই CSS
+         ফাইল আসা পর্যন্ত) — PageSpeed-এ "render-blocking requests" হিসেবে ফ্ল্যাগ
+         হয়েছিল। নিচের preload+media="print"+onload প্যাটার্ন CSS ফাইলটা non-blocking
+         ভাবে fetch করে, লোড হওয়ার পর media="all" করে অ্যাপ্লাই করে দেয় — ফলে প্রথম
+         পেইন্ট আর এই নেটওয়ার্ক রাউন্ড-ট্রিপের জন্য অপেক্ষা করে না (fallback system
+         ফন্টে পেইন্ট হয়, তারপর font-display:swap অনুযায়ী আসল ফন্টে বদলায় — এটা আগে
+         থেকেই ঘটত, শুধু এখন CSS ফাইলটাও নন-ব্লকিং হলো)। <noscript> ফলব্যাক JS বন্ধ
+         থাকা ব্রাউজার/ক্রলারদের জন্য। -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+
     <title>JUTORIA | Premium Eco-Friendly Handmade Home Décor</title>
 
     <!-- Open Graph — static fallback for crawlers that don't execute JS (e.g. Facebook's

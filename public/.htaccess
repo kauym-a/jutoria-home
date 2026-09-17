@@ -1,6 +1,20 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # prerender.mjs এখন /wholesale, /product/<sku> ইত্যাদি রুটের জন্য dist/-এ আসল
+  # ফোল্ডার+index.html বানায় (যেমন dist/wholesale/index.html)। Apache-এর ডিফল্ট
+  # mod_dir আচরণ (DirectorySlash On) ট্রেইলিং স্ল্যাশ ছাড়া রিকোয়েস্ট (/wholesale)
+  # পেলে ক্লায়েন্টকে external 301 redirect পাঠায় (/wholesale → /wholesale/) আগে,
+  # তারপর সেই নতুন রিকোয়েস্টে index.html সার্ভ করে — মানে প্রতিটা prerendered রুটে
+  # real কনটেন্ট আসার আগে একটা বাড়তি রাউন্ড-ট্রিপ যোগ হচ্ছিল (PageSpeed-এর
+  # render-blocking/লেটেন্সি ফ্ল্যাগের একটা বড় কারণ)। নিচের রুলটা mod_dir পর্যন্ত
+  # পৌঁছানোর আগেই নিজেরা সরাসরি index.html-এ ইন্টারনালি রিরাইট করে দেয় (কোনো
+  # external redirect ছাড়াই, URL বারে /wholesale-ই থেকে যায়)।
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*[^/])$ /$1/index.html [L]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

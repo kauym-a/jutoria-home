@@ -183,7 +183,15 @@ export default function Wholesale() {
             preload দিলে ব্রাউজার JS পার্স/এক্সিকিউট হওয়ার জন্য অপেক্ষা না করেই এই
             ইমেজের ডাউনলোড শুরু করে দেয় (HTML parser নিজেই <head> স্ক্যান করার সময় এটা
             ধরে ফেলে) — নিচের <img fetchPriority="high"> এর সাথে মিলিয়ে ব্যবহার করা হয়েছে। */}
-        <link rel="preload" as="image" href="/wholesale-hero-natural-home-decor.webp" fetchPriority="high" type="image/webp" />
+        <link
+          rel="preload"
+          as="image"
+          href="/wholesale-hero-natural-home-decor.webp"
+          imageSrcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor.webp 1774w"
+          imageSizes="(max-width: 1023px) 100vw, 50vw"
+          fetchPriority="high"
+          type="image/webp"
+        />
       </Helmet>
 
       {/* 1. HERO */}
@@ -213,6 +221,8 @@ export default function Wholesale() {
           <div className="relative min-h-[320px] lg:min-h-[640px]">
             <img
               src="/wholesale-hero-natural-home-decor.webp"
+              srcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor.webp 1774w"
+              sizes="(max-width: 1023px) 100vw, 50vw"
               alt="Natural-fiber woven placemats, baskets and décor styled in a warm, modern interior"
               className="absolute inset-0 w-full h-full object-cover"
               width={1774}
@@ -236,6 +246,8 @@ export default function Wholesale() {
             <div className="lg:col-span-2">
               <img loading="lazy" decoding="async"
                 src="/wholesale-businesses-collage.webp"
+                srcSet="/wholesale-businesses-collage-640w.webp 640w, /wholesale-businesses-collage.webp 1000w"
+                sizes="(max-width: 1023px) 100vw, 40vw"
                 alt="JUTORIA natural-fiber pieces in retail display, hospitality and design settings"
                 className="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
                 width={1000}
@@ -260,7 +272,14 @@ export default function Wholesale() {
       {/* 3. WHAT WE OFFER */}
       <section className="py-16 md:py-24 bg-white border-t border-brand-navy/10">
         <div className="container mx-auto max-w-7xl px-4">
-          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase text-center">
+          {/* brand-gold (#C89B3C) ফুল অপাসিটিতে সাদা/অফহোয়াইট ব্যাকগ্রাউন্ডে ~2.6:1 কন্ট্রাস্ট
+              দেয় — WCAG AA-এর 4.5:1 থ্রেশহোল্ডে ফেল করে (PageSpeed accessibility audit-এ
+              ফ্ল্যাগ হয়েছিল)। darker গোল্ড শেড (#8a6a29, ~5.5:1) ব্যবহার করা হচ্ছে যাতে
+              ব্র্যান্ড অ্যাকসেন্ট-এর লুক থাকে কিন্তু পড়া যায়। নেভি হেডিং-এর সাথে না
+              মেলায় visual hierarchy-ও বজায় থাকে। hero সেকশনের একই প্যাটার্নের eyebrow
+              (line ~201) touch করা হয়নি — ওটা navy ব্যাকগ্রাউন্ডে আছে, যেখানে ফুল-অপাসিটি
+              gold-ই যথেষ্ট কন্ট্রাস্ট দেয় (~6.2:1)। */}
+          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase text-center">
             What We Offer
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center max-w-2xl mx-auto">
@@ -292,7 +311,7 @@ export default function Wholesale() {
       {/* 4. FEATURED WHOLESALE COLLECTION */}
       <section className="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
         <div className="container mx-auto max-w-7xl px-4">
-          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase text-center">
+          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase text-center">
             Featured Wholesale Collection
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center max-w-2xl mx-auto">
@@ -336,7 +355,7 @@ export default function Wholesale() {
         <div className="container mx-auto max-w-7xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+              <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
                 Materials & Craftsmanship
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-8 leading-tight">
@@ -360,6 +379,8 @@ export default function Wholesale() {
             <div className="grid grid-cols-2 gap-4">
               <img loading="lazy" decoding="async"
                 src="/jutoria-artisans-weaving.webp"
+                srcSet="/jutoria-artisans-weaving-480w.webp 480w, /jutoria-artisans-weaving.webp 1000w"
+                sizes="(max-width: 1023px) 50vw, 25vw"
                 alt="Artisan hand-weaving a natural fiber product"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px]"
                 width={1000}
@@ -367,6 +388,8 @@ export default function Wholesale() {
               />
               <img loading="lazy" decoding="async"
                 src="/jutoria-story-natural-materials.webp"
+                srcSet="/jutoria-story-natural-materials-480w.webp 480w, /jutoria-story-natural-materials.webp 1000w"
+                sizes="(max-width: 1023px) 50vw, 25vw"
                 alt="Natural fiber raw materials"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px] mt-8"
                 width={1000}
