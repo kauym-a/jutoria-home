@@ -75,4 +75,11 @@
       Header set Cache-Control "public, max-age=2592000"
     </FilesMatch>
   </If>
+
+  <!-- hero-video.mp4 (public/-এর সরাসরি ফাইল, ২.৯ MB) আগে কোনো FilesMatch প্যাটার্নেই
+       ধরা পড়ত না, তাই "Cache TTL: None" হিসেবে PageSpeed-এ ফ্ল্যাগ হয়েছিল। ভিডিও
+       ছবির চেয়েও বেশি বড় ও কম ঘনঘন বদলায়, তাই আলাদা, একটু লম্বা (৬০ দিন) ক্যাশ। -->
+  <FilesMatch "\.(mp4|webm)$">
+    Header set Cache-Control "public, max-age=5184000"
+  </FilesMatch>
 </IfModule>

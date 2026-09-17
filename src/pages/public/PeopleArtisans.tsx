@@ -89,7 +89,7 @@ export default function PeopleArtisans() {
 
             {/* Text */}
             <div>
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 Skilled Hands
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -127,7 +127,7 @@ export default function PeopleArtisans() {
         <div className="container mx-auto max-w-6xl px-6 md:px-8">
 
           <div className="mb-10 md:mb-14">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               Craftsmanship
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight max-w-xl">
@@ -174,7 +174,7 @@ export default function PeopleArtisans() {
         <div className="container mx-auto max-w-6xl px-6 md:px-8">
 
           <div className="mb-12 md:mb-16">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               Natural Materials
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight max-w-2xl mb-6">
@@ -318,7 +318,7 @@ export default function PeopleArtisans() {
 
             {/* Text */}
             <div className="order-1 lg:order-2">
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 Detail &amp; Craft
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -345,7 +345,7 @@ export default function PeopleArtisans() {
         <div className="container mx-auto max-w-6xl px-6 md:px-8">
 
           <div className="text-center mb-14 md:mb-18">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               The Artisans
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -391,7 +391,7 @@ export default function PeopleArtisans() {
         <div className="container mx-auto max-w-6xl px-6 md:px-8">
 
           <div className="text-center mb-12 md:mb-14">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               From Hands to Home
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-navy leading-tight max-w-2xl mx-auto">

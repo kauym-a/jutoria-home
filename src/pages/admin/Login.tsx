@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Helmet } from 'react-helmet-async';
 import { Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
-import { auth } from '../../services/firebase/config';
+import { getFirebaseAuth } from '../../services/firebase/config';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,6 +20,7 @@ export default function Login() {
 
     try {
       // ফায়ারবেসের মাধ্যমে লগইন করার চেষ্টা
+      const auth = await getFirebaseAuth();
       await signInWithEmailAndPassword(auth, email, password);
       // লগইন সফল হলে ড্যাশবোর্ডে নিয়ে যাবে
       navigate('/admin/dashboard');

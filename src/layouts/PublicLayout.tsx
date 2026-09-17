@@ -193,7 +193,7 @@ export default function PublicLayout() {
               alt="JUTORIA" 
               className="h-10 md:h-12 w-auto object-contain" 
             />
-            <span className="inline-flex items-center gap-1 font-sans text-[10px] font-bold tracking-[0.05em] uppercase text-brand-navy/60 border border-brand-navy/15 rounded-full pl-1 pr-2 py-1 whitespace-nowrap">
+            <span className="inline-flex items-center gap-1 font-sans text-[10px] font-bold tracking-[0.05em] uppercase text-brand-navy/70 border border-brand-navy/15 rounded-full pl-1 pr-2 py-1 whitespace-nowrap">
               <img src="https://flagcdn.com/w40/gb.png" alt="UK flag" className="w-3.5 h-2.5 object-cover rounded-[1px]" />
               UK
             </span>
@@ -534,7 +534,7 @@ export default function PublicLayout() {
                 <span className="block font-sans text-[12px] font-bold uppercase tracking-[0.2em] text-brand-navy sm:text-[11px] sm:text-brand-navy/70">
                   Get In Touch
                 </span>
-                <span className="mt-0.5 block font-sans text-[11px] normal-case tracking-normal text-brand-navy/50 sm:hidden">
+                <span className="mt-0.5 block font-sans text-[11px] normal-case tracking-normal text-brand-navy/70 sm:hidden">
                   Email, phone &amp; WhatsApp — tap to view
                 </span>
               </span>
@@ -579,7 +579,7 @@ export default function PublicLayout() {
                           {numbers.map(({ display, tel, wa }) => (
                             <div key={tel} className="flex flex-wrap items-center gap-x-3 gap-y-1">
                               <a href={`tel:${tel}`} className="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">{display}</a>
-                              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
+                              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
                                 <SocialBrandIcon platform="whatsapp" /> WhatsApp
                               </a>
                             </div>

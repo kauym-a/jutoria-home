@@ -24,7 +24,7 @@ export default function PlaceholderPage({ title, eyebrow, description }: Props) 
 
       <section className="relative min-h-[60vh] flex items-center bg-brand-ivory">
         <div className="container mx-auto max-w-3xl px-4 py-24 text-center">
-          <span className="block font-sans text-brand-gold font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">
+          <span className="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">
             {eyebrow}
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-navy leading-tight mb-8">

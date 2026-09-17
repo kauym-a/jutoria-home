@@ -19,7 +19,7 @@ export default function Materials() {
 
       <section className="border-b border-brand-navy/10 bg-[#f7f4ee]">
         <div className="container mx-auto max-w-7xl px-4 py-16 md:py-20 lg:py-24">
-          <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+          <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
             Materials
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">

@@ -68,7 +68,7 @@ export default function OurStory() {
 
             {/* Text column */}
             <div>
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 Rooted in Nature
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -119,7 +119,7 @@ export default function OurStory() {
 
             {/* Text column — right on desktop */}
             <div className="order-1 lg:order-2">
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 The Material
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -219,7 +219,7 @@ export default function OurStory() {
 
             {/* Text column */}
             <div>
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 The Craft
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -258,7 +258,7 @@ export default function OurStory() {
 
           {/* Section header — centered */}
           <div className="text-center mb-14 md:mb-18">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               From Hands to Home
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-navy leading-tight max-w-2xl mx-auto">
@@ -362,7 +362,7 @@ export default function OurStory() {
           ════════════════════════════════════════════════════════ */}
       <section className="py-20 md:py-28 bg-brand-ivory border-t border-brand-navy/10">
         <div className="container mx-auto max-w-3xl px-6 md:px-8 text-center">
-          <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
             Discover JUTORIA
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-navy leading-tight mb-6">

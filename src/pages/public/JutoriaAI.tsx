@@ -13,7 +13,7 @@ export default function JutoriaAI() {
 
       <section className="border-b border-brand-navy/10 bg-[#f7f4ee]">
         <div className="container mx-auto max-w-4xl px-4 py-16 md:py-20 text-center">
-          <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+          <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
             Jutoria AI
           </span>
           <h1 className="text-4xl md:text-5xl font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6">

@@ -353,7 +353,7 @@ export default function Contact() {
       <section className="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center mb-14">
-            <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+            <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
               JUTORIA
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy">

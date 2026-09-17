@@ -80,7 +80,7 @@ export default function CategoryDetail() {
 
       <section className="py-16 md:py-20 bg-white border-t border-brand-navy/10">
         <div className="container mx-auto max-w-6xl px-4">
-          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-4">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-4">
             {category.name}
           </span>
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-navy mb-10">

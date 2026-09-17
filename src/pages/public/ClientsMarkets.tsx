@@ -82,7 +82,7 @@ export default function ClientsMarkets() {
       {/* 02. GLOBAL MARKET REACH */}
       <section className="py-16 md:py-24 bg-brand-offwhite">
         <div className="container mx-auto max-w-4xl px-4 text-center mb-14">
-          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+          <span className="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
             Our Global Reach
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-5">

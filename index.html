@@ -42,13 +42,24 @@
     <meta property="og:image" content="https://jutoriahome.com/laundry-basket-lifestyle.webp" />
     <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
 
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X"></script>
+    <!-- Google Analytics (GA4) — আগে সরাসরি async <script> ট্যাগ হিসেবে ছিল, যেটা
+         পেজ লোড হওয়ার সাথে সাথেই (ফার্স্ট পেইন্টের আগেও) ডাউনলোড+পার্স+এক্সিকিউট শুরু
+         করে দিত ("167 KiB unused JavaScript" হিসেবে PageSpeed-এ ফ্ল্যাগ হয়েছিল, যেহেতু
+         এই কোড ফার্স্ট পেইন্ট/ইন্টারঅ্যাক্টিভিটির জন্য জরুরি নয়)। এখন window-এর 'load'
+         ইভেন্টের পরে (পেজ পুরোপুরি ইন্টারঅ্যাক্টিভ হওয়ার পরে) স্ক্রিপ্ট ট্যাগ ডাইনামিকালি
+         তৈরি করা হয় — analytics ডেটা তখনো সঠিকভাবে ট্র্যাক হয়, শুধু ক্রিটিক্যাল
+         রেন্ডারিং পাথ থেকে সম্পূর্ণ সরে যায়। -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-51YWD5QZ8X');
+      window.addEventListener('load', function () {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
+        document.head.appendChild(s);
+      });
     </script>
   </head>
   <body>

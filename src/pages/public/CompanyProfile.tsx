@@ -51,7 +51,7 @@ export default function CompanyProfile() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
             <div>
-              <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-5">
                 Who We Are
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -77,7 +77,7 @@ export default function CompanyProfile() {
       {/* 3. JUTORIA + SIRCOMMERCE GROUP LTD */}
       <section className="py-20 md:py-24 bg-white border-y border-brand-navy/10">
         <div className="container mx-auto max-w-4xl px-4 text-center">
-          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-5">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-5">
             Corporate Foundation
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-8">
@@ -96,7 +96,7 @@ export default function CompanyProfile() {
       <section className="py-20 md:py-28 bg-brand-offwhite">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center mb-16">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-5">
               Our Business Approach
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight">
@@ -158,7 +158,7 @@ export default function CompanyProfile() {
       {/* 6. GLOBAL VISION */}
       <section className="py-20 md:py-28 bg-brand-ivory">
         <div className="container mx-auto max-w-4xl px-4 text-center">
-          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-5">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-5">
             Global Vision
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-navy leading-tight mb-8">
@@ -175,7 +175,7 @@ export default function CompanyProfile() {
       {/* 7. PEOPLE / ARTISANS PREVIEW */}
       <section className="py-20 md:py-24 bg-white border-t border-brand-navy/10">
         <div className="container mx-auto max-w-4xl px-4 text-center">
-          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase mb-5">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-5">
             The People Behind JUTORIA
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { signOut, type User } from 'firebase/auth';
-import { auth } from '../services/firebase/config';
+import type { User } from 'firebase/auth';
+import { getFirebaseAuth } from '../services/firebase/config';
 
 // স্টোরে কী কী তথ্য থাকবে তার একটি নিয়ম (Type definition)
 interface AuthState {
@@ -30,6 +30,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   // লগআউট করার সিস্টেম
   logout: async () => {
     try {
+      const [{ signOut }, auth] = await Promise.all([import('firebase/auth'), getFirebaseAuth()]);
       await signOut(auth); // ফায়ারবেস থেকে লগআউট
       set({ user: null, isAdmin: false, isLoading: false }); // স্টোর থেকে তথ্য মুছে ফেলা
     } catch (error) {

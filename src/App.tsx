@@ -61,8 +61,12 @@ function AdminLoadingFallback() {
 function App() {
   return (
     <HelmetProvider>
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        {/* AuthProvider এখন BrowserRouter-এর ভেতরে (আগে বাইরে ছিল) — useLocation() দিয়ে
+            /admin/* রুট কিনা রিয়েলটাইমে ডিটেক্ট করার জন্য router context দরকার। এটা
+            পাবলিক পেজে Firebase Auth সম্পূর্ণ স্কিপ করার জন্য প্রয়োজনীয় (দেখুন
+            AuthProvider.tsx-এর কমেন্ট)। */}
+        <AuthProvider>
           <ScrollToTop />
           {/* একটাই top-level Suspense — নিচের lazy() admin কম্পোনেন্টগুলোর যেকোনোটা suspend
               করলে এটাই ধরে (React ট্রি-অনুযায়ী কাজ করে, JSX নেস্টিং-এ Route-এর মাঝে
@@ -143,8 +147,8 @@ function App() {
             </Route>
           </Routes>
           </Suspense>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </HelmetProvider>
   );
 }

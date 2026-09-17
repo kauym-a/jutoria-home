@@ -39,7 +39,7 @@ export default function Products() {
         <div className="container mx-auto max-w-7xl px-4 py-16 md:py-20 lg:py-24">
           <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
             <div className="max-w-xl">
-              <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">
+              <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
                 Our Collection
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6">

@@ -155,7 +155,7 @@ export default function CorporateInformation() {
 
             {/* Right: Text & Info */}
             <div>
-              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+              <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
                 Company
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -207,7 +207,7 @@ export default function CorporateInformation() {
               </p>
               
               <div className="bg-brand-ivory p-8 md:p-10 rounded-[2px] shadow-premium">
-                <span className="block font-sans text-[11px] font-bold tracking-[0.2em] text-brand-gold uppercase mb-4">
+                <span className="block font-sans text-[11px] font-bold tracking-[0.2em] text-[#8a6a29] uppercase mb-4">
                   UK Warehouse / Business Address
                 </span>
                 <address className="not-italic font-sans text-base md:text-lg text-brand-navy leading-relaxed mb-6">
@@ -341,7 +341,7 @@ export default function CorporateInformation() {
       <section className="py-20 md:py-28 bg-brand-ivory">
         <div className="container mx-auto max-w-6xl px-6 md:px-8">
           <div className="text-center mb-14 md:mb-16">
-            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">
+            <span className="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">
               Leadership
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
@@ -364,7 +364,7 @@ export default function CorporateInformation() {
                 />
                 <div className="p-6">
                   <h3 className="font-serif font-bold text-brand-navy leading-snug mb-1">{person.name}</h3>
-                  <p className="font-sans text-xs font-bold text-brand-gold uppercase tracking-wide mb-2">{person.title}</p>
+                  <p className="font-sans text-xs font-bold text-[#8a6a29] uppercase tracking-wide mb-2">{person.title}</p>
                   {/* LinkedIn — শুধু যাদের `linkedin` URL সেট করা আছে (এখন শুধু Founder)।
                       target/rel দেওয়া, তাই নতুন ট্যাবে খোলে ও কখনো পেজ টপে স্ক্রল করে না। */}
                   {person.linkedin && (
