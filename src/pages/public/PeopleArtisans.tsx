@@ -40,6 +40,7 @@ export default function PeopleArtisans() {
           content="Meet the skilled Bangladeshi women artisans and workshop teams whose hands transform natural materials into handcrafted home décor for modern living."
         />
         <link rel="canonical" href={absoluteUrl('/people')} />
+        <link rel="preload" as="image" href={src(IMG.hero)} fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════

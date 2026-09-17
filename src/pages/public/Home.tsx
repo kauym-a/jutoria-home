@@ -43,7 +43,7 @@ const featuredProducts = [
     id: 'f3', 
     name: 'Minimalist Organizer', 
     category: 'Natural Fiber', 
-    productImg: '/organizer-basket-product.jpg', 
+    productImg: '/organizer-basket-product.webp', 
     lifestyleImg: '/organizer-basket-lifestyle.webp' 
   },
   { 
@@ -58,7 +58,7 @@ const featuredProducts = [
 const certificationLogos = [
  { name: 'Banglacraft', src: '/Banglacraft-Logo.png' },
  { name: 'BSCI', src: '/BSCI_LOGO.png' },
- { name: 'ENV Study', src: '/env-study.jpg' },
+ { name: 'ENV Study', src: '/env-study.webp' },
  { name: 'EPB', src: '/epb.png' },
  { name: 'Expo', src: '/EXPO%20LOGO.png' },
  { name: 'JDPC', src: '/JDPC.png' },

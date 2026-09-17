@@ -22,6 +22,7 @@ export default function CompanyProfile() {
           content="JUTORIA is a premium eco-friendly natural home décor brand, operated by Sircommerce Group Ltd (UK Company No. 17029469)."
         />
         <link rel="canonical" href={absoluteUrl('/company-profile')} />
+        <link rel="preload" as="image" href="/jute-basket-lifestyle.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* 1. HERO */}

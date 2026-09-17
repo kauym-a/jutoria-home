@@ -61,12 +61,20 @@ export default function ClientsMarkets() {
           content="From Bangladesh to international markets, JUTORIA connects natural-fiber craftsmanship with retailers, designers, hospitality businesses and wholesale buyers worldwide."
         />
         <link rel="canonical" href={absoluteUrl('/clients-markets')} />
+        <link rel="preload" as="image" href="/global-clients-hero.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* 01. HERO */}
       <section className="relative bg-brand-navy overflow-hidden min-h-[52vh] flex items-end">
         <div className="absolute inset-0">
-          <img src="/global-clients-hero.jpg" alt="Natural-fiber home décor styled in a warm dining interior" className="w-full h-full object-cover" />
+          <img
+            src="/global-clients-hero.webp"
+            alt="Natural-fiber home décor styled in a warm dining interior"
+            className="w-full h-full object-cover"
+            width={1800}
+            height={749}
+            fetchPriority="high"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/70 to-brand-navy/20" />
         </div>
         <div className="relative z-10 container mx-auto max-w-4xl px-4 pt-28 md:pt-36 pb-14 md:pb-20">
@@ -123,9 +131,11 @@ export default function ClientsMarkets() {
             </p>
           </div>
           <img loading="lazy" decoding="async"
-            src="/global-market-reach-map.jpg"
+            src="/global-market-reach-map.webp"
             alt="Stylized world map showing JUTORIA's international market regions"
             className="w-full h-auto rounded-[2px] shadow-premium"
+            width={1774}
+            height={887}
           />
         </div>
       </section>

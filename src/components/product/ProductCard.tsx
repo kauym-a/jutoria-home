@@ -11,7 +11,7 @@ type Product = {
   excel_fields?: Record<string, any>;
 };
 
-export default function ProductCard({ product }:{ product: Product }) {
+export default function ProductCard({ product, priority = false }:{ product: Product; priority?: boolean }) {
   const primary = product.images?.find(i => i.role === 'primary') || product.images?.[0];
   const imageUrl = primary?.url || '/placemat-product.webp';
 
@@ -28,9 +28,15 @@ export default function ProductCard({ product }:{ product: Product }) {
     <div className="group h-full cursor-pointer">
       <Link to={productPath} className="block relative mb-4 overflow-hidden border border-brand-navy/10 bg-white">
         <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-white">
-          <img loading="lazy" decoding="async"
+          {/* গ্রিডের প্রথম কয়েকটা কার্ড (priority=true) সাধারণত ফোল্ডের ওপরে থাকে — সেগুলো
+              আগে সবসময় loading="lazy" ছিল, যেটা পেজের LCP এলিমেন্ট যদি এই গ্রিডেই থাকে
+              (যেমন /products পেজে হিরোর পাশে কোনো বড় ছবি না থাকলে) তাহলে অপ্রয়োজনীয়
+              দেরি করাতো। কলার (Products.tsx, MaterialDetail.tsx, CategoryDetail.tsx)
+              index অনুযায়ী priority পাঠায়। */}
+          <img loading={priority ? 'eager' : 'lazy'} decoding="async"
             src={imageUrl}
             alt={product.name}
+            fetchPriority={priority ? 'high' : undefined}
             className="h-full w-full object-contain object-center p-3 transition-transform duration-700 group-hover:scale-[1.02]"
           />
         </div>
@@ -41,7 +47,7 @@ export default function ProductCard({ product }:{ product: Product }) {
         </div>
       </Link>
       <div className="text-center">
-        <span className="text-xs font-sans font-bold tracking-widest text-brand-gold uppercase block mb-2">
+        <span className="text-xs font-sans font-bold tracking-widest text-[#8a6a29] uppercase block mb-2">
           {product.excel_fields?.['Material Composition'] || ''}
         </span>
         <h3 className="text-lg font-serif font-bold text-brand-navy mb-2">

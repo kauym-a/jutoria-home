@@ -32,6 +32,7 @@ export default function Products() {
         <title>Products | JUTORIA - Premium Eco-Friendly Home Décor</title>
         <meta name="description" content="Browse the complete JUTORIA product catalogue — filter by material or search by name and SKU. Available for international wholesale and retail." />
         <link rel="canonical" href={absoluteUrl('/products')} />
+        <link rel="preload" as="image" href="/laundry-basket-lifestyle.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* Page Header */}
@@ -124,8 +125,8 @@ export default function Products() {
 
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.sku} product={product as any} />
+              {filteredProducts.map((product, index) => (
+                <ProductCard key={product.sku} product={product as any} priority={index < 3} />
               ))}
             </div>
           ) : (

@@ -188,10 +188,12 @@ export default function PublicLayout() {
             onClick={() => { closeMenu(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="flex-shrink-0 flex items-center gap-2"
           >
-            <img 
-              src="/logo.png" 
-              alt="JUTORIA" 
-              className="h-10 md:h-12 w-auto object-contain" 
+            <img
+              src="/logo.webp"
+              alt="JUTORIA"
+              className="h-10 md:h-12 w-auto object-contain"
+              width={600}
+              height={186}
             />
             <span className="inline-flex items-center gap-1 font-sans text-[10px] font-bold tracking-[0.05em] uppercase text-brand-navy/70 border border-brand-navy/15 rounded-full pl-1 pr-2 py-1 whitespace-nowrap">
               <img src="https://flagcdn.com/w40/gb.png" alt="UK flag" className="w-3.5 h-2.5 object-cover rounded-[1px]" />
@@ -335,7 +337,7 @@ export default function PublicLayout() {
       >
         {/* Drawer Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-brand-navy/10">
-          <img src="/logo.png" alt="JUTORIA" loading="lazy" className="h-9 w-auto object-contain" />
+          <img src="/logo.webp" alt="JUTORIA" loading="lazy" className="h-9 w-auto object-contain" />
           <button onClick={closeMenu} aria-label="Close menu" className="text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2">
             <X size={26} strokeWidth={1.5} />
           </button>
@@ -440,7 +442,7 @@ export default function PublicLayout() {
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
           <div className="flex flex-col items-center text-center mb-12">
             <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-              <img src="/logo.png" alt="JUTORIA" loading="lazy" className="h-14 md:h-20 w-auto mb-6 object-contain" />
+              <img src="/logo.webp" alt="JUTORIA" loading="lazy" className="h-14 md:h-20 w-auto mb-6 object-contain" />
             </Link>
             
             <p className="font-sans text-sm opacity-80 max-w-md mx-auto font-medium">
@@ -451,9 +453,11 @@ export default function PublicLayout() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-8 md:gap-10 text-left">
             <div className="xl:col-span-2">
               <img
-                src="/sircommerce_logo.png"
+                src="/sircommerce_logo.webp"
                 alt="Sir Commerce Group Ltd logo"
                 className="h-20 w-auto object-contain mb-5 mix-blend-multiply"
+                width={746}
+                height={528}
                 loading="lazy"
               />
               <p className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">

@@ -31,10 +31,17 @@ export default function ProductGallery({ images, productName }:{ images: ImageEn
   return (
     <div className="space-y-4">
       <div className="flex min-h-[420px] items-center justify-center overflow-hidden rounded-lg border border-brand-navy/10 bg-brand-offwhite p-4 sm:min-h-[480px] lg:min-h-[560px]">
+        {/* এই ইমেজটাই /product/:sku পেজের LCP এলিমেন্ট — lazy নয় (ডিফল্ট eager), আর
+            fetchPriority="high" যোগ করা হলো যাতে ব্রাউজার এটাকে সবার আগে ডাউনলোড করে।
+            width/height দেওয়া হয়নি ইচ্ছাকৃতভাবে — Firebase Storage-এ আপলোড করা প্রতিটা
+            ছবির আসল রেজোলিউশন ভিন্ন ভিন্ন (অ্যাডমিন যেকোনো সাইজের ফাইল আপলোড করতে পারেন),
+            আর প্যারেন্ট কন্টেইনারের min-h-[...] ফিক্সড হাইট আগে থেকেই CLS ঠেকিয়ে রাখে —
+            ভুল width/height অনুমান করলে সঠিক aspect-ratio না মিললে বরং সমস্যা তৈরি করতে পারে। */}
         <img
           src={activeImage.url}
           alt={buildAlt(activeImage, selectedIndex)}
           className="max-h-[560px] w-full object-contain object-center"
+          fetchPriority="high"
         />
       </div>
 

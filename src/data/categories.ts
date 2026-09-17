@@ -46,7 +46,7 @@ export const categories: Category[] = [
     desc: 'Compartmentalized woven trays and baskets for tidy, styled storage.',
     longDesc:
       'Organizer baskets bring the same hand-weaving techniques to smaller, compartmentalized forms — designed for desks, shelves and vanities where storage needs to look as good as it functions.',
-    image: '/organizer-basket-product.jpg',
+    image: '/organizer-basket-product.webp',
   },
   {
     id: '05',

@@ -71,8 +71,8 @@ const LEADERSHIP_TEAM = [
 
 /* Exact public-folder filenames (double-extension as uploaded) */
 const IMG = {
-  logo: 'sircommerce_logo.png',
-  registration: 'jutoria-corporate-registration.jpg',
+  logo: 'sircommerce_logo.webp',
+  registration: 'jutoria-corporate-registration.webp',
   ukPresence: 'jutoria-uk-operational-presence.webp',
   trademark: 'jutoria-trademark-uk.webp',
   craftsmanship: 'jutoria-bangladesh-craftsmanship.webp'
@@ -90,6 +90,7 @@ export default function CorporateInformation() {
           content="Corporate information for JUTORIA, a premium natural home décor brand operated by SIRCOMMERCE GROUP LTD."
         />
         <link rel="canonical" href={absoluteUrl('/corporate-information')} />
+        <link rel="preload" as="image" href={src(IMG.registration)} fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════
@@ -145,10 +146,12 @@ export default function CorporateInformation() {
             
             {/* Left: Logo */}
             <div className="flex items-center justify-center lg:justify-start p-8 bg-white border border-brand-navy/10 rounded-[2px] shadow-premium aspect-[4/3] lg:aspect-auto lg:h-[400px]">
-              <img 
-                src={src(IMG.logo)} 
-                alt="SIRCOMMERCE GROUP LTD logo" 
+              <img
+                src={src(IMG.logo)}
+                alt="SIRCOMMERCE GROUP LTD logo"
                 className="w-full max-w-[280px] h-auto object-contain mix-blend-multiply"
+                width={746}
+                height={528}
                 loading="lazy"
               />
             </div>

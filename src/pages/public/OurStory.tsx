@@ -19,6 +19,11 @@ export default function OurStory() {
           content="Discover the JUTORIA story, from natural materials and Bangladeshi craftsmanship to thoughtfully designed home décor for modern living."
         />
         <link rel="canonical" href={absoluteUrl('/our-story')} />
+        {/* এই পেজের LCP এলিমেন্ট CSS background-image হিসেবে বসানো (নিচের সেকশনে) —
+            browser-এর preload scanner সাধারণ <img src> এর মতো এটা আগে থেকে ধরতে পারে
+            না (JS/CSS পার্স হওয়া পর্যন্ত অপেক্ষা করে), তাই এখানে স্পষ্টভাবে preload
+            করা হচ্ছে যাতে ডাউনলোড আগেভাগেই শুরু হয়ে যায়। */}
+        <link rel="preload" as="image" href="/jutoria-story-hero.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════
@@ -29,7 +34,7 @@ export default function OurStory() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/jutoria-story-hero.jpg')", backgroundPosition: 'center 30%' }}
+          style={{ backgroundImage: "url('/jutoria-story-hero.webp')", backgroundPosition: 'center 30%' }}
           role="img"
           aria-label="Bangladeshi women artisans handcrafting natural fibre products"
         />
@@ -164,11 +169,14 @@ export default function OurStory() {
         {/* Full-width image */}
         <div className="relative">
           <img
-            src="/jutoria-story-hands.jpg"
+            src="/jutoria-story-hands.webp"
             alt="Bangladeshi woman artisan hand-weaving a natural fibre product"
             className="w-full object-cover object-center"
             style={{ maxHeight: '680px', objectPosition: 'center 15%' }}
+            width={1024}
+            height={686}
             loading="lazy"
+            decoding="async"
           />
           {/* Gradient overlay — left side for text legibility on desktop */}
           <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/90 via-brand-navy/50 to-transparent hidden lg:block" />
@@ -238,7 +246,7 @@ export default function OurStory() {
             <div className="relative">
               <div
                 className="aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-finished-product.jpg')", backgroundPosition: 'center 10%' }}
+                style={{ backgroundImage: "url('/jutoria-story-finished-product.webp')", backgroundPosition: 'center 10%' }}
                 role="img"
                 aria-label="Bangladeshi woman artisan with a finished woven home décor piece"
               />
@@ -270,11 +278,14 @@ export default function OurStory() {
           {/* Full-width image — cinematic widescreen crop */}
           <div className="relative overflow-hidden rounded-[2px] shadow-premium-hover mb-12 md:mb-16">
             <img
-              src="/jutoria-story-modern-living.jpg"
+              src="/jutoria-story-modern-living.webp"
               alt="Handcrafted natural fibre décor connecting Bangladeshi craftsmanship with modern living"
               className="w-full object-cover object-center"
               style={{ maxHeight: '520px', objectPosition: 'center 30%' }}
+              width={1024}
+              height={571}
               loading="lazy"
+              decoding="async"
             />
             {/* Subtle brand tint overlay */}
             <div className="absolute inset-0 bg-brand-navy/10" />

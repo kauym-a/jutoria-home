@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from './config';
+import { resizeAndConvertToWebP } from '../../lib/imageProcessing';
 import { materials } from '../../data/materials';
 
 // ============================================================
@@ -77,11 +78,12 @@ export async function deleteCategory(slug: string): Promise<void> {
  * ফাইল Storage-এ `category-images/{slug}/{timestamp}-{originalFileName}` পাথে সেভ হয়।
  */
 export async function uploadCategoryImage(slug: string, file: File): Promise<string> {
+  const processed = await resizeAndConvertToWebP(file);
   const safeSlug = slug.trim() || 'unfiled';
-  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]+/g, '-');
+  const safeName = processed.name.replace(/[^a-zA-Z0-9.\-_]+/g, '-');
   const path = `category-images/${safeSlug}/${Date.now()}-${safeName}`;
   const storageRef = ref(storage, path);
-  const snapshot = await uploadBytes(storageRef, file);
+  const snapshot = await uploadBytes(storageRef, processed);
   return getDownloadURL(snapshot.ref);
 }
 

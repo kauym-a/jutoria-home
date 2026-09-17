@@ -42,6 +42,7 @@ export default function AmazonUSA() {
           content="Discover JUTORIA's natural-fiber home décor collection on Amazon Business, with convenient shopping, secure checkout, and reliable delivery for wholesale and business buyers."
         />
         <link rel="canonical" href={absoluteUrl('/amazon-usa')} />
+        <link rel="preload" as="image" href="/amazon-usa-hero-premium-lifestyle.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* 1. HERO */}
@@ -91,6 +92,9 @@ export default function AmazonUSA() {
               src="/amazon-usa-hero-premium-lifestyle.webp"
               alt="Natural-fiber woven placemats and baskets styled on a dining table in a warm interior"
               className="absolute inset-0 w-full h-full object-cover"
+              width={1774}
+              height={887}
+              fetchPriority="high"
             />
           </div>
         </div>

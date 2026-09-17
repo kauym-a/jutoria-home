@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Database, ExternalLink } from 'lucide-react';
+import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   fetchAllProducts,
   deleteProduct,
   seedProductsFromStaticData,
+  optimizeExistingProductImages,
   upsertProduct,
   type Product,
 } from '../../services/firebase/products';
@@ -15,6 +16,8 @@ export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
+  const [optimizeProgress, setOptimizeProgress] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -44,6 +47,32 @@ export default function AdminProducts() {
       toast.error('সিড করতে সমস্যা হয়েছে — Firestore নিয়ম/লগইন চেক করুন।');
     } finally {
       setSeeding(false);
+    }
+  };
+
+  // Admin Panel থেকে আপলোড করা পুরনো প্রোডাক্ট ছবি (uploadProductImage() ফিক্স হওয়ার
+  // আগে আপলোড হওয়া — অসংকুচিত PNG/JPG, প্রায়ই কয়েকশো KB-থেকে কয়েক MB) এক-বারের জন্য
+  // ডাউনলোড+resize+WebP-convert+re-upload করে। বড় ক্যাটালগে সময় লাগতে পারে — চালু
+  // অবস্থায় ট্যাব বন্ধ না করার জন্য বলা হচ্ছে টোস্টে।
+  const handleOptimizeImages = async () => {
+    if (!window.confirm('সব প্রোডাক্টের পুরনো (non-WebP) ছবি resize+WebP-তে কনভার্ট করে Firebase Storage-এ পুনরায় আপলোড হবে। এতে কয়েক মিনিট লাগতে পারে — চলার সময় এই ট্যাব বন্ধ করবেন না। এগোতে চান?')) return;
+    setOptimizing(true);
+    setOptimizeProgress('শুরু হচ্ছে...');
+    try {
+      const result = await optimizeExistingProductImages((done, total, sku) => {
+        setOptimizeProgress(sku ? `${done + 1}/${total} — ${sku}` : `সম্পন্ন (${total}/${total})`);
+      });
+      const savedKB = Math.round((result.bytesBefore - result.bytesAfter) / 1024);
+      toast.success(
+        `${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে — ${result.imagesConverted}টা ছবি কনভার্ট (${result.imagesSkipped}টা আগে থেকেই WebP/static, স্কিপ)। প্রায় ${savedKB} KB বাঁচল।`,
+      );
+      await load();
+    } catch (err) {
+      console.error(err);
+      toast.error('ছবি অপ্টিমাইজ করতে সমস্যা হয়েছে — Firestore/Storage নিয়ম চেক করুন।');
+    } finally {
+      setOptimizing(false);
+      setOptimizeProgress('');
     }
   };
 
@@ -92,6 +121,15 @@ export default function AdminProducts() {
             >
               <Database size={16} />
               {seeding ? 'Seeding…' : 'Seed Existing Products'}
+            </button>
+            <button
+              onClick={handleOptimizeImages}
+              disabled={optimizing}
+              className="flex items-center gap-2 border border-brand-navy/20 text-brand-navy px-4 py-2.5 text-sm font-semibold hover:border-brand-gold hover:text-brand-gold transition-colors disabled:opacity-50"
+              title="পুরনো (non-WebP) প্রোডাক্ট ছবি resize+WebP-তে কনভার্ট করে Storage-এ পুনরায় আপলোড করে — পেজ লোড স্পিড বাড়ানোর জন্য"
+            >
+              <ImageDown size={16} />
+              {optimizing ? optimizeProgress || 'Optimizing…' : 'Optimize Existing Images'}
             </button>
             <Link
               to="/admin/products/new"

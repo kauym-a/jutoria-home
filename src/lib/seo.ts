@@ -22,7 +22,7 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     legalName: 'SIRCOMMERCE GROUP LTD',
     url: SITE_URL,
-    logo: absoluteUrl('/logo.png'),
+    logo: absoluteUrl('/logo.webp'),
     address: {
       '@type': 'PostalAddress',
       streetAddress: '69 Wingfield Road, Great Barr',
