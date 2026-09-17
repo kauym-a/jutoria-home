@@ -35,7 +35,7 @@ const LEADERSHIP_TEAM = [
     phone: '+880 1745-249997',
     email: 'rashed@jutoriahome.com',
     linkedin: 'https://www.linkedin.com/company/jutoriahome',
-    photo: '/team/founder-managing-director.jpg',
+    photo: '/team/founder-managing-director.webp',
   },
   {
     name: 'S M Nasif Ali',
@@ -45,7 +45,7 @@ const LEADERSHIP_TEAM = [
     phone: '+880 1324-438566',
     email: 'nasif@jutoriahome.com',
     linkedin: '',
-    photo: '/team/uk-bangladesh-marketing-director.jpg',
+    photo: '/team/uk-bangladesh-marketing-director.webp',
   },
   {
     name: 'Wafi Rahman Ananna',
@@ -55,7 +55,7 @@ const LEADERSHIP_TEAM = [
     phone: '+44 7435 945500',
     email: 'wafi@jutoriahome.com',
     linkedin: '',
-    photo: '/team/uk-warehouse-director.jpg',
+    photo: '/team/uk-warehouse-director.webp',
   },
   {
     name: 'MST KAZI SANZIDA AHAMMAD',
@@ -65,7 +65,7 @@ const LEADERSHIP_TEAM = [
     phone: '+880 1714-567000',
     email: 'sanjida@jutoriahome.com',
     linkedin: '',
-    photo: '/team/product-designer-marketing-director.jpg',
+    photo: '/team/product-designer-marketing-director.webp',
   },
 ] as const;
 
@@ -73,9 +73,9 @@ const LEADERSHIP_TEAM = [
 const IMG = {
   logo: 'sircommerce_logo.png',
   registration: 'jutoria-corporate-registration.jpg',
-  ukPresence: 'jutoria-uk-operational-presence.jpg',
-  trademark: 'jutoria-trademark-uk.jpg',
-  craftsmanship: 'jutoria-bangladesh-craftsmanship.jpg'
+  ukPresence: 'jutoria-uk-operational-presence.webp',
+  trademark: 'jutoria-trademark-uk.webp',
+  craftsmanship: 'jutoria-bangladesh-craftsmanship.webp'
 } as const;
 
 const src = (name: string) => `/${name}`;

@@ -54,3 +54,10 @@ firebase-debug.*.log
 # Misc
 .cache/
 .tmp/
+
+# Original (pre-WebP-conversion) images — kept locally as a safety backup by
+# scripts/_tmp-optimize-images.mjs-style tooling, not committed (would bloat
+# the repo with near-duplicate multi-MB originals already superseded by the
+# optimized .webp files in public/). Safe to delete once you're confident in
+# the converted images; nothing in the app reads from this folder.
+image-originals-backup/

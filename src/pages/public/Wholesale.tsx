@@ -46,19 +46,19 @@ const OFFER_CARDS = [
   {
     name: 'Jute',
     desc: 'Placemats, rugs, baskets and home décor woven from natural jute.',
-    image: '/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.png',
+    image: '/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.webp',
     link: '/materials/jute',
   },
   {
     name: 'Sea Grass',
     desc: 'Placemats, baskets and natural décor pieces woven from seagrass.',
-    image: '/product-master/sea-grass-natura/sea-grass-natural-lifestyle.png',
+    image: '/product-master/sea-grass-natura/sea-grass-natural-lifestyle.webp',
     link: '/materials/seagrass',
   },
   {
     name: 'Natural Fiber Home Décor',
     desc: 'Storage, planters, table décor and floor décor across our natural-fiber range.',
-    image: '/jute-basket-lifestyle.jpg',
+    image: '/jute-basket-lifestyle.webp',
     link: '/categories',
   },
 ];
@@ -71,7 +71,7 @@ const FEATURED_PRODUCTS = [
     sku: 'JTR-JPM-NAT-RND-14-S6',
     name: 'Jute Placemats',
     variant: 'Natural / Round / 14"',
-    image: '/product-master/jute-cotton-natural/jute-cotton-natural-single.png',
+    image: '/product-master/jute-cotton-natural/jute-cotton-natural-single.webp',
     link: '/product/JTR-JPM-NAT-RND-14-S6',
     hasPhoto: true,
   },
@@ -79,7 +79,7 @@ const FEATURED_PRODUCTS = [
     sku: 'JTR-SPM-NAT-RND-14-S6',
     name: 'Seagrass Placemats',
     variant: 'Natural / Round / 14"',
-    image: '/product-master/sea-grass-natura/sea-grass-natural.png',
+    image: '/product-master/sea-grass-natura/sea-grass-natural.webp',
     link: '/product/JTR-SPM-NAT-RND-14-S6',
     hasPhoto: true,
   },
@@ -87,7 +87,7 @@ const FEATURED_PRODUCTS = [
     sku: 'JTR-JPB-A',
     name: 'Jute Planter Baskets',
     variant: 'Natural / Set of 3',
-    image: '/jute-basket-product.jpg',
+    image: '/jute-basket-product.webp',
     link: '/categories/planter-baskets',
     hasPhoto: false,
   },
@@ -199,7 +199,7 @@ export default function Wholesale() {
           </div>
           <div className="relative min-h-[320px] lg:min-h-[640px]">
             <img
-              src="/wholesale-hero-natural-home-decor.jpg"
+              src="/wholesale-hero-natural-home-decor.webp"
               alt="Natural-fiber woven placemats, baskets and décor styled in a warm, modern interior"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -219,7 +219,7 @@ export default function Wholesale() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center mb-14">
             <div className="lg:col-span-2">
               <img loading="lazy" decoding="async"
-                src="/wholesale-businesses-collage.jpg"
+                src="/wholesale-businesses-collage.webp"
                 alt="JUTORIA natural-fiber pieces in retail display, hospitality and design settings"
                 className="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
               />
@@ -341,12 +341,12 @@ export default function Wholesale() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <img loading="lazy" decoding="async"
-                src="/jutoria-artisans-weaving.jpg"
+                src="/jutoria-artisans-weaving.webp"
                 alt="Artisan hand-weaving a natural fiber product"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px]"
               />
               <img loading="lazy" decoding="async"
-                src="/jutoria-story-natural-materials.jpg"
+                src="/jutoria-story-natural-materials.webp"
                 alt="Natural fiber raw materials"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px] mt-8"
               />

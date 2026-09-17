@@ -6,3 +6,59 @@
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
+
+# ============================================================
+# COMPRESSION — gzip (mod_deflate, near-universal on Apache/Hostinger) and
+# Brotli where the host has it enabled. Each wrapped in <IfModule> so this
+# file still works if a module isn't loaded — Hostinger shared hosting
+# doesn't always expose the same module set.
+# ============================================================
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml text/javascript
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/ttf font/otf font/woff font/woff2
+  AddOutputFilterByType DEFLATE application/font-woff application/font-woff2 application/vnd.ms-fontobject
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml text/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/x-javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/rss+xml
+  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+  AddOutputFilterByType BROTLI_COMPRESS font/ttf font/otf font/woff font/woff2
+</IfModule>
+
+# ============================================================
+# CACHING
+# vite build ফাইলনেমে content hash যোগ করে (যেমন index-DlV9v49_.js) — তাই /assets/-এর
+# ভেতরের js/css/font ফাইলগুলো ১ বছর immutable ক্যাশ করা নিরাপদ: কনটেন্ট বদলালে নতুন
+# ডিপ্লয়ে ফাইলনেমও বদলে যায়, ব্রাউজার পুরনো ক্যাশড কপি আর কখনো রিকোয়েস্টই করবে না।
+#
+# public/-এর সরাসরি ফাইল (লোগো, প্রোডাক্ট/টিম ছবি ইত্যাদি) হ্যাশ করা নয় — একই URL-এ
+# কনটেন্ট বদলাতে পারে (Admin Panel থেকে নতুন ছবি আপলোড, ইত্যাদি) — তাই immutable নয়,
+# একটা মাঝারি ৩০ দিনের ক্যাশ (স্টেল হলে ব্রাউজার revalidate করবে)। /assets/-কে এখান
+# থেকে স্পষ্টভাবে বাদ (negative <If>) দেওয়া হয়েছে, যাতে ভবিষ্যতে কখনো /assets/-এর
+# ভেতরে ফন্ট/ছবিও এলে এই looser rule ওই উপরের immutable rule-কে ওভাররাইট করে না দেয়।
+#
+# index.html ক্যাশ করা হয় না — এটাই একমাত্র ফাইল যেটা নতুন ডিপ্লয়ে হ্যাশড অ্যাসেটের
+# আপডেটেড রেফারেন্স বহন করে, তাই এটা সবসময় fresh থাকতে হবে (না হলে ভিজিটর পুরনো
+# index.html + নতুন/মুছে ফেলা hashed অ্যাসেটের মিসম্যাচে আটকে যেতে পারেন)।
+<IfModule mod_headers.c>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  <If "%{REQUEST_URI} =~ m#^/assets/#">
+    <FilesMatch "\.(js|mjs|css|woff2?|ttf|otf|eot)$">
+      Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+  </If>
+
+  <If "%{REQUEST_URI} !~ m#^/assets/#">
+    <FilesMatch "\.(jpe?g|png|webp|gif|svg|ico|avif|woff2?|ttf|otf|eot)$">
+      Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+  </If>
+</IfModule>

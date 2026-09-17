@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -8,7 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
-import AdminLayout from './layouts/AdminLayout';
+// AdminLayout code-split নিচে (Admin Pages সেকশনে) — পাবলিক ভিজিটর কখনো এই কোড লোড করবে না
 
 // Public Pages
 import Home from './pages/public/Home';
@@ -35,14 +36,27 @@ import PeopleArtisans from './pages/public/PeopleArtisans';
 import CorporateInformation from './pages/public/CorporateInformation';
 import NotFound from './pages/public/NotFound';
 
-// Admin Pages
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import AdminProducts from './pages/admin/Products';
-import AdminProductForm from './pages/admin/ProductForm';
-import AdminCategories from './pages/admin/Categories';
-import AdminCategoryForm from './pages/admin/CategoryForm';
-import AdminLeads from './pages/admin/Leads';
+// Admin Pages — React.lazy() দিয়ে code-split করা। এই পেজগুলো শুধু /admin/* রুটে গেলেই
+// লোড হয় — পাবলিক ভিজিটর (যারা কখনো লগইন পেজেই যায় না) এই JS একদমই ডাউনলোড করে না।
+// প্রতিটা lazy import নিচে <Suspense>-এর ভেতরে রেন্ডার হয় (রুট লেভেলে, App() ফাংশনের শেষে)।
+const Login = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminProducts = lazy(() => import('./pages/admin/Products'));
+const AdminProductForm = lazy(() => import('./pages/admin/ProductForm'));
+const AdminCategories = lazy(() => import('./pages/admin/Categories'));
+const AdminCategoryForm = lazy(() => import('./pages/admin/CategoryForm'));
+const AdminLeads = lazy(() => import('./pages/admin/Leads'));
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
+
+// Suspense fallback — খুব ছোট, ব্র্যান্ড কালারে, শুধু admin চাঙ্ক লোড হওয়ার সময় দেখা যায়
+// (পাবলিক পেজ কখনো এটা ট্রিগার করে না, কারণ ওগুলোর কোনো কম্পোনেন্টই lazy নয়)।
+function AdminLoadingFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-brand-offwhite">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-navy/20 border-t-brand-gold" />
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -50,6 +64,11 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
+          {/* একটাই top-level Suspense — নিচের lazy() admin কম্পোনেন্টগুলোর যেকোনোটা suspend
+              করলে এটাই ধরে (React ট্রি-অনুযায়ী কাজ করে, JSX নেস্টিং-এ Route-এর মাঝে
+              Suspense বসানো যায় না — react-router এটা সাপোর্ট করে না)। পাবলিক পেজের কোনো
+              কম্পোনেন্ট lazy নয়, তাই তারা এটা কখনো ট্রিগার করে না। */}
+          <Suspense fallback={<AdminLoadingFallback />}>
           <Routes>
             {/* Public Routes - সাধারণ কাস্টমারদের জন্য */}
             <Route element={<PublicLayout />}>
@@ -123,6 +142,7 @@ function App() {
               </Route>
             </Route>
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </AuthProvider>
     </HelmetProvider>

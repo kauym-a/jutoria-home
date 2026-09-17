@@ -138,7 +138,7 @@ export default function AdminProducts() {
                         <td className="p-4">
                           <div className="flex items-center gap-3">
                             {thumb ? (
-                              <img src={thumb} alt={p.name} className="w-12 h-12 object-cover rounded border border-brand-navy/10" />
+                              <img src={thumb} alt={p.name} loading="lazy" className="w-12 h-12 object-cover rounded border border-brand-navy/10" />
                             ) : (
                               <div className="w-12 h-12 bg-brand-offwhite rounded border border-brand-navy/10" />
                             )}

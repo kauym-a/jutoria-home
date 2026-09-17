@@ -243,6 +243,7 @@ export default function AdminCategoryForm() {
                 <img
                   src={category.image}
                   alt=""
+                  loading="lazy"
                   className="w-16 h-16 object-cover rounded border border-brand-navy/10 flex-shrink-0"
                 />
               )}
@@ -250,7 +251,7 @@ export default function AdminCategoryForm() {
                 type="text"
                 value={category.image}
                 onChange={(e) => update('image', e.target.value)}
-                placeholder="/materials/natural-jute.png"
+                placeholder="/materials/natural-jute.webp"
                 className="flex-grow border border-brand-navy/15 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-gold"
               />
               {category.image && (

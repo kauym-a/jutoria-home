@@ -87,7 +87,7 @@ export default function OurStory() {
             <div className="relative">
               <div
                 className="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-natural-materials.jpg')", backgroundPosition: 'center 20%' }}
+                style={{ backgroundImage: "url('/jutoria-story-natural-materials.webp')", backgroundPosition: 'center 20%' }}
                 role="img"
                 aria-label="Bangladeshi women artisans working with natural fibres"
               />
@@ -110,7 +110,7 @@ export default function OurStory() {
             <div className="order-2 lg:order-1 relative">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-material.jpg')", backgroundPosition: 'center 25%' }}
+                style={{ backgroundImage: "url('/jutoria-story-material.webp')", backgroundPosition: 'center 25%' }}
                 role="img"
                 aria-label="Bangladeshi artisan preparing natural fibres for handcrafting"
               />

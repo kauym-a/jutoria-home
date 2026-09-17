@@ -5,39 +5,39 @@
     "image_folder": "sea-grass-natura",
     "images": [
       {
-        "filename": "sea-grass-natural-closeup.png",
+        "filename": "sea-grass-natural-closeup.webp",
         "role": "closeup",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural-closeup.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-closeup.webp",
         "confidence": "high"
       },
       {
-        "filename": "sea-grass-natural-dm.png",
+        "filename": "sea-grass-natural-dm.webp",
         "role": "dm",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural-dm.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-dm.webp",
         "confidence": "high"
       },
       {
-        "filename": "sea-grass-natural-lifestyle.png",
+        "filename": "sea-grass-natural-lifestyle.webp",
         "role": "lifestyle",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural-lifestyle.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-lifestyle.webp",
         "confidence": "high"
       },
       {
-        "filename": "sea-grass-natural-pk.png",
+        "filename": "sea-grass-natural-pk.webp",
         "role": "packaging",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural-pk.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-pk.webp",
         "confidence": "high"
       },
       {
-        "filename": "sea-grass-natural-set.png",
+        "filename": "sea-grass-natural-set.webp",
         "role": "set",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural-set.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural-set.webp",
         "confidence": "high"
       },
       {
-        "filename": "sea-grass-natural.png",
+        "filename": "sea-grass-natural.webp",
         "role": "primary",
-        "url": "/product-master/sea-grass-natura/sea-grass-natural.png",
+        "url": "/product-master/sea-grass-natura/sea-grass-natural.webp",
         "confidence": "high"
       }
     ],
@@ -96,39 +96,39 @@
     "image_folder": "jute-cotton-black-natural",
     "images": [
       {
-        "filename": "jute-cotton-black-natural-closeup.png",
+        "filename": "jute-cotton-black-natural-closeup.webp",
         "role": "closeup",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-dm.png",
+        "filename": "jute-cotton-black-natural-dm.webp",
         "role": "dm",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-lifestyle.png",
+        "filename": "jute-cotton-black-natural-lifestyle.webp",
         "role": "lifestyle",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-pk.png",
+        "filename": "jute-cotton-black-natural-pk.webp",
         "role": "packaging",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-set.png",
+        "filename": "jute-cotton-black-natural-set.webp",
         "role": "set",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-single.png",
+        "filename": "jute-cotton-black-natural-single.webp",
         "role": "primary",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.webp",
         "confidence": "high"
       }
     ],
@@ -188,39 +188,39 @@
     "image_folder": "jute-cotton-natural",
     "images": [
       {
-        "filename": "jute-cotton-natural-closeup.png",
+        "filename": "jute-cotton-natural-closeup.webp",
         "role": "closeup",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-closeup.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-closeup.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-natural-dm.png",
+        "filename": "jute-cotton-natural-dm.webp",
         "role": "dm",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-dm.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-dm.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-natural-lifestyle.png",
+        "filename": "jute-cotton-natural-lifestyle.webp",
         "role": "lifestyle",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-natural-pk.png",
+        "filename": "jute-cotton-natural-pk.webp",
         "role": "packaging",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-pk.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-pk.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-natural-set.png",
+        "filename": "jute-cotton-natural-set.webp",
         "role": "set",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-set.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-set.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-natural-single.png",
+        "filename": "jute-cotton-natural-single.webp",
         "role": "primary",
-        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-single.png",
+        "url": "/product-master/jute-cotton-natural/jute-cotton-natural-single.webp",
         "confidence": "high"
       }
     ],
@@ -279,39 +279,39 @@
     "image_folder": "jute-cotton-black-natural",
     "images": [
       {
-        "filename": "jute-cotton-black-natural-closeup.png",
+        "filename": "jute-cotton-black-natural-closeup.webp",
         "role": "closeup",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-closeup.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-dm.png",
+        "filename": "jute-cotton-black-natural-dm.webp",
         "role": "dm",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-dm.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-lifestyle.png",
+        "filename": "jute-cotton-black-natural-lifestyle.webp",
         "role": "lifestyle",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-lifestyle.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-pk.png",
+        "filename": "jute-cotton-black-natural-pk.webp",
         "role": "packaging",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-pk.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-set.png",
+        "filename": "jute-cotton-black-natural-set.webp",
         "role": "set",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-set.webp",
         "confidence": "high"
       },
       {
-        "filename": "jute-cotton-black-natural-single.png",
+        "filename": "jute-cotton-black-natural-single.webp",
         "role": "primary",
-        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.png",
+        "url": "/product-master/jute-cotton-black-natural/jute-cotton-black-natural-single.webp",
         "confidence": "high"
       }
     ],

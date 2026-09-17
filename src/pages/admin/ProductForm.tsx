@@ -386,7 +386,7 @@ export default function AdminProductForm() {
             <div className="space-y-3">
               {product.images.map((img, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  {img.url && <img src={img.url} alt="" className="w-12 h-12 object-cover rounded border border-brand-navy/10 flex-shrink-0" />}
+                  {img.url && <img src={img.url} alt="" loading="lazy" className="w-12 h-12 object-cover rounded border border-brand-navy/10 flex-shrink-0" />}
                   <input
                     type="text"
                     value={img.url}

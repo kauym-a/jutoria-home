@@ -53,7 +53,7 @@ export default function Products() {
             <div className="relative overflow-hidden border border-brand-navy/10 bg-brand-ivory min-h-[260px] md:min-h-[320px] lg:min-h-[360px]">
               <div
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url('/laundry-basket-lifestyle.jpg')" }}
+                style={{ backgroundImage: "url('/laundry-basket-lifestyle.webp')" }}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/40 via-brand-navy/10 to-brand-ivory/10" />
               <div className="relative flex h-full min-h-[260px] md:min-h-[320px] lg:min-h-[360px] items-end justify-start p-6 md:p-8">

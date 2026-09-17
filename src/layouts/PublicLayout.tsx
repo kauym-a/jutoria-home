@@ -335,7 +335,7 @@ export default function PublicLayout() {
       >
         {/* Drawer Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-brand-navy/10">
-          <img src="/logo.png" alt="JUTORIA" className="h-9 w-auto object-contain" />
+          <img src="/logo.png" alt="JUTORIA" loading="lazy" className="h-9 w-auto object-contain" />
           <button onClick={closeMenu} className="text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2">
             <X size={26} strokeWidth={1.5} />
           </button>
@@ -440,7 +440,7 @@ export default function PublicLayout() {
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
           <div className="flex flex-col items-center text-center mb-12">
             <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-              <img src="/logo.png" alt="JUTORIA" className="h-14 md:h-20 w-auto mb-6 object-contain" />
+              <img src="/logo.png" alt="JUTORIA" loading="lazy" className="h-14 md:h-20 w-auto mb-6 object-contain" />
             </Link>
             
             <p className="font-sans text-sm opacity-80 max-w-md mx-auto font-medium">

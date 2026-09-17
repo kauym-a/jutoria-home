@@ -13,7 +13,7 @@ type Product = {
 
 export default function ProductCard({ product }:{ product: Product }) {
   const primary = product.images?.find(i => i.role === 'primary') || product.images?.[0];
-  const imageUrl = primary?.url || '/placemat-product.jpg';
+  const imageUrl = primary?.url || '/placemat-product.webp';
 
   const productPath = `/product/${encodeURIComponent(product.sku)}`;
 

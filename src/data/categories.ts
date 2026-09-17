@@ -19,7 +19,7 @@ export const categories: Category[] = [
     desc: 'Hand-braided rounds and sets that bring natural texture to every table setting.',
     longDesc:
       'Our placemats are hand-braided from jute and seagrass into dense, durable rounds. Reversible, heat-resistant and finished with a clean edge, they are built for daily use in both hospitality and residential settings — sold individually or as matched sets.',
-    image: '/placemat-product.jpg',
+    image: '/placemat-product.webp',
   },
   {
     id: '02',
@@ -28,7 +28,7 @@ export const categories: Category[] = [
     desc: 'Sturdy woven baskets shaped to hold plants, storage bins, and everyday essentials.',
     longDesc:
       'Planter baskets are woven for structure — round, tapered forms with reinforced bases that hold their shape under weight. Available in natural, seagrass and jute finishes, sized to nest together for retail display or bulk shipping.',
-    image: '/jute-basket-product.jpg',
+    image: '/jute-basket-product.webp',
   },
   {
     id: '03',
@@ -37,7 +37,7 @@ export const categories: Category[] = [
     desc: 'Deep, reinforced baskets woven for daily handling and long-term durability.',
     longDesc:
       'Built for daily wear, our laundry baskets combine seagrass and jute for extra structural strength. Deep, wide-mouthed forms with reinforced rims make them equally at home in a laundry room, nursery or living space.',
-    image: '/laundry-basket-product.jpg',
+    image: '/laundry-basket-product.webp',
   },
   {
     id: '04',
@@ -55,6 +55,6 @@ export const categories: Category[] = [
     desc: 'Flat-braided jute floor coverings, from entryway mats to full room rugs.',
     longDesc:
       'Woven from 100% jute or a jute-cotton blend, our floor mats and rugs are flat-braided and stitched into rounds and rectangles from entryway size up to full room dimensions — durable underfoot and fully biodegradable.',
-    image: '/floor-mats-rugs.jpg',
+    image: '/floor-mats-rugs.webp',
   },
 ];

@@ -12,20 +12,20 @@ import { absoluteUrl } from '../../lib/seo';
 
 /* Exact public-folder filenames (double-extension as uploaded) */
 const IMG = {
-  hero:           'jutoria-artisans-hero.jpg',
-  skilledHands:   'jutoria-artisans-skilled-hands.jpg',
-  weaving:        'jutoria-artisans-weaving.jpg',
-  hands:          'jutoria-artisans-hands.jpg',
-  rawMaterials:   'jutoria-artisans-raw-materials.jpg',
-  materialPrep:   'jutoria-artisans-material-preparation.jpg',
-  finishedCraft:  'jutoria-artisans-finished-craft.jpg',
-  workshopTeam:   'jutoria-artisans-workshop-team.jpg',
-  craftDetail:    'jutoria-artisans-craft-detail.jpg',
-  finishedDetail: 'jutoria-artisans-finished-detail.jpg',
-  portrait01:     'jutoria-artisan-portrait-01.jpg',
-  portrait02:     'jutoria-artisan-portrait-02.jpg',
-  portrait03:     'jutoria-artisan-portrait-03.jpg',
-  modernLiving:   'jutoria-artisans-modern-living.jpg',
+  hero:           'jutoria-artisans-hero.webp',
+  skilledHands:   'jutoria-artisans-skilled-hands.webp',
+  weaving:        'jutoria-artisans-weaving.webp',
+  hands:          'jutoria-artisans-hands.webp',
+  rawMaterials:   'jutoria-artisans-raw-materials.webp',
+  materialPrep:   'jutoria-artisans-material-preparation.webp',
+  finishedCraft:  'jutoria-artisans-finished-craft.webp',
+  workshopTeam:   'jutoria-artisans-workshop-team.webp',
+  craftDetail:    'jutoria-artisans-craft-detail.webp',
+  finishedDetail: 'jutoria-artisans-finished-detail.webp',
+  portrait01:     'jutoria-artisan-portrait-01.webp',
+  portrait02:     'jutoria-artisan-portrait-02.webp',
+  portrait03:     'jutoria-artisan-portrait-03.webp',
+  modernLiving:   'jutoria-artisans-modern-living.webp',
 } as const;
 
 const src = (name: string) => `/${name}`;

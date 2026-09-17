@@ -140,6 +140,7 @@ export default function AdminCategories() {
                             <img
                               src={c.image}
                               alt={c.name}
+                              loading="lazy"
                               className="w-12 h-12 object-cover rounded border border-brand-navy/10"
                             />
                           ) : (

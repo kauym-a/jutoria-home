@@ -139,7 +139,7 @@ export default function ClientsMarkets() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
             <div className="lg:col-span-2">
               <img loading="lazy" decoding="async"
-                src="/global-b2b-audience.jpg"
+                src="/global-b2b-audience.webp"
                 alt="JUTORIA pieces in retail display, hospitality and design settings"
                 className="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
               />
@@ -213,7 +213,7 @@ export default function ClientsMarkets() {
         <div className="container mx-auto max-w-7xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-0 overflow-hidden rounded-[2px] shadow-premium">
             <img loading="lazy" decoding="async"
-              src="/bangladesh-craftsmanship-global.jpg"
+              src="/bangladesh-craftsmanship-global.webp"
               alt="Artisan hand-weaving natural fiber baskets in Bangladesh"
               className="w-full h-72 lg:h-[440px] object-cover"
             />

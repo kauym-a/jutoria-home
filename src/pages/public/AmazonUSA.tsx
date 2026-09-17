@@ -88,7 +88,7 @@ export default function AmazonUSA() {
           </div>
           <div className="relative min-h-[320px] lg:min-h-[640px]">
             <img
-              src="/amazon-usa-hero-premium-lifestyle.jpg"
+              src="/amazon-usa-hero-premium-lifestyle.webp"
               alt="Natural-fiber woven placemats and baskets styled on a dining table in a warm interior"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -152,7 +152,7 @@ export default function AmazonUSA() {
         <div className="container mx-auto max-w-7xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-0 overflow-hidden rounded-[2px] shadow-premium">
             <img loading="lazy" decoding="async"
-              src="/amazon-usa-brand-craftsmanship.jpg"
+              src="/amazon-usa-brand-craftsmanship.webp"
               alt="Artisan hand-weaving natural fiber products in Bangladesh"
               className="w-full h-72 lg:h-[480px] object-cover"
             />

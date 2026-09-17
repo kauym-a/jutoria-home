@@ -29,29 +29,29 @@ const featuredProducts = [
     id: 'f1', 
     name: 'Jute Storage Basket', 
     category: 'Natural Jute', 
-    productImg: '/jute-basket-product.jpg', 
-    lifestyleImg: '/jute-basket-lifestyle.jpg' 
+    productImg: '/jute-basket-product.webp', 
+    lifestyleImg: '/jute-basket-lifestyle.webp' 
   },
   { 
     id: 'f2', 
     name: 'Woven Laundry Basket', 
     category: 'Seagrass', 
-    productImg: '/laundry-basket-product.jpg', 
-    lifestyleImg: '/laundry-basket-lifestyle.jpg' 
+    productImg: '/laundry-basket-product.webp', 
+    lifestyleImg: '/laundry-basket-lifestyle.webp' 
   },
   { 
     id: 'f3', 
     name: 'Minimalist Organizer', 
     category: 'Natural Fiber', 
     productImg: '/organizer-basket-product.jpg', 
-    lifestyleImg: '/organizer-basket-lifestyle.jpg' 
+    lifestyleImg: '/organizer-basket-lifestyle.webp' 
   },
   { 
     id: 'f4', 
     name: 'Artisan Placemat', 
     category: 'Hogla Leaf', 
-    productImg: '/placemat-product.jpg', 
-    lifestyleImg: '/placemat-lifestyle.jpg' 
+    productImg: '/placemat-product.webp', 
+    lifestyleImg: '/placemat-lifestyle.webp' 
   }
 ];
 
@@ -62,7 +62,7 @@ const certificationLogos = [
  { name: 'EPB', src: '/epb.png' },
  { name: 'Expo', src: '/EXPO%20LOGO.png' },
  { name: 'JDPC', src: '/JDPC.png' },
- { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate-logo.png' }
+ { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate-logo.webp' }
 ];
 
 export default function Home() {
@@ -221,14 +221,14 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="JUTORIA" />
         <meta property="og:url" content={absoluteUrl('/')} />
-        <meta property="og:image" content={absoluteUrl('/laundry-basket-lifestyle.jpg')} />
+        <meta property="og:image" content={absoluteUrl('/laundry-basket-lifestyle.webp')} />
         <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
         <meta name="twitter:description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
-        <meta name="twitter:image" content={absoluteUrl('/laundry-basket-lifestyle.jpg')} />
+        <meta name="twitter:image" content={absoluteUrl('/laundry-basket-lifestyle.webp')} />
         <meta name="twitter:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
 
         <script type="application/ld+json">{JSON.stringify(organizationJsonLd())}</script>
@@ -393,7 +393,7 @@ export default function Home() {
                 >
                   {/* মোবাইল/ট্যাবলেট ভার্সন (portrait crop) */}
                   <img
-                    src="/jutoria-artisans-craftsmanship-mobile.jpg"
+                    src="/jutoria-artisans-craftsmanship-mobile.webp"
                     alt="JUTORIA artisans hand-weaving natural fiber baskets in Bangladesh"
                     className="block lg:hidden w-full h-auto aspect-[1161/1355] object-cover origin-center"
                     decoding="async"
@@ -402,7 +402,7 @@ export default function Home() {
                   />
                   {/* ডেস্কটপ ভার্সন (landscape crop) */}
                   <img
-                    src="/jutoria-artisans-craftsmanship-desktop.jpg"
+                    src="/jutoria-artisans-craftsmanship-desktop.webp"
                     alt="JUTORIA artisans hand-weaving natural fiber baskets in Bangladesh"
                     className="hidden lg:block w-full h-auto aspect-[1537/1023] object-cover origin-center"
                     decoding="async"
@@ -542,7 +542,7 @@ export default function Home() {
               <div className={`transition-all duration-1000 delay-200 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 <div className="aspect-[4/5] lg:aspect-[3/4] overflow-hidden rounded-[2px] bg-brand-navy/5">
                   <img 
-                    src="/laundry-basket-lifestyle.jpg" 
+                    src="/laundry-basket-lifestyle.webp" 
                     alt="JUTORIA beautiful living space" 
                     className="w-full h-full object-cover origin-center"
                                       decoding="async"
@@ -558,7 +558,7 @@ export default function Home() {
             <div className={`md:col-span-5 lg:col-span-4 transition-all duration-1000 delay-300 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-square md:aspect-[4/5] overflow-hidden rounded-[2px] bg-brand-navy/5">
                 <img 
-                  src="/jute-basket-lifestyle.jpg" 
+                  src="/jute-basket-lifestyle.webp" 
                   alt="Natural jute lifestyle detail" 
                   className="w-full h-full object-cover origin-center"
                                   decoding="async"
@@ -571,7 +571,7 @@ export default function Home() {
             <div className={`md:col-span-7 lg:col-span-5 transition-all duration-1000 delay-500 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-video md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden rounded-[2px] bg-brand-navy/5">
                 <img 
-                  src="/placemat-lifestyle.jpg" 
+                  src="/placemat-lifestyle.webp" 
                   alt="Handcrafted placemat in natural setting" 
                   className="w-full h-full object-cover origin-center"
                   decoding="async"
@@ -584,7 +584,7 @@ export default function Home() {
             <div className={`md:col-span-6 md:col-start-4 lg:col-span-3 lg:col-start-10 lg:-mt-32 transition-all duration-1000 delay-700 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-brand-navy/5">
                 <img 
-                  src="/organizer-basket-lifestyle.jpg" 
+                  src="/organizer-basket-lifestyle.webp" 
                   alt="Minimalist organizer lifestyle view" 
                   className="w-full h-full object-cover origin-center"
                   decoding="async"
@@ -691,9 +691,9 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
             {[
-              { src: '/jutoria-instagram-natural-living.jpg', alt: 'JUTORIA natural fiber home décor styled in a living room' },
-              { src: '/jutoria-instagram-dining-table.jpg', alt: 'JUTORIA woven placemats and baskets on a dining table' },
-              { src: '/jutoria-instagram-modern-home.jpg', alt: 'JUTORIA natural fiber basket in a modern home' },
+              { src: '/jutoria-instagram-natural-living.webp', alt: 'JUTORIA natural fiber home décor styled in a living room' },
+              { src: '/jutoria-instagram-dining-table.webp', alt: 'JUTORIA woven placemats and baskets on a dining table' },
+              { src: '/jutoria-instagram-modern-home.webp', alt: 'JUTORIA natural fiber basket in a modern home' },
             ].map((img) => (
               <a
                 key={img.src}
@@ -706,6 +706,8 @@ export default function Home() {
                 <img
                   src={img.src}
                   alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
                 {/* subtle overlay + Instagram glyph so visitors realise the tile links out */}

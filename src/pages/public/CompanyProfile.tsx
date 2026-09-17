@@ -28,7 +28,7 @@ export default function CompanyProfile() {
       <section className="relative w-full min-h-[68vh] flex items-end bg-brand-navy overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/jute-basket-lifestyle.jpg')" }}
+          style={{ backgroundImage: "url('/jute-basket-lifestyle.webp')" }}
           role="img"
           aria-label="Handwoven natural-fiber home décor by JUTORIA"
         />
@@ -66,7 +66,7 @@ export default function CompanyProfile() {
             </div>
             <div
               className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium"
-              style={{ backgroundImage: "url('/laundry-basket-lifestyle.jpg')" }}
+              style={{ backgroundImage: "url('/laundry-basket-lifestyle.webp')" }}
               role="img"
               aria-label="Natural fiber craftsmanship in a JUTORIA product"
             />
