@@ -19,9 +19,17 @@ import { useLeadForm } from '../../hooks/useLeadForm';
 import { absoluteUrl } from '../../lib/seo';
 
 // ============================================================
-// এই পেজের কনটেন্ট প্ল্যান অনুযায়ী তৈরি: Hero → Who We Serve → What We Offer →
-// Featured Collection → Materials & Craftsmanship → Why JUTORIA → Process →
-// Inquiry Form → Explore CTA → FAQ → Final CTA
+// সেকশন অর্ডার (conversion-flow অনুযায়ী পুনর্বিন্যাস করা হয়েছে): Hero → Who We Serve →
+// What We Offer → Featured Collection → Materials & Craftsmanship → Why JUTORIA →
+// Process (How Wholesale Works) → FAQ → Inquiry Form (পেজের একদম শেষ, একমাত্র
+// conversion point)।
+//
+// FAQ ইচ্ছাকৃতভাবে ফর্মের ঠিক আগে — pricing/"কীভাবে শুরু করব" মতো প্রশ্নের উত্তর
+// visitor ফর্ম পূরণের আগেই পাওয়া দরকার। "Explore CTA" ও "Final CTA" সেকশন দুটো
+// (দুটোই শুধু Hero-র CTA-জোড়ার পুনরাবৃত্তি, নতুন কোনো তথ্য ছিল না) সম্পূর্ণ বাদ
+// দেওয়া হয়েছে — ফর্মের পরে বা আগে অতিরিক্ত CTA থাকলে ভিজিটর কোথায় ক্লিক করবে
+// confuse হতো এবং ফর্মটাই যে চূড়ান্ত পদক্ষেপ সেটা স্পষ্ট থাকত না।
+//
 // কোনো fabricated MOQ/lead-time/shipping প্রতিশ্রুতি এখানে নেই — যেগুলো এখনো
 // verified commercial policy হিসেবে ঠিক হয়নি, সেগুলো ইচ্ছাকৃতভাবে বাদ দেওয়া হয়েছে।
 // ============================================================
@@ -179,9 +187,11 @@ export default function Wholesale() {
               Discover JUTORIA's natural-fiber home décor collection for retailers, designers, hospitality businesses and other wholesale buyers.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link to="/contact" className="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+              {/* এই পেজেরই নিচে, এখন পেজের একদম শেষে থাকা ফর্মে (#wholesale-inquiry) নিয়ে যায় —
+                  আগে ভুলবশত /contact পেজে চলে যেত, এই পেজের নিজস্ব ফর্মে না গিয়ে। */}
+              <a href="#wholesale-inquiry" className="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
                 Request A Wholesale Quote <ArrowRight size={16} />
-              </Link>
+              </a>
               <Link to="/products" className="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
                 Explore Products
               </Link>
@@ -386,7 +396,24 @@ export default function Wholesale() {
         </div>
       </section>
 
-      {/* 8. B2B INQUIRY SECTION */}
+      {/* 8. FAQ (WHOLESALE QUESTIONS) — এখন ফর্মের ঠিক আগে, কারণ pricing ও "কীভাবে শুরু
+          করব" মতো প্রশ্নগুলোর উত্তর ফর্ম পূরণের আগেই পাওয়া দরকার */}
+      <section className="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+        <div className="container mx-auto max-w-3xl px-4">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4 text-center">
+            Wholesale Questions
+          </h2>
+          <p className="font-sans text-brand-navy/60 text-center mb-12">Common questions from wholesale buyers.</p>
+          <div>
+            {FAQS.map((f) => (
+              <FaqItem key={f.q} q={f.q} a={f.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. B2B INQUIRY SECTION — পেজের একদম শেষ সেকশন, একমাত্র/চূড়ান্ত conversion point।
+          এর পরে আর কোনো CTA/সেকশন নেই ইচ্ছাকৃতভাবে, যাতে ফর্ম পূরণের পর ভিজিটর confuse না হয়। */}
       <section id="wholesale-inquiry" className="py-16 md:py-24 bg-brand-navy">
         <div className="container mx-auto max-w-4xl px-4">
           <div className="text-center mb-12">
@@ -461,70 +488,6 @@ export default function Wholesale() {
               </button>
             </form>
           )}
-        </div>
-      </section>
-
-      {/* 9. PRODUCT CATALOG / COLLECTION CTA */}
-      <section className="py-16 md:py-20 bg-brand-offwhite border-t border-brand-navy/10">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <img loading="lazy" decoding="async"
-              src="/wholesale-product-collection.jpg"
-              alt="JUTORIA natural-fiber placemats and woven baskets styled together"
-              className="w-full h-64 md:h-80 lg:h-96 object-cover rounded-[2px] shadow-premium order-2 lg:order-1"
-            />
-            <div className="text-center lg:text-left order-1 lg:order-2">
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-navy mb-4">
-                Looking for the Right Products for Your Business?
-              </h2>
-              <p className="font-sans text-brand-navy/65 font-light leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
-                Explore the collection and discover natural-fiber products suitable for retail and design-led spaces.
-              </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                <Link to="/products" className="inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
-                  Explore Products
-                </Link>
-                <a href="#wholesale-inquiry" className="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/25 text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory rounded-[2px]">
-                  Start A Wholesale Inquiry
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. FAQ */}
-      <section className="py-16 md:py-24 bg-white border-t border-brand-navy/10">
-        <div className="container mx-auto max-w-3xl px-4">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4 text-center">
-            Wholesale Questions
-          </h2>
-          <p className="font-sans text-brand-navy/60 text-center mb-12">Common questions from wholesale buyers.</p>
-          <div>
-            {FAQS.map((f) => (
-              <FaqItem key={f.q} q={f.q} a={f.a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 11. FINAL CTA */}
-      <section className="py-20 md:py-28 bg-brand-navy text-center">
-        <div className="container mx-auto max-w-2xl px-4">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory mb-5 leading-tight">
-            Build Your Next Collection with JUTORIA
-          </h2>
-          <p className="font-sans text-brand-ivory/70 font-light leading-relaxed mb-10">
-            Natural materials. Thoughtful design. A collection made for modern spaces.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a href="#wholesale-inquiry" className="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
-              Request A Wholesale Quote <ArrowRight size={16} />
-            </a>
-            <Link to="/products" className="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
-              Explore Products
-            </Link>
-          </div>
         </div>
       </section>
     </>
