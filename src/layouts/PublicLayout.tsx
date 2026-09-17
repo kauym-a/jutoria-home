@@ -336,7 +336,7 @@ export default function PublicLayout() {
         {/* Drawer Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-brand-navy/10">
           <img src="/logo.png" alt="JUTORIA" loading="lazy" className="h-9 w-auto object-contain" />
-          <button onClick={closeMenu} className="text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2">
+          <button onClick={closeMenu} aria-label="Close menu" className="text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2">
             <X size={26} strokeWidth={1.5} />
           </button>
         </div>

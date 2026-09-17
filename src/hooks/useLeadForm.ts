@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { submitLead, type LeadInput, type LeadSource } from '../services/firebase/leads';
+import type { LeadInput, LeadSource } from '../services/firebase/leads';
 
 // ============================================================
 // /wholesale ও /contact — দুটো ইনকোয়ারি ফর্মই এই hook ব্যবহার করে। প্রতিটা পেজ তার
@@ -38,6 +38,10 @@ export function useLeadForm(source: LeadSource) {
     }
     setSubmitting(true);
     try {
+      // Firestore/leads.ts dynamically imported শুধু সাবমিট করার সময় — এই ফর্ম
+      // (wholesale/contact) ইউজার কখনো সাবমিট না করলে Firestore write-path কোড
+      // (collection/addDoc ইত্যাদি) পেজের ইনিশিয়াল বান্ডলে ডাউনলোডই হয় না।
+      const { submitLead } = await import('../services/firebase/leads');
       await submitLead({ source, ...values });
       setSubmitted(true);
       setValues(EMPTY);

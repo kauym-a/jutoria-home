@@ -1,5 +1,6 @@
 // ============================================================
-// Build-time static prerendering for product pages.
+// Build-time static prerendering for product pages AND key static marketing routes
+// (/, /wholesale, /products, etc.).
 //
 // WHY THIS APPROACH (not react-snap / vite-plugin-prerender):
 // Both of those are effectively unmaintained (last published 2022) and pin very old
@@ -14,18 +15,21 @@
 // WHAT IT DOES:
 //   1. Serves the already-built `dist/` folder locally (same SPA-fallback behaviour as
 //      the site's public/.htaccess: unmatched paths fall back to index.html).
-//   2. For every product SKU in src/data/products.json, opens /product/<sku> in a real
-//      browser tab and waits for network to go idle (this covers the Firestore fetch
-//      useProducts() kicks off — see src/hooks/useProducts.ts).
-//   3. Captures the fully-rendered HTML (React mounted, react-helmet-async's <title> and
-//      <meta property="og:*"> tags baked into <head> for real) and writes it to
-//      dist/product/<sku>/index.html.
+//   2. For every product SKU in Firestore, opens /product/<sku> in a real browser tab
+//      and waits for it to fully render (see prerenderRoute) — covers the Firestore
+//      fetch useProducts() kicks off (see src/hooks/useProducts.ts).
+//   3. For every route in STATIC_ROUTES (below) — the marketing/info pages that matter
+//      most for Core Web Vitals (LCP/FCP), since without this they ship as an empty
+//      `<div id="root">` shell that waits for JS to download+execute+hydrate before any
+//      content paints — does the same, writing dist/<route>/index.html (or dist/index.html
+//      directly for '/').
+//   4. Captures the fully-rendered HTML (React mounted, react-helmet-async's <title> and
+//      <meta property="og:*"> tags baked into <head> for real) and writes it to disk.
 //
 // Real end users still get the normal client-rendered SPA (main.tsx calls
 // createRoot(...).render(...), which simply re-renders over this prerendered markup —
-// no hydration mismatch risk). This is purely so crawlers that don't execute JS
-// (Facebook's Sharing Debugger, most other social-preview bots) see correct per-product
-// og:title / og:image without running any JavaScript at all.
+// no hydration mismatch risk). This means crawlers AND the initial paint for real visitors
+// now get real content (hero image, text, og:tags) without waiting on any JavaScript.
 // ============================================================
 
 import fs from 'node:fs';
@@ -139,6 +143,29 @@ async function loadProductRoutes() {
 
 const DEFAULT_TITLE = 'JUTORIA | Premium Eco-Friendly Handmade Home Décor';
 
+// স্ট্যাটিক মার্কেটিং রুট — এগুলোর কনটেন্ট বিল্ড-টাইমে ফিক্সড (Firestore-নির্ভর প্রোডাক্ট
+// ডেটার মতো ইউজার-জেনারেটেড নয়), তাই Firestore থেকে লিস্ট আনার দরকার নেই, হার্ডকোড করাই
+// যথেষ্ট। '/' রুটটা dist/index.html-কেই সরাসরি ওভাররাইট করে (Apache-এ "/" রিকোয়েস্ট
+// DirectoryIndex দিয়ে ওই ফাইলেই রিজলভ হয়) — তাই সরাসরি ডোমেইন রুট ভিজিট করলেই এখন থেকে
+// খালি loading shell-এর বদলে আসল Home কনটেন্ট (hero, ইত্যাদি) view-source-এই দেখা যাবে।
+// GA PageSpeed রিপোর্টে সবচেয়ে বেশি ফ্ল্যাগ হওয়া /wholesale অগ্রাধিকারে প্রথমে।
+const STATIC_ROUTES = [
+  { route: '/wholesale', outFile: 'wholesale/index.html' },
+  { route: '/', outFile: 'index.html' },
+  { route: '/products', outFile: 'products/index.html' },
+  { route: '/categories', outFile: 'categories/index.html' },
+  { route: '/materials', outFile: 'materials/index.html' },
+  { route: '/our-story', outFile: 'our-story/index.html' },
+  { route: '/company-profile', outFile: 'company-profile/index.html' },
+  { route: '/people', outFile: 'people/index.html' },
+  { route: '/corporate-information', outFile: 'corporate-information/index.html' },
+  { route: '/clients-markets', outFile: 'clients-markets/index.html' },
+  { route: '/amazon-usa', outFile: 'amazon-usa/index.html' },
+  { route: '/jutoria-ai', outFile: 'jutoria-ai/index.html' },
+  { route: '/sustainability', outFile: 'sustainability/index.html' },
+  { route: '/contact', outFile: 'contact/index.html' },
+];
+
 async function prerenderRoute(browser, baseUrl, route, debug = false) {
   const page = await browser.newPage();
   if (debug) {
@@ -196,6 +223,10 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
       dedupe('meta[property^="og:"]', 'property');
       dedupe('meta[name^="twitter:"]', 'name');
       dedupe('link[rel="canonical"]', 'rel');
+      // Helmet মাঝেমধ্যে rel="preload" লিংকও (যেমন Wholesale.tsx-এর hero-image preload)
+      // ডাবল রেন্ডার করে ফেলে — href অনুযায়ী dedupe করা হচ্ছে যাতে prerendered HTML-এ
+      // একই preload দুইবার না থাকে।
+      dedupe('link[rel="preload"]', 'href');
 
       // <title>-এর কোনো attribute-key নেই dedupe করার জন্য — react-helmet-async DOM-এ
       // নতুন <title> বসায় প্রথম চাইল্ড হিসেবে (তাই document.title getter এটাই ঠিকভাবে
@@ -211,6 +242,7 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
       title: document.title,
       ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || null,
       ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || null,
+      rootChildren: document.getElementById('root')?.children.length || 0,
     }));
 
     const html = await page.content();
@@ -264,17 +296,45 @@ async function main() {
         console.error(`✗ ${sku} — prerender ব্যর্থ:`, err.message);
       }
     }
+
+    // ============================================================
+    // STATIC MARKETING ROUTES — Google PageSpeed Insights রিপোর্টে /wholesale-এর LCP
+    // 8.8s/FCP 4.7s-এর মূল কারণ ছিল এটাই: এই রুটগুলো কখনো prerender হতো না, তাই সার্ভার
+    // একটা খালি <div id="root">-সহ index.html পাঠাতো, ব্রাউজারকে JS ডাউনলোড+এক্সিকিউট+
+    // React মাউন্ট হওয়া পর্যন্ত অপেক্ষা করতে হতো hero কনটেন্ট পেইন্ট হওয়ার আগে। এখন
+    // প্রোডাক্ট পেজের মতোই এগুলোও পুরোপুরি রেন্ডার হওয়া HTML হিসেবে সার্ভ হবে।
+    console.log(`[prerender] ${STATIC_ROUTES.length}টা স্ট্যাটিক মার্কেটিং রুট prerender করা হবে...`);
+    for (const { route, outFile } of STATIC_ROUTES) {
+      try {
+        const { html, meta } = await prerenderRoute(browser, baseUrl, route, debug);
+        const outPath = path.join(DIST_DIR, outFile);
+        fs.mkdirSync(path.dirname(outPath), { recursive: true });
+        fs.writeFileSync(outPath, html, 'utf8');
+
+        // নোট: title !== DEFAULT_TITLE চেক এখানে করা হয় না — Home ('/') পেজের নিজস্ব
+        // সঠিক title-ই ঘটনাক্রমে index.html-এর generic default title-এর সাথে হুবহু
+        // মেলে (দুটোই ইচ্ছাকৃতভাবে একই), তাই ওই চেক '/' রুটের জন্য false failure দিত।
+        // React আসলেই মাউন্ট হয়ে কনটেন্ট রেন্ডার করেছে কিনা সেটাই এখানে আসল প্রশ্ন।
+        const contentOk = Boolean(meta.title) && meta.rootChildren > 0;
+        console.log(`${contentOk ? '✓' : '⚠'} ${route} — title: "${meta.title}" | root children: ${meta.rootChildren}`);
+        if (contentOk) ok += 1;
+        else failed += 1;
+      } catch (err) {
+        failed += 1;
+        console.error(`✗ ${route} — prerender ব্যর্থ:`, err.message);
+      }
+    }
   } finally {
     await browser.close();
     server.close();
   }
 
-  console.log(`[prerender] সম্পন্ন — ${ok} সফল, ${failed} সমস্যাযুক্ত (মোট ${routes.length})।`);
-  // রুট লিস্ট এখন Firestore থেকেই আসে (সব real, active প্রোডাক্ট) — তাই প্রতিটারই সফল
-  // হওয়া উচিত। একটাও ব্যর্থ হলে বিল্ড আটকে দেওয়া হচ্ছে, যাতে ভাঙা og ট্যাগসহ কোনো
-  // প্রোডাক্ট পেজ চুপচাপ ডিপ্লয় হয়ে না যায়।
+  const totalRoutes = routes.length + STATIC_ROUTES.length;
+  console.log(`[prerender] সম্পন্ন — ${ok} সফল, ${failed} সমস্যাযুক্ত (মোট ${totalRoutes})।`);
+  // একটাও রুট ব্যর্থ হলে বিল্ড আটকে দেওয়া হচ্ছে, যাতে ভাঙা/অসম্পূর্ণ prerender-সহ কোনো
+  // পেজ চুপচাপ ডিপ্লয় হয়ে না যায়।
   if (failed > 0) {
-    throw new Error(`${failed}টা প্রোডাক্ট পেজ সঠিকভাবে prerender হয়নি — বিল্ড ব্যর্থ ধরা হচ্ছে।`);
+    throw new Error(`${failed}টা পেজ সঠিকভাবে prerender হয়নি — বিল্ড ব্যর্থ ধরা হচ্ছে।`);
   }
 }
 

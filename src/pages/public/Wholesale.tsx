@@ -72,6 +72,8 @@ const FEATURED_PRODUCTS = [
     name: 'Jute Placemats',
     variant: 'Natural / Round / 14"',
     image: '/product-master/jute-cotton-natural/jute-cotton-natural-single.webp',
+    width: 1000,
+    height: 1000,
     link: '/product/JTR-JPM-NAT-RND-14-S6',
     hasPhoto: true,
   },
@@ -80,6 +82,8 @@ const FEATURED_PRODUCTS = [
     name: 'Seagrass Placemats',
     variant: 'Natural / Round / 14"',
     image: '/product-master/sea-grass-natura/sea-grass-natural.webp',
+    width: 1000,
+    height: 1000,
     link: '/product/JTR-SPM-NAT-RND-14-S6',
     hasPhoto: true,
   },
@@ -88,6 +92,8 @@ const FEATURED_PRODUCTS = [
     name: 'Jute Planter Baskets',
     variant: 'Natural / Set of 3',
     image: '/jute-basket-product.webp',
+    width: 1000,
+    height: 1250,
     link: '/categories/planter-baskets',
     hasPhoto: false,
   },
@@ -96,6 +102,8 @@ const FEATURED_PRODUCTS = [
     name: 'Jute Area Rugs',
     variant: 'Round / 90cm',
     image: null,
+    width: null,
+    height: null,
     link: '/categories/floor-mats-rugs',
     hasPhoto: false,
   },
@@ -171,6 +179,11 @@ export default function Wholesale() {
           content="JUTORIA supplies natural-fiber home décor — jute and seagrass placemats, baskets and floor décor — to retailers, importers, designers and hospitality businesses."
         />
         <link rel="canonical" href={absoluteUrl('/wholesale')} />
+        {/* LCP ইমেজ (hero) — PageSpeed Insights রিপোর্টে LCP 8.8s ফ্ল্যাগ হয়েছিল।
+            preload দিলে ব্রাউজার JS পার্স/এক্সিকিউট হওয়ার জন্য অপেক্ষা না করেই এই
+            ইমেজের ডাউনলোড শুরু করে দেয় (HTML parser নিজেই <head> স্ক্যান করার সময় এটা
+            ধরে ফেলে) — নিচের <img fetchPriority="high"> এর সাথে মিলিয়ে ব্যবহার করা হয়েছে। */}
+        <link rel="preload" as="image" href="/wholesale-hero-natural-home-decor.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
 
       {/* 1. HERO */}
@@ -202,6 +215,9 @@ export default function Wholesale() {
               src="/wholesale-hero-natural-home-decor.webp"
               alt="Natural-fiber woven placemats, baskets and décor styled in a warm, modern interior"
               className="absolute inset-0 w-full h-full object-cover"
+              width={1774}
+              height={887}
+              fetchPriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/40 via-transparent to-transparent lg:hidden" />
           </div>
@@ -222,6 +238,8 @@ export default function Wholesale() {
                 src="/wholesale-businesses-collage.webp"
                 alt="JUTORIA natural-fiber pieces in retail display, hospitality and design settings"
                 className="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
+                width={1000}
+                height={667}
               />
             </div>
             <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -231,7 +249,7 @@ export default function Wholesale() {
                     <Icon size={20} strokeWidth={1.5} />
                   </div>
                   <h3 className="font-serif font-bold text-brand-navy mb-1.5">{name}</h3>
-                  <p className="font-sans text-xs text-brand-navy/60 leading-relaxed">{desc}</p>
+                  <p className="font-sans text-xs text-brand-navy/70 leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
@@ -288,7 +306,7 @@ export default function Wholesale() {
                   style={!p.image ? { background: 'linear-gradient(160deg, #1a2e29 0%, #0f1a17 100%)' } : undefined}
                 >
                   {p.image ? (
-                    <img loading="lazy" decoding="async" src={p.image} alt={p.name} className="w-full h-full object-contain p-4" />
+                    <img loading="lazy" decoding="async" src={p.image} alt={p.name} width={p.width ?? undefined} height={p.height ?? undefined} className="w-full h-full object-contain p-4" />
                   ) : (
                     <span className="font-sans text-[11px] tracking-[0.2em] uppercase text-brand-ivory/50 px-6 text-center">
                       Photography coming soon
@@ -297,7 +315,7 @@ export default function Wholesale() {
                 </div>
                 <div className="p-5 flex flex-col flex-grow">
                   <h3 className="font-serif font-bold text-brand-navy mb-1">{p.name}</h3>
-                  <p className="font-sans text-xs text-brand-navy/55 mb-4">{p.variant}</p>
+                  <p className="font-sans text-xs text-brand-navy/70 mb-4">{p.variant}</p>
                   <div className="mt-auto flex flex-col gap-2">
                     <Link to={p.link} className="text-center text-[11px] font-sans font-bold tracking-[0.15em] uppercase border border-brand-navy/20 text-brand-navy px-4 py-2.5 hover:border-brand-navy transition-colors rounded-[2px]">
                       {p.hasPhoto ? 'View Product' : 'View Category'}
@@ -344,11 +362,15 @@ export default function Wholesale() {
                 src="/jutoria-artisans-weaving.webp"
                 alt="Artisan hand-weaving a natural fiber product"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px]"
+                width={1000}
+                height={558}
               />
               <img loading="lazy" decoding="async"
                 src="/jutoria-story-natural-materials.webp"
                 alt="Natural fiber raw materials"
                 className="w-full h-64 md:h-80 object-cover rounded-[2px] mt-8"
+                width={1000}
+                height={746}
               />
             </div>
           </div>
@@ -386,7 +408,7 @@ export default function Wholesale() {
               <div key={step.num} className="relative text-center">
                 <span className="block font-serif text-5xl font-bold text-brand-gold/30 mb-4">{step.num}</span>
                 <h3 className="font-serif font-bold text-brand-navy text-lg mb-2">{step.title}</h3>
-                <p className="font-sans text-sm text-brand-navy/60 leading-relaxed max-w-[220px] mx-auto">{step.desc}</p>
+                <p className="font-sans text-sm text-brand-navy/70 leading-relaxed max-w-[220px] mx-auto">{step.desc}</p>
                 {i < PROCESS_STEPS.length - 1 && (
                   <ArrowRight size={18} className="hidden lg:block absolute top-6 -right-5 text-brand-navy/20" />
                 )}
@@ -403,7 +425,7 @@ export default function Wholesale() {
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4 text-center">
             Wholesale Questions
           </h2>
-          <p className="font-sans text-brand-navy/60 text-center mb-12">Common questions from wholesale buyers.</p>
+          <p className="font-sans text-brand-navy/70 text-center mb-12">Common questions from wholesale buyers.</p>
           <div>
             {FAQS.map((f) => (
               <FaqItem key={f.q} q={f.q} a={f.a} />
@@ -429,7 +451,7 @@ export default function Wholesale() {
             <div className="bg-white p-8 md:p-12 rounded-[2px] text-center">
               <CheckCircle2 size={40} className="mx-auto text-brand-gold mb-4" strokeWidth={1.5} />
               <h3 className="text-xl font-serif font-bold text-brand-navy mb-2">Thank you — your inquiry is in.</h3>
-              <p className="font-sans text-sm text-brand-navy/60 max-w-md mx-auto">
+              <p className="font-sans text-sm text-brand-navy/70 max-w-md mx-auto">
                 Our team will review your requirements and get back to you with the appropriate next steps.
               </p>
             </div>
@@ -437,30 +459,30 @@ export default function Wholesale() {
             <form className="bg-white p-8 md:p-10 rounded-[2px] space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Your Name *</label>
-                  <input type="text" required value={values.name} onChange={(e) => setField('name', e.target.value)} placeholder="Jane Doe" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                  <label htmlFor="wholesale-name" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Your Name *</label>
+                  <input id="wholesale-name" type="text" required value={values.name} onChange={(e) => setField('name', e.target.value)} placeholder="Jane Doe" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
                 </div>
                 <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Company Name</label>
-                  <input type="text" value={values.company} onChange={(e) => setField('company', e.target.value)} placeholder="Company Ltd." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Email *</label>
-                  <input type="email" required value={values.email} onChange={(e) => setField('email', e.target.value)} placeholder="jane@company.com" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
-                </div>
-                <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Country *</label>
-                  <input type="text" required value={values.country} onChange={(e) => setField('country', e.target.value)} placeholder="United Kingdom" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                  <label htmlFor="wholesale-company" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Company Name</label>
+                  <input id="wholesale-company" type="text" value={values.company} onChange={(e) => setField('company', e.target.value)} placeholder="Company Ltd." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Business Type *</label>
-                  <select required value={values.type} onChange={(e) => setField('type', e.target.value)} className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm text-brand-navy">
+                  <label htmlFor="wholesale-email" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Business Email *</label>
+                  <input id="wholesale-email" type="email" required value={values.email} onChange={(e) => setField('email', e.target.value)} placeholder="jane@company.com" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
+                <div>
+                  <label htmlFor="wholesale-country" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Country *</label>
+                  <input id="wholesale-country" type="text" required value={values.country} onChange={(e) => setField('country', e.target.value)} placeholder="United Kingdom" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="wholesale-type" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Business Type *</label>
+                  <select id="wholesale-type" required value={values.type} onChange={(e) => setField('type', e.target.value)} className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm text-brand-navy">
                     <option value="" disabled>Select an option</option>
                     {BUSINESS_TYPES.map((t) => (
                       <option key={t} value={t}>{t}</option>
@@ -468,19 +490,19 @@ export default function Wholesale() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Estimated Quantity</label>
-                  <input type="text" value={values.quantity} onChange={(e) => setField('quantity', e.target.value)} placeholder="e.g. 500 units" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                  <label htmlFor="wholesale-quantity" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Estimated Quantity</label>
+                  <input id="wholesale-quantity" type="text" value={values.quantity} onChange={(e) => setField('quantity', e.target.value)} placeholder="e.g. 500 units" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
                 </div>
               </div>
 
               <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Product Interest</label>
-                <input type="text" value={values.productInterest} onChange={(e) => setField('productInterest', e.target.value)} placeholder="e.g. Jute placemats, planter baskets" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
+                <label htmlFor="wholesale-product-interest" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Product Interest</label>
+                <input id="wholesale-product-interest" type="text" value={values.productInterest} onChange={(e) => setField('productInterest', e.target.value)} placeholder="e.g. Jute placemats, planter baskets" className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm" />
               </div>
 
               <div>
-                <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Message</label>
-                <textarea rows={4} value={values.message} onChange={(e) => setField('message', e.target.value)} placeholder="Tell us more about what you're looking for..." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm resize-none" />
+                <label htmlFor="wholesale-message" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Message</label>
+                <textarea id="wholesale-message" rows={4} value={values.message} onChange={(e) => setField('message', e.target.value)} placeholder="Tell us more about what you're looking for..." className="w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm resize-none" />
               </div>
 
               <button type="submit" disabled={submitting} className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-10 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px] disabled:opacity-60">
