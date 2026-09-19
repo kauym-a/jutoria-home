@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from './config';
+import { getFirebaseStorage } from './config';
 import { resizeAndConvertToWebP } from '../../lib/imageProcessing';
 import { fetchAllProducts, upsertProduct } from './products';
 
@@ -32,6 +32,7 @@ export async function uploadProductImage(sku: string, file: File): Promise<strin
   const safeSku = sku.trim() || 'unfiled';
   const safeName = processed.name.replace(/[^a-zA-Z0-9.\-_]+/g, '-');
   const path = `product-images/${safeSku}/${Date.now()}-${safeName}`;
+  const storage = await getFirebaseStorage();
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, processed);
   return getDownloadURL(snapshot.ref);
@@ -53,6 +54,7 @@ export async function optimizeExistingProductImages(
   onProgress?: (done: number, total: number, sku: string) => void,
 ): Promise<{ productsUpdated: number; imagesConverted: number; imagesSkipped: number; bytesBefore: number; bytesAfter: number }> {
   const products = await fetchAllProducts();
+  const storage = await getFirebaseStorage();
   let productsUpdated = 0;
   let imagesConverted = 0;
   let imagesSkipped = 0;

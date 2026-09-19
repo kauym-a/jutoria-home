@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from './config';
+import { getFirebaseStorage } from './config';
 import { resizeAndConvertToWebP } from '../../lib/imageProcessing';
 
 // ============================================================
@@ -21,6 +21,7 @@ export async function uploadCategoryImage(slug: string, file: File): Promise<str
   const safeSlug = slug.trim() || 'unfiled';
   const safeName = processed.name.replace(/[^a-zA-Z0-9.\-_]+/g, '-');
   const path = `category-images/${safeSlug}/${Date.now()}-${safeName}`;
+  const storage = await getFirebaseStorage();
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, processed);
   return getDownloadURL(snapshot.ref);

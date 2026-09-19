@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
 
 // .env.local ফাইলে রাখা গোপন চাবিগুলো এখানে কল করা হয়েছে
 const firebaseConfig = {
@@ -36,9 +35,20 @@ export function getFirebaseAuth() {
   return authPromise;
 }
 
-// Initialize Firebase Storage (প্রোডাক্ট ইমেজ আপলোড করার জন্য — Admin Panel থেকে
-// সরাসরি আপলোড, যাতে Hostinger-এ ম্যানুয়ালি ফাইল রেখে সেই একই নাম হুবহু টাইপ করে
-// আবার Admin Panel-এ বসাতে না হয়। এতে টাইপো-জনিত ভুল (যেমন 501 বনাম 502) বন্ধ হয়ে যায়।
-export const storage = getStorage(app);
+// Firebase Storage-ও (Auth-এর মতোই) ইচ্ছাকৃতভাবে eagerly initialize করা হয় না।
+// আগে এখানে সরাসরি `export const storage = getStorage(app)` ছিল — module scope-এই
+// কল হতো, যেটার মানে config.ts (public পেজেও দরকার হয় শুধু `db`-এর জন্য) ইম্পোর্ট
+// করা মাত্রই Storage SDK-এর পুরো কোড bundle-এ ঢুকে যেত, productsAdmin.ts/
+// categoriesAdmin.ts-কে আলাদা ফাইলে সরানোর পরও (দেখুন সেই ফাইলগুলোর কমেন্ট) —
+// কারণ ref()/uploadBytes() কারা ইম্পোর্ট করছে সেটা আসল সমস্যা ছিল না, getStorage(app)
+// eagerly কল হওয়াটাই ছিল। এখন এটাও lazy — Admin Panel-এর আপলোড ফাংশনগুলোই একমাত্র
+// কলার, যেগুলো এমনিতেই lazy-loaded admin চাংকে থাকে।
+let storagePromise: Promise<import('firebase/storage').FirebaseStorage> | null = null;
+export function getFirebaseStorage() {
+  if (!storagePromise) {
+    storagePromise = import('firebase/storage').then(({ getStorage }) => getStorage(app));
+  }
+  return storagePromise;
+}
 
 export default app;
