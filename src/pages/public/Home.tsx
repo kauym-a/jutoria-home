@@ -55,13 +55,21 @@ const featuredProducts = [
   }
 ];
 
+// এই লোগোগুলো ডিসপ্লে হয় মাত্র ৩৬-৬০px উচ্চতায় (নিচের h-9/sm:h-11/lg:h-[60px] দেখুন),
+// অথচ আসল ফাইলগুলো (Banglacraft-Logo.png, BSCI_LOGO.png, env-study.webp, epb.png,
+// JDPC.png) ছিল কয়েকশ px উঁচু, কিছু PNG ফরম্যাটে — ৩০০KB+ মিলিয়ে হিরো সেকশনের ঠিক
+// নিচে, mobile PageSpeed-এ হিরো পোস্টার ছবির সাথে ব্যান্ডউইথ কম্পিট করছিল (loading="lazy"
+// থাকা সত্ত্বেও — থ্রটলড কানেকশনে Chrome-এর lazy-load lookahead distance বেড়ে যায়,
+// তাই fold-এর ঠিক নিচের ছবিও early fetch হয়)। ২০০px উচ্চতায় (retina-safe) resize + WebP
+// এ কনভার্ট করা হয়েছে — ৭৮-৮৯% সাইজ কমেছে (দেখুন কমিট মেসেজ)। Expo/Phytosanitary
+// আগে থেকেই ছোট ছিল, রি-এনকোড করলে লাভ হয়নি বলে অপরিবর্তিত রাখা হলো।
 const certificationLogos = [
- { name: 'Banglacraft', src: '/Banglacraft-Logo.png' },
- { name: 'BSCI', src: '/BSCI_LOGO.png' },
- { name: 'ENV Study', src: '/env-study.webp' },
- { name: 'EPB', src: '/epb.png' },
+ { name: 'Banglacraft', src: '/Banglacraft-Logo-sm.webp' },
+ { name: 'BSCI', src: '/BSCI_LOGO-sm.webp' },
+ { name: 'ENV Study', src: '/env-study-sm.webp' },
+ { name: 'EPB', src: '/epb-sm.webp' },
  { name: 'Expo', src: '/EXPO%20LOGO.png' },
- { name: 'JDPC', src: '/JDPC.png' },
+ { name: 'JDPC', src: '/JDPC-sm.webp' },
  { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate-logo.webp' }
 ];
 
@@ -219,8 +227,12 @@ export default function Home() {
             থ্রটলড মোবাইল কানেকশনে এটাই ৬+ সেকেন্ড LCP-র মূল কারণ ছিল। এখন একটা অপ্টিমাইজড
             static ছবি poster হিসেবে preload+fetchPriority high দিয়ে দেওয়া হলো (অন্যান্য পেজের
             হিরো ছবির প্যাটার্নই — দেখুন OurStory.tsx/AmazonUSA.tsx) — এটাই তাৎক্ষণিক LCP
-            candidate হয়, ভিডিও এর ওপরে সিমলেসলি ওভারলে হয়ে যায় যখন যথেষ্ট বাফার হয়ে যায়। */}
-        <link rel="preload" as="image" href="/jutoria-artisans-hero.webp" fetchPriority="high" type="image/webp" />
+            candidate হয়, ভিডিও এর ওপরে সিমলেসলি ওভারলে হয়ে যায় যখন যথেষ্ট বাফার হয়ে যায়।
+            jutoria-artisans-hero-poster.webp হলো jutoria-artisans-hero.webp (PeopleArtisans.tsx-এও
+            ব্যবহৃত, full-res দরকার সেখানে) থেকে আলাদা করে বানানো ৯০০px-wide রিসাইজড কপি — মোবাইল
+            viewport-এর (~412px, hero ~50vh) জন্য আসল ১৬৭২px ফাইলটা বহুগুণ বেশি রেজোলিউশনের ছিল,
+            LCP-গেটিং রিসোর্স হওয়া সত্ত্বেও ১৮৫KB ডাউনলোড করাতো — রিসাইজে ৬৫% (~৬৪KB) কমেছে। */}
+        <link rel="preload" as="image" href="/jutoria-artisans-hero-poster.webp" fetchPriority="high" type="image/webp" />
 
         {/* Open Graph — og:url/og:image must be absolute, social crawlers (WhatsApp/LinkedIn/Facebook) don't resolve relative paths */}
         <meta property="og:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
@@ -251,7 +263,7 @@ export default function Home() {
               ফ্ল্যাগ হয়েছিল) — "metadata" শুধু duration/dimensions আনে, autoplay তখনো
               কাজ করে (browser নিজে থেকেই playback শুরুর জন্য যথেষ্ট বাফার করে নেয়),
               কিন্তু পুরো ফাইলটা প্রথম পেইন্টের আগেই ডাউনলোড করার জন্য অপেক্ষা করায় না। */}
-          <video autoPlay loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero.webp" className="w-full h-full object-cover">
+          <video autoPlay loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" className="w-full h-full object-cover">
             <source src="/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
