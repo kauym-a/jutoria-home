@@ -433,13 +433,17 @@ export default function Home() {
                   className="relative overflow-hidden rounded-[2px] bg-brand-navy/5"
                   style={{ transform: `translateY(${prefersReducedMotion ? 0 : parallaxOffset}px)`, transition: 'transform 0.1s ease-out' }}
                 >
-                  {/* মোবাইল/ট্যাবলেট ভার্সন (portrait crop) */}
+                  {/* মোবাইল/ট্যাবলেট ভার্সন (portrait crop) — এখানে "-sm" ভ্যারিয়েন্ট, এই
+                      লেআউটে (single-column, ~380-400px display) ১০০০px আসল ফাইল ~2.5x
+                      oversized ছিল। ডেস্কটপ ভার্সন (নিচে) অপরিবর্তিত — সেটা lg:w-1/2-এ
+                      (~৬০০-৬২০px) দেখানো হয়, retina-তে বরং একটু ছোটই (undersized) বলে
+                      resize করা হয়নি। */}
                   <img
-                    src="/jutoria-artisans-craftsmanship-mobile.webp"
+                    src="/jutoria-artisans-craftsmanship-mobile-sm.webp"
                     alt="JUTORIA artisans hand-weaving natural fiber baskets in Bangladesh"
                     className="block lg:hidden w-full h-auto aspect-[1161/1355] object-cover origin-center"
-                    width={1000}
-                    height={1167}
+                    width={800}
+                    height={934}
                     decoding="async"
                     loading="lazy"
                     style={{ transform: `scale(${isArtisanVisible && !prefersReducedMotion ? 1.04 : 1.00})`, transition: prefersReducedMotion ? 'none' : 'transform 10s ease-out' }}
@@ -744,10 +748,12 @@ export default function Home() {
             </a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+            {/* "-sm" ভ্যারিয়েন্ট — এই ৩-কলাম গ্রিডে (max-w-6xl, aspect-square) সব breakpoint-এই
+                display width ~৩৬০-৪০০px-এর মধ্যে থাকে, আসল ১০০০x১০০০ ফাইল ~1.25x oversized। */}
             {[
-              { src: '/jutoria-instagram-natural-living.webp', alt: 'JUTORIA natural fiber home décor styled in a living room' },
-              { src: '/jutoria-instagram-dining-table.webp', alt: 'JUTORIA woven placemats and baskets on a dining table' },
-              { src: '/jutoria-instagram-modern-home.webp', alt: 'JUTORIA natural fiber basket in a modern home' },
+              { src: '/jutoria-instagram-natural-living-sm.webp', alt: 'JUTORIA natural fiber home décor styled in a living room' },
+              { src: '/jutoria-instagram-dining-table-sm.webp', alt: 'JUTORIA woven placemats and baskets on a dining table' },
+              { src: '/jutoria-instagram-modern-home-sm.webp', alt: 'JUTORIA natural fiber basket in a modern home' },
             ].map((img) => (
               <a
                 key={img.src}
