@@ -361,13 +361,26 @@ export default function Home() {
                   to={`/materials/${material.slug}`}
                   key={material.slug}
                   className={`group relative p-8 md:p-12 border-2 transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[300px] md:min-h-[350px] shadow-premium hover:shadow-premium-hover ${isFeatured ? 'md:col-span-2 lg:col-span-2 border-brand-navy/10 hover:border-brand-gold' : 'border-brand-navy/10 hover:border-brand-gold'}`}
-                  style={{
-                    backgroundImage: `linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%), url(${material.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                  }}
                 >
+                  {/* আগে এই কার্ডের ছবি inline style-এর CSS background-image হিসেবে বসানো
+                      হতো — সেভাবে <img loading="lazy"> এর মতো native lazy-loading সম্ভব
+                      না, ব্রাউজার viewport-এ আসুক বা না আসুক সাথে সাথেই ফেচ করে ফেলে।
+                      ৭টা ছবিই (প্রতিটা ৩০০-৪০০KB) হোমপেজ লোড হওয়া মাত্র, এই সেকশন fold-এর
+                      অনেক নিচে থাকা সত্ত্বেও, হিরো ভিডিও/ছবির সাথে ব্যান্ডউইথ কম্পিট করতো
+                      — mobile PageSpeed-এ LCP/Speed Index খারাপ করার একটা বড় কারণ ছিল।
+                      এখন আসল <img loading="lazy"> (gradient overlay-র নিচে absolute
+                      positioned), যাতে ব্রাউজার ফোল্ডের কাছে না আসা পর্যন্ত এটা ফেচ না করে। */}
+                  <img
+                    src={material.image}
+                    alt={material.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{ backgroundImage: 'linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%)' }}
+                  />
                   <span className="absolute top-6 right-8 font-serif text-6xl md:text-7xl font-bold transition-colors duration-500 text-brand-ivory/25 group-hover:text-brand-gold/60">
                     {displayNumber(material.order)}
                   </span>
