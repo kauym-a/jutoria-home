@@ -6,9 +6,9 @@ import toast from 'react-hot-toast';
 import {
   fetchCategory,
   upsertCategory,
-  uploadCategoryImage,
   type Category,
 } from '../../services/firebase/categories';
+import { uploadCategoryImage } from '../../services/firebase/categoriesAdmin';
 
 const EMPTY_CATEGORY: Category = {
   slug: '',
