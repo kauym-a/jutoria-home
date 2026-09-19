@@ -39,12 +39,23 @@ export default function Materials() {
                 to={`/materials/${material.slug}`}
                 key={material.slug}
                 className="group relative p-8 md:p-10 border-2 border-brand-navy/10 hover:border-brand-gold transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[320px] shadow-premium hover:shadow-premium-hover"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%), url(${material.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
               >
+                {/* Home.tsx-এর "Our Materials" গ্রিডের মতোই একই বাগ + একই ফিক্স — CSS
+                    background-image native lazy-loading সাপোর্ট করে না, তাই আগে সবগুলো
+                    ছবি (৩০০-৪০০KB প্রতিটা) পেজ লোড হওয়া মাত্র ফেচ হতো, নিচের সারিগুলো
+                    viewport-এ না এলেও। এখন <img loading="lazy"> (gradient overlay-র
+                    নিচে absolute positioned)। */}
+                <img
+                  src={material.image}
+                  alt={material.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundImage: 'linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%)' }}
+                />
                 <span className="absolute top-6 right-8 font-serif text-6xl font-bold text-brand-ivory/25 group-hover:text-brand-gold/60 transition-colors duration-500">
                   {displayNumber(material.order)}
                 </span>
