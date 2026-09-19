@@ -7,10 +7,10 @@ import {
   fetchAllProducts,
   deleteProduct,
   seedProductsFromStaticData,
-  optimizeExistingProductImages,
   upsertProduct,
   type Product,
 } from '../../services/firebase/products';
+import { optimizeExistingProductImages } from '../../services/firebase/productsAdmin';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);

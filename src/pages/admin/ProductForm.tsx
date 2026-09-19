@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { fetchProduct, fetchAllProducts, upsertProduct, uploadProductImage, type Product, type ProductImage } from '../../services/firebase/products';
+import { fetchProduct, fetchAllProducts, upsertProduct, type Product, type ProductImage } from '../../services/firebase/products';
+import { uploadProductImage } from '../../services/firebase/productsAdmin';
 import { useCategories } from '../../hooks/useCategories';
 
 const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
