@@ -1,15 +1,4 @@
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { db } from './config';
+import { getFirestoreCtx } from './config';
 
 // ============================================================
 // পাবলিক সাইটের দুটো ফর্ম — /wholesale-এর "Let's Discuss Your Collection" এবং
@@ -50,6 +39,7 @@ export type Lead = LeadInput & {
 
 /** নতুন lead জমা দেয় (পাবলিক — লগইন লাগে না)। */
 export async function submitLead(input: LeadInput): Promise<void> {
+  const { db, collection, addDoc, serverTimestamp } = await getFirestoreCtx();
   // খালি/undefined ফিল্ড বাদ দিয়ে পরিষ্কার অবজেক্ট বানাই
   const clean: Record<string, unknown> = { status: 'new', createdAt: serverTimestamp() };
   for (const [k, v] of Object.entries(input)) {
@@ -65,6 +55,7 @@ export async function submitLead(input: LeadInput): Promise<void> {
 
 /** সব lead আনে (admin — নতুন আগে)। */
 export async function fetchAllLeads(): Promise<Lead[]> {
+  const { db, collection, query, orderBy, getDocs } = await getFirestoreCtx();
   const q = query(collection(db, LEADS_COLLECTION), orderBy('createdAt', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Lead, 'id'>) }));
@@ -72,10 +63,12 @@ export async function fetchAllLeads(): Promise<Lead[]> {
 
 /** একটা lead-এর স্ট্যাটাস বদলায় (admin)। */
 export async function updateLeadStatus(id: string, status: LeadStatus): Promise<void> {
+  const { db, doc, updateDoc } = await getFirestoreCtx();
   await updateDoc(doc(db, LEADS_COLLECTION, id), { status });
 }
 
 /** একটা lead মুছে ফেলে (admin)। */
 export async function deleteLead(id: string): Promise<void> {
+  const { db, doc, deleteDoc } = await getFirestoreCtx();
   await deleteDoc(doc(db, LEADS_COLLECTION, id));
 }

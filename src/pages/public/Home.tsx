@@ -214,6 +214,13 @@ export default function Home() {
         <title>JUTORIA | Premium Eco-Friendly Handmade Home Décor</title>
         <meta name="description" content="Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces." />
         <link rel="canonical" href={absoluteUrl('/')} />
+        {/* হিরো <video>-র কোনো poster ছিল না — LCP স্পেক অনুযায়ী poster-বিহীন video তখনই LCP
+            candidate হয় যখন প্রথম ফ্রেম পেইন্ট হয়, যার জন্য metadata নয়, আসল ভিডিও বাইট লাগে।
+            থ্রটলড মোবাইল কানেকশনে এটাই ৬+ সেকেন্ড LCP-র মূল কারণ ছিল। এখন একটা অপ্টিমাইজড
+            static ছবি poster হিসেবে preload+fetchPriority high দিয়ে দেওয়া হলো (অন্যান্য পেজের
+            হিরো ছবির প্যাটার্নই — দেখুন OurStory.tsx/AmazonUSA.tsx) — এটাই তাৎক্ষণিক LCP
+            candidate হয়, ভিডিও এর ওপরে সিমলেসলি ওভারলে হয়ে যায় যখন যথেষ্ট বাফার হয়ে যায়। */}
+        <link rel="preload" as="image" href="/jutoria-artisans-hero.webp" fetchPriority="high" type="image/webp" />
 
         {/* Open Graph — og:url/og:image must be absolute, social crawlers (WhatsApp/LinkedIn/Facebook) don't resolve relative paths */}
         <meta property="og:title" content="JUTORIA | Premium Eco-Friendly Handmade Home Décor" />
@@ -244,7 +251,7 @@ export default function Home() {
               ফ্ল্যাগ হয়েছিল) — "metadata" শুধু duration/dimensions আনে, autoplay তখনো
               কাজ করে (browser নিজে থেকেই playback শুরুর জন্য যথেষ্ট বাফার করে নেয়),
               কিন্তু পুরো ফাইলটা প্রথম পেইন্টের আগেই ডাউনলোড করার জন্য অপেক্ষা করায় না। */}
-          <video autoPlay loop muted playsInline preload="metadata" className="w-full h-full object-cover">
+          <video autoPlay loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero.webp" className="w-full h-full object-cover">
             <source src="/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>

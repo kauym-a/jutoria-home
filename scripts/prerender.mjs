@@ -240,6 +240,22 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
         el.setAttribute('media', 'print');
       });
 
+      // ⚠️ আরেকটা একই ধরনের বাগ: Firestore/Storage/Auth এখন lazy dynamic import() (দেখুন
+      // src/services/firebase/config.ts) — এই পেজ prerender করার সময় products/categories
+      // ফেচ হওয়ার কারণে dynamic import() সত্যিকারেই ট্রিগার হয়, আর Vite-এর রানটাইম
+      // preload হেল্পার তখন একটা নতুন <link rel="modulepreload"> DOM-এ ইনজেক্ট করে,
+      // href resolve হয় *এই prerender ব্রাউজার সেশনের* origin (http://127.0.0.1:PORT)
+      // দিয়ে — যেটা কখনোই আসল ভিজিটরের ব্রাউজারে কাজ করবে না (broken request)। শুধু URL
+      // ঠিক করে রাখাটাও ভুল হবে — তাহলে Firestore চাংক আবার প্রতিটা পেজ-লোডে eagerly,
+      // high-priority-তে preload হয়ে যাবে, ঠিক যেটা lazy-loading করে এড়ানো হয়েছিল।
+      // তাই এই প্রি-রেন্ডার-সেশন-নির্দিষ্ট ইনজেক্টেড ট্যাগগুলো সরিয়ে দেওয়া হচ্ছে — আসল
+      // ভিজিটরের ব্রাউজার প্রয়োজনমতো নিজেই এটা (সঠিক origin দিয়ে) ইনজেক্ট করবে dynamic
+      // import() চলার সময়, prerendered HTML-এ static থাকার দরকার নেই।
+      document.querySelectorAll('link[rel="modulepreload"]').forEach((el) => {
+        const href = el.getAttribute('href') || '';
+        if (href.startsWith(location.origin)) el.remove();
+      });
+
       // <title>-এর কোনো attribute-key নেই dedupe করার জন্য — react-helmet-async DOM-এ
       // নতুন <title> বসায় প্রথম চাইল্ড হিসেবে (তাই document.title getter এটাই ঠিকভাবে
       // ধরে), কিন্তু index.html-এর আসল static <title>-টা দ্বিতীয় হিসেবে থেকেই যায়।

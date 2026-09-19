@@ -1,15 +1,4 @@
-import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  query,
-  where,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { db } from './config';
+import { getFirestoreCtx } from './config';
 import staticProducts from '../../data/products.json';
 
 // ============================================================
@@ -48,12 +37,14 @@ export type Product = {
 
 /** সব প্রোডাক্ট আনে (admin-এর জন্য — active/inactive সব)। */
 export async function fetchAllProducts(): Promise<Product[]> {
+  const { db, collection, getDocs } = await getFirestoreCtx();
   const snap = await getDocs(collection(db, PRODUCTS_COLLECTION));
   return snap.docs.map((d) => d.data() as Product);
 }
 
 /** শুধু active প্রোডাক্ট আনে (পাবলিক সাইটের জন্য)। */
 export async function fetchActiveProducts(): Promise<Product[]> {
+  const { db, collection, query, where, getDocs } = await getFirestoreCtx();
   const q = query(collection(db, PRODUCTS_COLLECTION), where('active', '!=', false));
   const snap = await getDocs(q);
   return snap.docs.map((d) => d.data() as Product);
@@ -61,6 +52,7 @@ export async function fetchActiveProducts(): Promise<Product[]> {
 
 /** একটা নির্দিষ্ট SKU-র প্রোডাক্ট আনে। */
 export async function fetchProduct(sku: string): Promise<Product | null> {
+  const { db, doc, getDoc } = await getFirestoreCtx();
   const ref = doc(db, PRODUCTS_COLLECTION, sku);
   const snap = await getDoc(ref);
   return snap.exists() ? (snap.data() as Product) : null;
@@ -69,12 +61,14 @@ export async function fetchProduct(sku: string): Promise<Product | null> {
 /** নতুন প্রোডাক্ট তৈরি বা বিদ্যমান প্রোডাক্ট আপডেট করে (SKU document ID হিসেবে ব্যবহৃত হয়)। */
 export async function upsertProduct(product: Product): Promise<void> {
   if (!product.sku) throw new Error('Product SKU is required');
+  const { db, doc, setDoc, serverTimestamp } = await getFirestoreCtx();
   const ref = doc(db, PRODUCTS_COLLECTION, product.sku);
   await setDoc(ref, { ...product, updatedAt: serverTimestamp() }, { merge: true });
 }
 
 /** একটা প্রোডাক্ট মুছে ফেলে। */
 export async function deleteProduct(sku: string): Promise<void> {
+  const { db, doc, deleteDoc } = await getFirestoreCtx();
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, sku));
 }
 

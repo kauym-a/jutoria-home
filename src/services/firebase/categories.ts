@@ -1,13 +1,4 @@
-import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { db } from './config';
+import { getFirestoreCtx } from './config';
 import { materials } from '../../data/materials';
 
 // ============================================================
@@ -39,12 +30,14 @@ const byOrder = (a: Category, b: Category) => (a.order ?? 0) - (b.order ?? 0);
 
 /** সব ক্যাটাগরি আনে (admin-এর জন্য — active/inactive সব), order অনুসারে সাজানো। */
 export async function fetchAllCategories(): Promise<Category[]> {
+  const { db, collection, getDocs } = await getFirestoreCtx();
   const snap = await getDocs(collection(db, CATEGORIES_COLLECTION));
   return snap.docs.map((d) => d.data() as Category).sort(byOrder);
 }
 
 /** শুধু active ক্যাটাগরি আনে (পাবলিক সাইটের জন্য), order অনুসারে সাজানো। */
 export async function fetchActiveCategories(): Promise<Category[]> {
+  const { db, collection, getDocs } = await getFirestoreCtx();
   const snap = await getDocs(collection(db, CATEGORIES_COLLECTION));
   return snap.docs
     .map((d) => d.data() as Category)
@@ -54,6 +47,7 @@ export async function fetchActiveCategories(): Promise<Category[]> {
 
 /** একটা নির্দিষ্ট slug-এর ক্যাটাগরি আনে। */
 export async function fetchCategory(slug: string): Promise<Category | null> {
+  const { db, doc, getDoc } = await getFirestoreCtx();
   const snap = await getDoc(doc(db, CATEGORIES_COLLECTION, slug));
   return snap.exists() ? (snap.data() as Category) : null;
 }
@@ -61,12 +55,14 @@ export async function fetchCategory(slug: string): Promise<Category | null> {
 /** নতুন ক্যাটাগরি তৈরি বা বিদ্যমান ক্যাটাগরি আপডেট করে (slug document ID হিসেবে ব্যবহৃত হয়)। */
 export async function upsertCategory(category: Category): Promise<void> {
   if (!category.slug) throw new Error('Category slug is required');
+  const { db, doc, setDoc, serverTimestamp } = await getFirestoreCtx();
   const ref = doc(db, CATEGORIES_COLLECTION, category.slug);
   await setDoc(ref, { ...category, updatedAt: serverTimestamp() }, { merge: true });
 }
 
 /** একটা ক্যাটাগরি মুছে ফেলে। */
 export async function deleteCategory(slug: string): Promise<void> {
+  const { db, doc, deleteDoc } = await getFirestoreCtx();
   await deleteDoc(doc(db, CATEGORIES_COLLECTION, slug));
 }
 

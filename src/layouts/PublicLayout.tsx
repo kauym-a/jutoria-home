@@ -3,6 +3,14 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Menu as MenuIcon, X, ChevronDown, Mail, Phone, Download, Send } from 'lucide-react';
 import JutoriaAssistantWidget from '../components/chat/JutoriaAssistant';
 
+// এটা lazy() দিয়ে code-split করার চেষ্টা করা হয়েছিল (products.json/materials.ts/
+// assistantKnowledge.ts এন্ট্রি বান্ডল থেকে সরানোর জন্য), কিন্তু Rollup build-এ
+// INEFFECTIVE_DYNAMIC_IMPORT ওয়ার্নিং দিয়েছে: src/pages/public/JutoriaAI.tsx
+// (/jutoria-ai পেজ) এই একই ফাইল থেকে JutoriaAssistantPanel স্ট্যাটিকালি ইম্পোর্ট করে,
+// আর App.tsx-এ ইচ্ছাকৃতভাবে কোনো পাবলিক পেজই lazy নয় (দেখুন App.tsx-এর কমেন্ট) —
+// তাই এই মডিউল যাই হোক এন্ট্রি চাংকেই থাকবে, dynamic import শুধু অকারণ Suspense
+// জটিলতা যোগ করতো, বান্ডল সাইজে কোনো লাভ ছাড়াই।
+
 function SocialBrandIcon({ platform }: { platform: string }) {
   const common = { viewBox: '0 0 24 24', 'aria-hidden': true, className: 'h-4 w-4', fill: 'currentColor' } as const;
 

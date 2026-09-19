@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
 
 // .env.local ফাইলে রাখা গোপন চাবিগুলো এখানে কল করা হয়েছে
 const firebaseConfig = {
@@ -14,8 +13,26 @@ const firebaseConfig = {
 // Initialize Firebase (ডাটাবেস কানেকশন চালু করা হলো)
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore Database (প্রোডাক্ট ও লিড সেভ করার জন্য)
-export const db = getFirestore(app);
+// Firestore SDK-ও (Auth/Storage-এর মতোই) আর eagerly ইম্পোর্ট করা হয় না। আগে এখানে
+// টপ-লেভেলে `import { getFirestore } from 'firebase/firestore'` + `export const db =
+// getFirestore(app)` ছিল — মানে config.ts ইম্পোর্ট করা মাত্রই (products.ts/
+// categories.ts/leads.ts-এর মাধ্যমে প্রতিটা পাবলিক পেজেই হয়) পুরো Firestore SDK-টা
+// এন্ট্রি চাংকে ঢুকে যেত এবং dist/index.html-এ modulepreload হিসেবে high-priority-তে
+// fetch হতো — মোবাইল PageSpeed-এ হোমপেজের হিরো ভিডিও/ছবির সাথে ব্যান্ডউইথ কম্পিট করে
+// FCP/LCP খারাপ করছিল। এখন dynamic import — প্রথমবার getFirestoreCtx() কল হলেই SDK +
+// db instance লোড হয়, ফলাফল (একবারই ঘটা dynamic import + db instance) ক্যাশ করা থাকে।
+let firestoreCtxPromise: Promise<
+  typeof import('firebase/firestore') & { db: import('firebase/firestore').Firestore }
+> | null = null;
+export function getFirestoreCtx() {
+  if (!firestoreCtxPromise) {
+    firestoreCtxPromise = import('firebase/firestore').then((mod) => ({
+      ...mod,
+      db: mod.getFirestore(app),
+    }));
+  }
+  return firestoreCtxPromise;
+}
 
 // Firebase Authentication ইচ্ছাকৃতভাবে এখানে eagerly initialize করা হয় না। getAuth(app)
 // কল করলেই Auth SDK নিজে থেকে একটা hidden iframe (iframe.js) + googleapis-এর
