@@ -1,15 +1,26 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { categories } from '../../data/categories';
+import { useProductCategories } from '../../hooks/useProductCategories';
 import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/product/ProductCard';
 import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
 
 export default function CategoryDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const { categories, loading: categoriesLoading } = useProductCategories();
   const category = categories.find((c) => c.slug === slug);
   const { products } = useProducts(); // Firestore-backed, static ডেটায় fallback করে
+
+  // categories এখন Firestore-backed প্রোডাক্ট ডেটা থেকে ডাইনামিকভাবে বের হয় (দেখুন
+  // useProductCategories.ts) — initial render-এ static fallback প্রোডাক্ট দিয়ে বানানো
+  // হয়, যেটাতে নতুন/সবে-যোগ-করা category না-ও থাকতে পারে। ProductDetail.tsx-এর মতোই,
+  // Firestore fetch শেষ না হওয়া পর্যন্ত "not found" ধরে নিয়ে রিডাইরেক্ট করা হয় না —
+  // নাহলে সরাসরি এই URL-এ আসা ভিজিটর/ক্রলার real ডেটা লোড হওয়ার আগেই ভুলভাবে
+  // /categories-এ পাঠিয়ে দেওয়া হতো।
+  if (!category && categoriesLoading) {
+    return <div className="container mx-auto py-16 text-center text-brand-navy/50">Loading…</div>;
+  }
 
   if (!category) {
     return <Navigate to="/categories" replace />;

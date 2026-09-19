@@ -1,10 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { categories } from '../../data/categories';
+import { useProductCategories } from '../../hooks/useProductCategories';
 import { absoluteUrl } from '../../lib/seo';
 
 export default function Categories() {
+  const { categories } = useProductCategories();
+
   return (
     <>
       <Helmet>

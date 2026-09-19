@@ -293,8 +293,11 @@ export default function AdminProductForm() {
                   </select>
                 )}
                 <p className="text-xs text-brand-navy/40 mt-1">
-                  নতুন নাম যোগ করলে এই ও ভবিষ্যতের প্রোডাক্ট ফর্মে ড্রপডাউনে দেখাবে। তবে "/categories" পেজে
-                  আলাদা কার্ড/পেজ পেতে হলে সেটা কোডে (src/data/categories.ts) আলাদাভাবে যোগ করতে হবে।
+                  নতুন নাম যোগ করলে এই ও ভবিষ্যতের প্রোডাক্ট ফর্মে ড্রপডাউনে দেখাবে, এবং এই প্রোডাক্ট সেভ হলে
+                  পাবলিক "/categories" পেজেও স্বয়ংক্রিয়ভাবে একটা নতুন কার্ড হিসেবে দেখাবে (দেখুন
+                  useProductCategories.ts) — কোনো আলাদা কোড এডিটের দরকার নেই। কার্ডের ছবি এই category-র প্রথম
+                  প্রোডাক্টের primary ছবি থেকে, আর desc/longDesc একটা generic টেক্সট থেকে আসবে যতক্ষণ না
+                  src/data/categories.ts-এ হাতে-লেখা কপি যোগ করা হয় (ঐচ্ছিক)।
                 </p>
               </div>
               <div>

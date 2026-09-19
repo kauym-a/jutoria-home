@@ -225,7 +225,19 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
 
     // Firestore থেকে আসল (সম্ভবত আপডেটেড/Storage-hosted) ডেটা দিয়ে upgrade হওয়ার জন্য
     // বাড়তি সময় — networkidle-এর বিকল্প হিসেবে একটা বাউন্ডেড fixed wait।
-    await new Promise((r) => setTimeout(r, 1500));
+    //
+    // ⚠️ আবিষ্কৃত বাগ: 1500ms যথেষ্ট ছিল যখন `db` eagerly ইম্পোর্ট হতো, কিন্তু Firestore
+    // এখন lazy dynamic import (দেখুন config.ts) — প্রথমবার কোনো fetchActive*() কল হলে
+    // আগে 'firebase/firestore' চাংক লোড হতে হয়, তারপর আসল Firestore কোয়েরি রাউন্ড-ট্রিপ।
+    // যে পেজের <title> ডেটা-নির্ভর নয় (যেমন /categories, /products, /materials —
+    // উপরের waitForFunction তাই প্রায় সাথে সাথেই resolve হয়ে যায়, ডেটা লোড হওয়ার জন্য
+    // অপেক্ষা করে না), সেখানে 1500ms-এর পুরনো fixed wait এই বাড়তি লেটেন্সি কভার করতে
+    // পারছিল না — ফলে prerendered HTML-এ স্ট্যাটিক fallback ডেটা (src/data/products.json,
+    // পুরনো/আংশিক) বেক হয়ে যাচ্ছিল real Firestore ডেটার বদলে (useProductCategories.ts-এর
+    // /categories পেজে ধরা পড়েছে — নতুন category থাকা সত্ত্বেও prerendered কার্ড দেখাচ্ছিল
+    // না)। বাস্তব ব্রাউজারে (localhost test) 5s wait-এ সবসময় সঠিক ডেটা দেখা গেছে, তাই
+    // নিরাপদ মার্জিন রেখে 3500ms।
+    await new Promise((r) => setTimeout(r, 3500));
     if (debug) console.log('  [debug] after fixed wait:', await page.evaluate(() => ({ href: location.href, title: document.title })));
 
     // ⚠️ index.html-এ static fallback হিসেবে বসানো og:*/twitter:* ট্যাগগুলো (crawler যেন

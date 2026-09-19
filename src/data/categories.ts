@@ -8,9 +8,13 @@ export type Category = {
   image: string | null;
 };
 
-// Our Categories — shared across the Home page grid (if added), the /categories index page,
-// and each /categories/:slug detail page. Values match the `category` field used on Product
-// records and in the admin Product Form dropdown — keep these two lists in sync.
+// Curated copy for our original launch categories. /categories and /categories/:slug no longer
+// read this array directly — they call useProductCategories() (src/hooks/useProductCategories.ts),
+// which derives the full category list from whatever `category` values actually exist on active
+// products, and only falls back to this file's desc/longDesc/image for a name that matches one
+// of these entries exactly. Any category typed into the admin Product Form that isn't listed here
+// still gets its own auto-generated card (generic description, first product's photo) — this file
+// is now just a way to give a specific category nicer, hand-written copy, not a requirement.
 export const categories: Category[] = [
   {
     id: '01',
