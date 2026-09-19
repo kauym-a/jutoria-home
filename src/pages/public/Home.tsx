@@ -23,35 +23,41 @@ const INSTAGRAM_URL = 'https://www.instagram.com/jutoriahome/';
 import { useCategories } from '../../hooks/useCategories';
 import { displayNumber } from '../../services/firebase/categories';
 
-// Featured Products Data
+// Featured Products Data — এখানে productImg/lifestyleImg-এর "-sm" ভ্যারিয়েন্টগুলো
+// ব্যবহার করা হচ্ছে (৮০০px wide, মূল ফাইলের ~৪৬% সাইজ)। মূল (বড়) ফাইলগুলো এই একই
+// ইমেজগুলো অন্য পেজে hero/full-bleed background হিসেবে ব্যবহার করে বলে অপরিবর্তিত
+// রাখা হয়েছে — CompanyProfile.tsx (jute-basket-lifestyle, laundry-basket-lifestyle),
+// Products.tsx (laundry-basket-lifestyle), আর CategoryDetail.tsx-এর প্রতিটা ক্যাটাগরি
+// পেজের ৫৫vh হিরো ব্যাকগ্রাউন্ড (data/categories.ts-এর মাধ্যমে, সবগুলো "-product"
+// ফাইল)। শুধু এই হোমপেজের ছোট (aspect-[4/5]) ফিচার্ড-প্রোডাক্ট কার্ডেই ছোট সাইজ যথেষ্ট।
 const featuredProducts = [
-  { 
-    id: 'f1', 
-    name: 'Jute Storage Basket', 
-    category: 'Natural Jute', 
-    productImg: '/jute-basket-product.webp', 
-    lifestyleImg: '/jute-basket-lifestyle.webp' 
+  {
+    id: 'f1',
+    name: 'Jute Storage Basket',
+    category: 'Natural Jute',
+    productImg: '/jute-basket-product-sm.webp',
+    lifestyleImg: '/jute-basket-lifestyle-sm.webp'
   },
-  { 
-    id: 'f2', 
-    name: 'Woven Laundry Basket', 
-    category: 'Seagrass', 
-    productImg: '/laundry-basket-product.webp', 
-    lifestyleImg: '/laundry-basket-lifestyle.webp' 
+  {
+    id: 'f2',
+    name: 'Woven Laundry Basket',
+    category: 'Seagrass',
+    productImg: '/laundry-basket-product-sm.webp',
+    lifestyleImg: '/laundry-basket-lifestyle-sm.webp'
   },
-  { 
-    id: 'f3', 
-    name: 'Minimalist Organizer', 
-    category: 'Natural Fiber', 
-    productImg: '/organizer-basket-product.webp', 
-    lifestyleImg: '/organizer-basket-lifestyle.webp' 
+  {
+    id: 'f3',
+    name: 'Minimalist Organizer',
+    category: 'Natural Fiber',
+    productImg: '/organizer-basket-product-sm.webp',
+    lifestyleImg: '/organizer-basket-lifestyle-sm.webp'
   },
-  { 
-    id: 'f4', 
-    name: 'Artisan Placemat', 
-    category: 'Hogla Leaf', 
-    productImg: '/placemat-product.webp', 
-    lifestyleImg: '/placemat-lifestyle.webp' 
+  {
+    id: 'f4',
+    name: 'Artisan Placemat',
+    category: 'Hogla Leaf',
+    productImg: '/placemat-product-sm.webp',
+    lifestyleImg: '/placemat-lifestyle-sm.webp'
   }
 ];
 
