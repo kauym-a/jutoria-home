@@ -143,6 +143,30 @@ async function loadProductRoutes() {
 
 const DEFAULT_TITLE = 'JUTORIA | Premium Eco-Friendly Handmade Home Décor';
 
+// ============================================================
+// CRITICAL CSS INLINING — PageSpeed-এ "Render-blocking requests" সবসময় অ্যাপের নিজের
+// bundled CSS (`/assets/index-*.css`, ~50KB raw / ~9KB gzip) নিয়ে ফ্ল্যাগ হচ্ছিল।
+// prerender করা HTML-এ real content আগে থেকেই থাকা সত্ত্বেও ব্রাউজার প্রথম পেইন্ট আটকে
+// রাখে যতক্ষণ না এই blocking <link rel="stylesheet"> নেটওয়ার্ক রাউন্ড-ট্রিপ শেষ হয়
+// (CSSOM রেডি না হওয়া পর্যন্ত পেইন্ট না করাটাই standard browser behavior, FOUC এড়াতে) —
+// থ্রটলড মোবাইলে এই একটা রিকোয়েস্টই FCP-তে সেকেন্ডখানেক যোগ করছিল।
+//
+// এই ফাইলটা ছোট (পুরো অ্যাপের Tailwind output, প্রতিটা রুটেই identical) বলে সরাসরি
+// <head>-এ <style> ট্যাগ হিসেবে inline করে দেওয়া হচ্ছে — এতে আলাদা নেটওয়ার্ক
+// রাউন্ড-ট্রিপের দরকারই পড়ে না, prerendered HTML-এর সাথেই একই রেসপন্সে আসে। Hostinger
+// gzip/br দিয়ে HTML compress করে বলে wire-এ বাড়তি বাইট খরচও নগণ্য (~৯KB gzip যা আগে
+// আলাদা CSS রিকোয়েস্টেও যেত)। ট্রেডঅফ: cross-page navigation-এ (client-side SPA route
+// change নয়, ফ্রেশ পেজ লোডে) CSS আর browser HTTP cache থেকে reuse হবে না, প্রতিটা
+// প্রথমবার-লোড-করা রুটেই আবার inline হয়ে আসবে — কিন্তু ফাইলটা ছোট বলে এটা একটা যুক্তিসঙ্গত
+// trade-off, বিশেষত যেহেতু Lighthouse/PageSpeed ঠিক এই cold-load কেসটাই মাপে।
+function inlineCriticalCss(html) {
+  const match = html.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/);
+  if (!match) return html; // না পাওয়া গেলে ডিফেন্সিভলি link-টাই অক্ষত রেখে দেওয়া হলো
+  const [linkTag, href] = match;
+  const css = fs.readFileSync(path.join(DIST_DIR, href), 'utf8');
+  return html.replace(linkTag, `<style>${css}</style>`);
+}
+
 // স্ট্যাটিক মার্কেটিং রুট — এগুলোর কনটেন্ট বিল্ড-টাইমে ফিক্সড (Firestore-নির্ভর প্রোডাক্ট
 // ডেটার মতো ইউজার-জেনারেটেড নয়), তাই Firestore থেকে লিস্ট আনার দরকার নেই, হার্ডকোড করাই
 // যথেষ্ট। '/' রুটটা dist/index.html-কেই সরাসরি ওভাররাইট করে (Apache-এ "/" রিকোয়েস্ট
@@ -273,7 +297,7 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
       rootChildren: document.getElementById('root')?.children.length || 0,
     }));
 
-    const html = await page.content();
+    const html = inlineCriticalCss(await page.content());
     return { html, meta };
   } finally {
     await page.close();
