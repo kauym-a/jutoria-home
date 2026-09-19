@@ -21,15 +21,22 @@ const app = initializeApp(firebaseConfig);
 // fetch হতো — মোবাইল PageSpeed-এ হোমপেজের হিরো ভিডিও/ছবির সাথে ব্যান্ডউইথ কম্পিট করে
 // FCP/LCP খারাপ করছিল। এখন dynamic import — প্রথমবার getFirestoreCtx() কল হলেই SDK +
 // db instance লোড হয়, ফলাফল (একবারই ঘটা dynamic import + db instance) ক্যাশ করা থাকে।
-let firestoreCtxPromise: Promise<
-  typeof import('firebase/firestore') & { db: import('firebase/firestore').Firestore }
-> | null = null;
+let firestoreCtxPromise: ReturnType<typeof loadFirestoreCtx> | null = null;
+function loadFirestoreCtx() {
+  return import('firebase/firestore').then(
+    ({
+      getFirestore, collection, doc, getDocs, getDoc, setDoc, deleteDoc,
+      query, where, serverTimestamp, addDoc, updateDoc, orderBy,
+    }) => ({
+      db: getFirestore(app),
+      collection, doc, getDocs, getDoc, setDoc, deleteDoc,
+      query, where, serverTimestamp, addDoc, updateDoc, orderBy,
+    }),
+  );
+}
 export function getFirestoreCtx() {
   if (!firestoreCtxPromise) {
-    firestoreCtxPromise = import('firebase/firestore').then((mod) => ({
-      ...mod,
-      db: mod.getFirestore(app),
-    }));
+    firestoreCtxPromise = loadFirestoreCtx();
   }
   return firestoreCtxPromise;
 }
