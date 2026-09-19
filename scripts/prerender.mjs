@@ -228,6 +228,18 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
       // একই preload দুইবার না থাকে।
       dedupe('link[rel="preload"]', 'href');
 
+      // ⚠️ আবিষ্কৃত বাগ: index.html-এর Google Fonts স্টাইলশিট non-blocking রাখার জন্য
+      // media="print" + onload="this.media='all'" প্যাটার্ন ব্যবহার করা হয় (দেখুন
+      // index.html-এর কমেন্ট)। কিন্তু এই prerender স্ক্রিপ্ট page.content() দিয়ে DOM-এর
+      // *লাইভ* অবস্থা সেভ করে — ততক্ষণে onload ইতিমধ্যে ফায়ার হয়ে media="all" বসিয়ে
+      // দিয়েছে, ফলে সেভ হওয়া HTML-এ প্রথম বাইট থেকেই media="all" থাকে আর ফন্ট CSS
+      // আবার render-blocking হয়ে যায় — ঠিক সেই সমস্যাটাই যেটা এই প্যাটার্ন ফিক্স করার
+      // কথা ছিল, প্রতিটা prerendered পেজে (/, /wholesale, প্রোডাক্ট পেজ...) ফিরে আসে।
+      // তাই serialize করার ঠিক আগে media অ্যাট্রিবিউট আবার "print"-এ রিসেট করা হচ্ছে।
+      document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]').forEach((el) => {
+        el.setAttribute('media', 'print');
+      });
+
       // <title>-এর কোনো attribute-key নেই dedupe করার জন্য — react-helmet-async DOM-এ
       // নতুন <title> বসায় প্রথম চাইল্ড হিসেবে (তাই document.title getter এটাই ঠিকভাবে
       // ধরে), কিন্তু index.html-এর আসল static <title>-টা দ্বিতীয় হিসেবে থেকেই যায়।
