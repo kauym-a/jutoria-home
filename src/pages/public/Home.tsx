@@ -591,12 +591,15 @@ export default function Home() {
             <div className="lg:col-span-7 order-1 lg:order-2">
               <div className={`transition-all duration-1000 delay-200 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 <div className="aspect-[4/5] lg:aspect-[3/4] overflow-hidden rounded-[2px] bg-brand-navy/5">
+                  {/* "-editorial" ভ্যারিয়েন্ট (750px wide, q75) — মূল ফাইলটা CompanyProfile.tsx-এ
+                      fetchPriority="high" hero হিসেবেও ব্যবহৃত (সেখানে ছোঁয়া হয়নি), কিন্তু এখানে
+                      lazy-loaded below-fold সেকশনে সাইজ/মান ট্রেড-অফ করে আরও কমপ্রেস করা হলো। */}
                   <img
-                    src="/laundry-basket-lifestyle.webp"
+                    src="/laundry-basket-lifestyle-editorial.webp"
                     alt="JUTORIA beautiful living space"
                     className="w-full h-full object-cover origin-center"
-                                      width={1000}
-                                      height={1250}
+                                      width={750}
+                                      height={938}
                                       decoding="async"
                                       loading="lazy"
                                       style={{ transform: `scale(${isLifestyleVisible && !prefersReducedMotion ? 1.03 : 1.00})`, transition: prefersReducedMotion ? 'none' : 'transform 10s ease-out' }}
@@ -609,12 +612,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mt-16 lg:mt-24">
             <div className={`md:col-span-5 lg:col-span-4 transition-all duration-1000 delay-300 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-square md:aspect-[4/5] overflow-hidden rounded-[2px] bg-brand-navy/5">
-                <img 
-                  src="/jute-basket-lifestyle.webp"
+                <img
+                  src="/jute-basket-lifestyle-editorial.webp"
                   alt="Natural jute lifestyle detail"
                   className="w-full h-full object-cover origin-center"
-                                  width={1000}
-                                  height={1250}
+                                  width={750}
+                                  height={938}
                                   decoding="async"
                                   loading="lazy"
                                   style={{ transform: `scale(${isLifestyleVisible && !prefersReducedMotion ? 1.03 : 1.00})`, transition: prefersReducedMotion ? 'none' : 'transform 10s ease-out' }}
@@ -624,12 +627,12 @@ export default function Home() {
             
             <div className={`md:col-span-7 lg:col-span-5 transition-all duration-1000 delay-500 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-video md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden rounded-[2px] bg-brand-navy/5">
-                <img 
-                  src="/placemat-lifestyle.webp"
+                <img
+                  src="/placemat-lifestyle-editorial.webp"
                   alt="Handcrafted placemat in natural setting"
                   className="w-full h-full object-cover origin-center"
-                  width={1000}
-                  height={1250}
+                  width={750}
+                  height={938}
                   decoding="async"
                   loading="lazy"
                   style={{ transform: `scale(${isLifestyleVisible && !prefersReducedMotion ? 1.03 : 1.00})`, transition: prefersReducedMotion ? 'none' : 'transform 10s ease-out' }}
@@ -640,11 +643,11 @@ export default function Home() {
             <div className={`md:col-span-6 md:col-start-4 lg:col-span-3 lg:col-start-10 lg:-mt-32 transition-all duration-1000 delay-700 ease-out ${isLifestyleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-brand-navy/5">
                 <img
-                  src="/organizer-basket-lifestyle.webp"
+                  src="/organizer-basket-lifestyle-editorial.webp"
                   alt="Minimalist organizer lifestyle view"
                   className="w-full h-full object-cover origin-center"
-                  width={1000}
-                  height={1250}
+                  width={750}
+                  height={938}
                   decoding="async"
                   loading="lazy"
                   style={{ transform: `scale(${isLifestyleVisible && !prefersReducedMotion ? 1.03 : 1.00})`, transition: prefersReducedMotion ? 'none' : 'transform 10s ease-out' }}
