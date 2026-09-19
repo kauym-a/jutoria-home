@@ -33,7 +33,7 @@ export function useLeadForm(source: LeadSource) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!values.name.trim() || !values.email.trim()) {
-      toast.error('নাম ও ইমেইল আবশ্যক।');
+      toast.error('Name and email are required.');
       return;
     }
     setSubmitting(true);
@@ -45,10 +45,10 @@ export function useLeadForm(source: LeadSource) {
       await submitLead({ source, ...values });
       setSubmitted(true);
       setValues(EMPTY);
-      toast.success('ধন্যবাদ! আপনার ইনকোয়ারি জমা হয়েছে — আমরা শীঘ্রই যোগাযোগ করব।');
+      toast.success("Thank you! Your inquiry has been submitted — we'll be in touch shortly.");
     } catch (err) {
       console.error(err);
-      toast.error('জমা দিতে সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন অথবা সরাসরি ইমেইল করুন।');
+      toast.error('Something went wrong submitting your inquiry. Please try again shortly, or email us directly.');
     } finally {
       setSubmitting(false);
     }
