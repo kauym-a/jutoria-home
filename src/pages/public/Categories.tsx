@@ -13,7 +13,7 @@ export default function Categories() {
         <title>Categories | JUTORIA - Shop by Product Type</title>
         <meta
           name="description"
-          content="Browse the JUTORIA range by product type — placemats, planter baskets, laundry baskets, organizer baskets and floor mats & rugs."
+          content="Browse the complete JUTORIA range grouped by product category — for faster wholesale sourcing and easier comparison."
         />
         <link rel="canonical" href={absoluteUrl('/categories')} />
       </Helmet>
@@ -23,12 +23,15 @@ export default function Categories() {
           <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
             Product Collection
           </span>
+          {/* category.length এখন ডাইনামিক (useProductCategories.ts — active প্রোডাক্ট থেকে
+              বের হয়), তাই হেডলাইনেও হার্ডকোড করা সংখ্যার (আগে "Five") বদলে আসল সংখ্যা
+              বসানো হলো — নতুন category যোগ/বাদ হলে এই টেক্সট নিজে থেকেই ঠিক থাকবে। */}
           <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">
-            Five Categories. One Range.
+            {categories.length} {categories.length === 1 ? 'Category' : 'Categories'}. One Range.
           </h1>
           <p className="max-w-2xl font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
-            Browse the full JUTORIA range grouped by product type — from tableware to storage to
-            floor coverings — for faster sourcing.
+            Browse the full JUTORIA range grouped by product category, for faster sourcing and
+            easier comparison.
           </p>
         </div>
       </section>
