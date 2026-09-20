@@ -82,6 +82,12 @@ const certificationLogos = [
 export default function Home() {
   // "Our Materials" গ্রিডের ডেটা (Firestore 'categories' → fallback materials.ts)
   const { categories } = useCategories();
+  // হোমপেজের গ্রিড থেকে Hogla Leaf ও Cane/Natural Rattan ইচ্ছাকৃতভাবে বাদ — এই দুটো
+  // /materials পেজে এবং /materials/hogla-leaf, /materials/cane-rattan ডিটেইল পেজে
+  // এখনো ঠিকই আছে (আর Firestore-এর 'categories' কালেকশনেও অপরিবর্তিত), শুধু হোমপেজের
+  // "Our Materials" সেকশনে দেখানো হবে না।
+  const HOME_HIDDEN_MATERIAL_SLUGS = new Set(['hogla-leaf', 'cane-rattan']);
+  const homeMaterials = categories.filter((c) => !HOME_HIDDEN_MATERIAL_SLUGS.has(c.slug));
 
   // Hooks for Cinematic Artisan Animation
   const artisanRef = useRef<HTMLDivElement>(null);
@@ -372,7 +378,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {categories.map((material, index) => {
+            {homeMaterials.map((material, index) => {
               const isFeatured = index === 0;
               return (
                 <Link
@@ -400,7 +406,10 @@ export default function Home() {
                     style={{ backgroundImage: 'linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%)' }}
                   />
                   <span className="absolute top-6 right-8 font-serif text-6xl md:text-7xl font-bold transition-colors duration-500 text-brand-ivory/25 group-hover:text-brand-gold/60">
-                    {displayNumber(material.order)}
+                    {/* material.order নয় — ২টা material বাদ দেওয়ার পর (উপরে দেখুন) সেটা
+                        ব্যবহার করলে ব্যাজে গ্যাপ থাকত (যেমন 01,02,03,06,07)। এখানে ফিল্টার
+                        করা লিস্টের নিজস্ব পজিশন থেকে একটা পরিষ্কার 01-05 সিকোয়েন্স বানানো হলো। */}
+                    {displayNumber(index + 1)}
                   </span>
                   <div className="relative z-10 mt-auto">
                     <span className="block font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
