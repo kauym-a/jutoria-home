@@ -14,6 +14,7 @@ import {
   Handshake,
   ChevronDown,
   CheckCircle2,
+  Package,
 } from 'lucide-react';
 import { useLeadForm } from '../../hooks/useLeadForm';
 import { absoluteUrl } from '../../lib/seo';
@@ -168,7 +169,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Wholesale() {
-  const { values, setField, submitting, submitted, handleSubmit } = useLeadForm('wholesale');
+  const { values, setField, submitting, submitted, handleSubmit, prefilledProduct } = useLeadForm('wholesale');
 
   return (
     <>
@@ -480,6 +481,16 @@ export default function Wholesale() {
             </div>
           ) : (
             <form className="bg-white p-8 md:p-10 rounded-[2px] space-y-6" onSubmit={handleSubmit}>
+              {/* Contact.tsx-এর মতোই একই কারণে — দেখুন সেখানকার কমেন্ট */}
+              {prefilledProduct && (
+                <div className="flex items-start gap-3 border border-brand-gold/40 bg-brand-gold/10 px-4 py-3 rounded-[2px]">
+                  <Package size={18} className="text-brand-gold flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <p className="font-sans text-sm text-brand-navy">
+                    Inquiring about <strong>{prefilledProduct.name}</strong>
+                    {prefilledProduct.sku && <> — SKU: <strong>{prefilledProduct.sku}</strong></>}. We've pre-filled the details below — feel free to edit them.
+                  </p>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="wholesale-name" className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/70 mb-2">Your Name *</label>

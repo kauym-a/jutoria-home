@@ -49,6 +49,13 @@ export function useLeadForm(source: LeadSource) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  // productInterest/message ফিল্ড prefill হলেও সেটা দেখতে সাধারণ টাইপ-করা টেক্সটের
+  // মতোই — কাস্টমার হয়তো খেয়ালই করবেন না এটা স্বয়ংক্রিয়ভাবে বসেছে। তাই পেজগুলো
+  // (Contact.tsx/Wholesale.tsx) এই ভ্যালু দিয়ে ফর্মের উপরে একটা স্পষ্ট "আপনি এই
+  // প্রোডাক্ট নিয়ে জিজ্ঞাসা করছেন" ব্যানার দেখাতে পারে।
+  const productParam = searchParams.get('product');
+  const prefilledProduct = productParam ? { name: productParam, sku: searchParams.get('sku') } : null;
+
   const setField = (key: keyof Fields, value: string) => {
     setValues((v) => ({ ...v, [key]: value }));
   };
@@ -77,5 +84,5 @@ export function useLeadForm(source: LeadSource) {
     }
   };
 
-  return { values, setField, submitting, submitted, handleSubmit };
+  return { values, setField, submitting, submitted, handleSubmit, prefilledProduct };
 }

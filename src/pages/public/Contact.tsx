@@ -66,7 +66,7 @@ const WHY_PARTNER = [
 const INQUIRY_TYPES = ['Wholesale', 'Bulk Order', 'Retail Partnership', 'Hospitality / Interior Project', 'Custom Product', 'General Inquiry'];
 
 export default function Contact() {
-  const { values, setField, submitting, submitted, handleSubmit } = useLeadForm('contact');
+  const { values, setField, submitting, submitted, handleSubmit, prefilledProduct } = useLeadForm('contact');
 
   return (
     <>
@@ -215,6 +215,20 @@ export default function Contact() {
                 </div>
               ) : (
                 <form className="space-y-6" onSubmit={handleSubmit}>
+                  {/* প্রোডাক্ট পেজ থেকে ?product=...&sku=... দিয়ে এলে নিচের ফিল্ডগুলো prefill
+                      হয়ে যায় (useLeadForm.ts) — কিন্তু prefilled টেক্সট দেখতে সাধারণ
+                      টাইপ-করা টেক্সটের মতোই, কাস্টমার খেয়ালই নাও করতে পারেন এটা
+                      স্বয়ংক্রিয়ভাবে বসেছে। তাই এই স্পষ্ট ব্যানারটা — যাতে বোঝা যায় সঠিক
+                      প্রোডাক্ট রেফারেন্স হয়ে গেছে, শুধু বাকি তথ্য দিয়ে সাবমিট করলেই হবে। */}
+                  {prefilledProduct && (
+                    <div className="flex items-start gap-3 border border-brand-gold/40 bg-brand-gold/10 px-4 py-3 rounded-[2px]">
+                      <Package size={18} className="text-brand-gold flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                      <p className="font-sans text-sm text-brand-navy">
+                        Inquiring about <strong>{prefilledProduct.name}</strong>
+                        {prefilledProduct.sku && <> — SKU: <strong>{prefilledProduct.sku}</strong></>}. We've pre-filled the details below — feel free to edit them.
+                      </p>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block font-sans text-xs font-bold uppercase tracking-wide text-brand-navy/60 mb-2">Full Name *</label>
