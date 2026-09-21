@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2, ChevronUp, ChevronDown, ListOrdered } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchProduct, fetchAllProducts, upsertProduct, type Product, type ProductImage } from '../../services/firebase/products';
-import { uploadProductImage } from '../../services/firebase/productsAdmin';
+import { uploadProductImage, sortSpecKeys } from '../../services/firebase/productsAdmin';
 import { useCategories } from '../../hooks/useCategories';
 
 const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
@@ -179,6 +179,17 @@ export default function AdminProductForm() {
   };
 
   const addSpecRow = () => setSpecRows((rows) => [...rows, ['', '']]);
+
+  // Admin Products লিস্ট পেজের বাল্ক "Apply Standard Spec Order" বাটনের মতোই একই
+  // sortSpecKeys() লজিক ব্যবহার করে, কিন্তু এখানে শুধু এই একটা প্রোডাক্টে, তাৎক্ষণিকভাবে
+  // ফর্ম state-এ (Firestore-এ কিছু লেখা হয় না যতক্ষণ না "Save Product" চাপা হয়) — এডিট
+  // করার সময়ই এক ক্লিকে সাজানোর জন্য, আলাদা করে বাল্ক পেজে যাওয়ার দরকার নেই।
+  const sortSpecRows = () => {
+    setSpecRows((rows) => {
+      const valueByKey = new Map(rows.map(([k, v]) => [k, v]));
+      return sortSpecKeys(rows.map(([k]) => k)).map((k) => [k, valueByKey.get(k) ?? ''] as [string, string]);
+    });
+  };
   const removeSpecRow = (index: number) => setSpecRows((rows) => rows.filter((_, i) => i !== index));
 
   // spec-এর ক্রম ম্যানুয়ালি ঠিক করার জন্য (যেমন "Brand" আগে, "Size" পরে চাই) — up/down
@@ -447,13 +458,19 @@ export default function AdminProductForm() {
           <div className="bg-white border border-brand-navy/10 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-serif font-bold text-brand-navy">Specifications</h2>
-              <button type="button" onClick={addSpecRow} className="flex items-center gap-1.5 text-sm font-semibold text-brand-gold hover:text-brand-navy">
-                <Plus size={16} /> Add Row
-              </button>
+              <div className="flex items-center gap-4">
+                <button type="button" onClick={sortSpecRows} className="flex items-center gap-1.5 text-sm font-semibold text-brand-gold hover:text-brand-navy" title="Brand, Material, Color... ক্রমে সাজিয়ে দেয় (MOQ সবার শেষে) — Save করার আগ পর্যন্ত এখনো সেভ হয়নি">
+                  <ListOrdered size={16} /> Sort by Standard Order
+                </button>
+                <button type="button" onClick={addSpecRow} className="flex items-center gap-1.5 text-sm font-semibold text-brand-gold hover:text-brand-navy">
+                  <Plus size={16} /> Add Row
+                </button>
+              </div>
             </div>
             <p className="text-xs text-brand-navy/40 -mt-2 mb-3">
-              উপরে/নিচে তীর চেপে ক্রম ঠিক করুন — প্রোডাক্ট পেজে ঠিক এই ক্রমেই দেখাবে। পুরনো
-              প্রোডাক্টের ক্রম এলোমেলো থাকলে এখান থেকেই একবার সাজিয়ে Save করলে ঠিক হয়ে যাবে।
+              <strong>Sort by Standard Order</strong> চাপলে Brand, Material, Color... এই ক্রমে (MOQ
+              সবার শেষে) সব রো সাজিয়ে দেয় — অথবা উপরে/নিচে তীর চেপে হাতে ক্রম ঠিক করুন। যেভাবেই
+              সাজান, নিচে <strong>Save Product</strong> না চাপা পর্যন্ত এখনো সেভ হয়নি।
             </p>
             <div className="space-y-3">
               {specRows.map(([k, v], i) => (
