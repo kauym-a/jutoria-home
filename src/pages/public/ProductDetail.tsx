@@ -114,7 +114,7 @@ export default function ProductDetail(){
               </a>
             )}
             <Link
-              to="/contact"
+              to={`/contact?product=${encodeURIComponent(product.name)}&sku=${encodeURIComponent(product.sku)}`}
               className="inline-flex items-center gap-2 border border-brand-navy/25 text-brand-navy px-6 py-3 text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory transition-colors rounded-[2px]"
             >
               Wholesale Inquiry <ArrowRight size={14} />

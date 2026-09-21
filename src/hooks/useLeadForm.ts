@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import type { LeadInput, LeadSource } from '../services/firebase/leads';
 
@@ -21,8 +22,30 @@ const EMPTY: Fields = {
   message: '',
 };
 
+// আগে ProductDetail.tsx-এর "Wholesale Inquiry" বাটন চাপলে কাস্টমার একটা খালি ফর্মে
+// এসে পড়তেন — কোন প্রোডাক্ট নিয়ে জিজ্ঞাসা করছেন সেটা মনে রেখে/খাতায় লিখে "Products of
+// Interest" ফিল্ডে নিজে টাইপ করতে হতো। এখন প্রোডাক্ট পেজ থেকে ?product=...&sku=...
+// query param দিয়ে লিংক করা হয় (দেখুন ProductDetail.tsx), আর এখানে সেটা পড়ে
+// productInterest/message ফিল্ড আগে থেকেই ভরে দেওয়া হয় — কাস্টমার চাইলে edit করতে
+// পারেন, কিন্তু কিছু না করলেও সঠিক প্রোডাক্ট রেফারেন্স-সহই সাবমিট হবে। `type` ফিল্ড
+// ইচ্ছাকৃতভাবে prefill করা হয়নি — Contact.tsx-এ এটা "Inquiry Type" (Wholesale, Bulk
+// Order...) আর Wholesale.tsx-এ সম্পূর্ণ ভিন্ন জিনিস "Business Type" (Retailer,
+// Importer...) বোঝায়, দুই পেজে একই মান বসালে একটাতে ভুল/অচেনা অপশন সিলেক্ট হয়ে যেত।
+function buildInitialValues(searchParams: URLSearchParams): Fields {
+  const productName = searchParams.get('product');
+  if (!productName) return EMPTY;
+  const sku = searchParams.get('sku');
+  const label = sku ? `${productName} (SKU: ${sku})` : productName;
+  return {
+    ...EMPTY,
+    productInterest: label,
+    message: `I'm interested in ${label}. Please share pricing, MOQ and lead time.`,
+  };
+}
+
 export function useLeadForm(source: LeadSource) {
-  const [values, setValues] = useState<Fields>(EMPTY);
+  const [searchParams] = useSearchParams();
+  const [values, setValues] = useState<Fields>(() => buildInitialValues(searchParams));
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
