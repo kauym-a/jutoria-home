@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchProduct, fetchAllProducts, upsertProduct, type Product, type ProductImage } from '../../services/firebase/products';
 import { uploadProductImage } from '../../services/firebase/productsAdmin';
@@ -180,6 +180,20 @@ export default function AdminProductForm() {
 
   const addSpecRow = () => setSpecRows((rows) => [...rows, ['', '']]);
   const removeSpecRow = (index: number) => setSpecRows((rows) => rows.filter((_, i) => i !== index));
+
+  // spec-এর ক্রম ম্যানুয়ালি ঠিক করার জন্য (যেমন "Brand" আগে, "Size" পরে চাই) — up/down
+  // দিয়ে দুটো পাশাপাশি সারি অদলবদল করে। পুরনো প্রোডাক্টেও কাজ করে, কারণ specRows
+  // এমনিতেই বর্তমান specOrder (বা না থাকলে Firestore-এর ফলব্যাক ক্রম) থেকে লোড হয় —
+  // এখানে সাজিয়ে Save করলেই নতুন ক্রম specOrder হিসেবে সেভ হয়ে যাবে (দেখুন handleSave)।
+  const moveSpecRow = (index: number, direction: -1 | 1) => {
+    setSpecRows((rows) => {
+      const target = index + direction;
+      if (target < 0 || target >= rows.length) return rows;
+      const next = [...rows];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -437,9 +451,34 @@ export default function AdminProductForm() {
                 <Plus size={16} /> Add Row
               </button>
             </div>
+            <p className="text-xs text-brand-navy/40 -mt-2 mb-3">
+              উপরে/নিচে তীর চেপে ক্রম ঠিক করুন — প্রোডাক্ট পেজে ঠিক এই ক্রমেই দেখাবে। পুরনো
+              প্রোডাক্টের ক্রম এলোমেলো থাকলে এখান থেকেই একবার সাজিয়ে Save করলে ঠিক হয়ে যাবে।
+            </p>
             <div className="space-y-3">
               {specRows.map(([k, v], i) => (
                 <div key={i} className="flex items-center gap-3">
+                  <div className="flex flex-shrink-0 flex-col">
+                    <button
+                      type="button"
+                      onClick={() => moveSpecRow(i, -1)}
+                      disabled={i === 0}
+                      aria-label="Move up"
+                      className="text-brand-navy/40 hover:text-brand-gold disabled:opacity-20 disabled:hover:text-brand-navy/40"
+                    >
+                      <ChevronUp size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveSpecRow(i, 1)}
+                      disabled={i === specRows.length - 1}
+                      aria-label="Move down"
+                      className="text-brand-navy/40 hover:text-brand-gold disabled:opacity-20 disabled:hover:text-brand-navy/40"
+                    >
+                      <ChevronDown size={16} />
+                    </button>
+                  </div>
+                  <span className="w-5 flex-shrink-0 text-xs text-brand-navy/40">{i + 1}.</span>
                   <input
                     type="text"
                     value={k}
