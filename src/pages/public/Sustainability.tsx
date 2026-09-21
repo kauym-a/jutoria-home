@@ -35,7 +35,7 @@ export default function Sustainability() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-serif font-bold text-brand-navy mb-3">Sourced with Care</h3>
-              <p className="font-sans text-base text-brand-navy/80 leading-relaxed">We work with naturally renewing fibers like jute, seagrass, bamboo and hogla, choosing suppliers who meet ethical harvesting standards.</p>
+              <p className="font-sans text-base text-brand-navy/80 leading-relaxed">We work with naturally renewing fibers like jute, seagrass and bamboo, choosing suppliers who meet ethical harvesting standards.</p>
             </div>
 
             <div>

@@ -5,15 +5,23 @@ import { useCategories } from '../../hooks/useCategories';
 import { absoluteUrl } from '../../lib/seo';
 import { displayNumber } from '../../services/firebase/categories';
 
+// Hogla Leaf material হিসেবে বাদ দেওয়া হয়েছে (কোনো প্রোডাক্টই নেই, Seagrass-এর সাথে
+// ওভারল্যাপ করে) — src/data/materials.ts (static fallback) থেকে সরানো হয়েছে, কিন্তু
+// useCategories() *প্রথমে Firestore*-কেই জিজ্ঞেস করে, আর Firestore-এর 'categories'
+// কালেকশন থেকে এটা এখনো মোছা হয়নি (Admin Panel-এ লগইন করেই মুছতে হয়, কোড থেকে সম্ভব
+// না)। Firestore থেকে মুছে ফেলার আগ পর্যন্ত এই filter-টা সেফটি-নেট হিসেবে থেকে যাচ্ছে।
+const HIDDEN_MATERIAL_SLUGS = new Set(['hogla-leaf']);
+
 export default function Materials() {
   // Firestore 'categories' কালেকশন থেকে (admin: /admin/categories) — fallback materials.ts
-  const { categories: materials } = useCategories();
+  const { categories: allMaterials } = useCategories();
+  const materials = allMaterials.filter((m) => !HIDDEN_MATERIAL_SLUGS.has(m.slug));
 
   return (
     <>
       <Helmet>
         <title>Our Materials | JUTORIA - Natural Fibers of Bangladesh</title>
-        <meta name="description" content="Jute, seagrass, bamboo, hogla leaf, cane & rattan, water hyacinth and kans grass — the natural fibers behind every JUTORIA piece." />
+        <meta name="description" content="Jute, seagrass, bamboo, cane & rattan, water hyacinth and kans grass — the natural fibers behind every JUTORIA piece." />
         <link rel="canonical" href={absoluteUrl('/materials')} />
       </Helmet>
 
@@ -22,8 +30,10 @@ export default function Materials() {
           <span className="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
             Materials
           </span>
+          {/* materials.length ডাইনামিক — হার্ডকোড করা সংখ্যা (আগে "Seven") Categories.tsx-এর
+              মতোই একই কারণে stale হয়ে যেত, একটা material বাদ পড়লেই ভুল হয়ে যেত। */}
           <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">
-            Seven Natural Fibers. One Craft Tradition.
+            {materials.length} Natural Fibers. One Craft Tradition.
           </h1>
           <p className="max-w-2xl font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
             Every JUTORIA piece begins with a raw, natural material — sourced responsibly across Bangladesh and shaped entirely by hand.

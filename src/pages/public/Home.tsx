@@ -55,7 +55,7 @@ const featuredProducts = [
   {
     id: 'f4',
     name: 'Artisan Placemat',
-    category: 'Hogla Leaf',
+    category: 'Seagrass',
     productImg: '/placemat-product-sm.webp',
     lifestyleImg: '/placemat-lifestyle-sm.webp'
   }
@@ -82,11 +82,18 @@ const certificationLogos = [
 export default function Home() {
   // "Our Materials" গ্রিডের ডেটা (Firestore 'categories' → fallback materials.ts)
   const { categories } = useCategories();
-  // হোমপেজের গ্রিড থেকে Hogla Leaf ও Cane/Natural Rattan ইচ্ছাকৃতভাবে বাদ — এই দুটো
-  // /materials পেজে এবং /materials/hogla-leaf, /materials/cane-rattan ডিটেইল পেজে
-  // এখনো ঠিকই আছে (আর Firestore-এর 'categories' কালেকশনেও অপরিবর্তিত), শুধু হোমপেজের
-  // "Our Materials" সেকশনে দেখানো হবে না।
-  const HOME_HIDDEN_MATERIAL_SLUGS = new Set(['hogla-leaf', 'cane-rattan']);
+  // হোমপেজের গ্রিড থেকে Cane/Natural Rattan ইচ্ছাকৃতভাবে বাদ — /materials পেজে এবং
+  // /materials/cane-rattan ডিটেইল পেজে এখনো ঠিকই আছে (আর Firestore-এর 'categories'
+  // কালেকশনেও অপরিবর্তিত), শুধু হোমপেজের "Our Materials" সেকশনে দেখানো হবে না।
+  //
+  // Hogla Leaf-ও এখানে থেকেই যাচ্ছে ⚠️ — এটা src/data/materials.ts (static fallback)
+  // থেকে সম্পূর্ণ মুছে ফেলা হয়েছে, কিন্তু categories আসে useCategories() হুক দিয়ে যেটা
+  // *প্রথমে Firestore-কেই* জিজ্ঞেস করে (fallback শুধু Firestore খালি/অফলাইন হলে ব্যবহৃত
+  // হয়) — আর Firestore-এর 'categories' কালেকশনে Hogla Leaf এখনো live আছে, যেটা এই
+  // কোড থেকে মোছা সম্ভব না (Admin Panel-এ লগইন করেই মুছতে হবে, দেখুন CATEGORY_ADMIN
+  // নোট)। Admin থেকে Firestore-এ একবার মুছে ফেলা হলে এই entry-টা এমনিতেই আর filter-এর
+  // দরকার পড়বে না (categories array-তেই আর আসবে না), তখন চাইলে সরিয়ে ফেলা যাবে।
+  const HOME_HIDDEN_MATERIAL_SLUGS = new Set(['cane-rattan', 'hogla-leaf']);
   const homeMaterials = categories.filter((c) => !HOME_HIDDEN_MATERIAL_SLUGS.has(c.slug));
 
   // Hooks for Cinematic Artisan Animation

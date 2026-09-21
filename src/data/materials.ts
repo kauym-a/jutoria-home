@@ -36,14 +36,6 @@ export const materials: Material[] = [
   },
   {
     id: '04',
-    slug: 'hogla-leaf',
-    name: 'Hogla Leaf',
-    desc: 'A beautiful aquatic plant dried and intricately braided for soft, thick, and resilient textures.',
-    longDesc: 'Hogla leaf grows wild along Bangladesh\'s waterways. Once dried, it is intricately braided into thick, soft-textured strands used for placemats and decorative pieces — a material with a distinctly regional character that is difficult to source outside Bangladesh.',
-    image: '/materials/hogla-leaf.webp',
-  },
-  {
-    id: '05',
     slug: 'cane-rattan',
     name: 'Cane / Natural Rattan',
     desc: 'Sturdy yet pliable, perfect for architectural weaves and lasting structural integrity.',
@@ -51,7 +43,7 @@ export const materials: Material[] = [
     image: '/materials/cane-rattan.webp',
   },
   {
-    id: '06',
+    id: '05',
     slug: 'water-hyacinth',
     name: 'Water Hyacinth',
     desc: 'Carefully braided to create warm, chunky weaves with unique character and volume.',
@@ -59,7 +51,7 @@ export const materials: Material[] = [
     image: '/materials/water-hyacinth.webp',
   },
   {
-    id: '07',
+    id: '06',
     slug: 'kans-grass',
     name: 'Kans Grass',
     desc: 'Wildly grown and carefully harvested for delicate, elegant, yet durable home goods.',

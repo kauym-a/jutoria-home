@@ -182,7 +182,7 @@ export default function PeopleArtisans() {
               Working With Natural Materials
             </h2>
             <p className="font-sans text-base md:text-lg text-brand-navy/65 font-light leading-relaxed max-w-xl">
-              JUTORIA works with natural materials such as jute, seagrass, water hyacinth, bamboo, cane and rattan, hogla leaf and kans grass.
+              JUTORIA works with natural materials such as jute, seagrass, water hyacinth, bamboo, cane and rattan, and kans grass.
             </p>
           </div>
 

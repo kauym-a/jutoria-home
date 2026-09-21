@@ -99,7 +99,7 @@ function respond(query: string): { text: string; link?: { label: string; to: str
   }
   if (/material|fiber|fibre|jute|seagrass|bamboo/.test(q)) {
     return {
-      text: "We work with seven natural fibers: Jute, Seagrass, Bamboo, Hogla Leaf, Cane/Rattan, Water Hyacinth and Kans Grass. Which one are you interested in?",
+      text: "We work with six natural fibers: Jute, Seagrass, Bamboo, Cane/Rattan, Water Hyacinth and Kans Grass. Which one are you interested in?",
       link: { label: 'Browse All Materials', to: '/materials' },
     };
   }

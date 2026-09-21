@@ -59,7 +59,7 @@ export default function CompanyProfile() {
                 A brand built on material, craft and intent.
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed mb-5">
-                JUTORIA is a premium eco-friendly home décor brand rooted in natural materials — jute, seagrass, bamboo, water hyacinth, cane &amp; rattan, hogla leaf and kans grass. Every piece begins as a raw fiber and is shaped by skilled hands into a finished product for the home.
+                JUTORIA is a premium eco-friendly home décor brand rooted in natural materials — jute, seagrass, bamboo, water hyacinth, cane &amp; rattan and kans grass. Every piece begins as a raw fiber and is shaped by skilled hands into a finished product for the home.
               </p>
               <p className="font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
                 Our vision is an international one: thoughtfully designed, naturally made products that fit modern living spaces, brought to a global audience through considered design and honest materials.
