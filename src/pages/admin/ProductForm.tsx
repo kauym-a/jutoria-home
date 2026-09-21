@@ -78,7 +78,14 @@ export default function AdminProductForm() {
       .then((data) => {
         if (data) {
           setProduct(data);
-          setSpecRows(Object.entries(data.excel_fields || {}));
+          // specOrder থাকলে (নতুন প্রোডাক্ট, বা এই ফিচার আসার পর একবার সেভ হয়েছে) সেই
+          // ক্রম অনুসরণ করে রো বানানো হয় — Firestore-এর excel_fields ম্যাপ নিজে থেকে
+          // কোনো নির্দিষ্ট ক্রম রাখে না (দেখুন products.ts-এর specOrder কমেন্ট)। পুরনো
+          // প্রোডাক্টে specOrder না থাকলে Object.entries()-এই ফলব্যাক করে, আগের মতোই।
+          const fields = data.excel_fields || {};
+          const order = data.specOrder?.filter((k) => k in fields) || Object.keys(fields);
+          const extraKeys = Object.keys(fields).filter((k) => !order.includes(k));
+          setSpecRows([...order, ...extraKeys].map((k) => [k, fields[k]]));
         } else {
           toast.error('প্রোডাক্ট পাওয়া যায়নি।');
           navigate('/admin/products');
@@ -182,8 +189,14 @@ export default function AdminProductForm() {
     }
     setSaving(true);
     try {
-      const excel_fields = Object.fromEntries(specRows.filter(([k]) => k.trim() !== ''));
-      await upsertProduct({ ...product, excel_fields });
+      const validRows = specRows.filter(([k]) => k.trim() !== '');
+      const excel_fields = Object.fromEntries(validRows);
+      // specOrder = validRows-এর নিজস্ব ক্রম অনুযায়ী শুধু key-গুলো, একটা array হিসেবে
+      // সেভ হয় — Firestore array insertion order রাখে (map রাখে না), তাই এটাই আসল
+      // ক্রমের সোর্স অফ ট্রুথ। excel_fields ম্যাপটা নির্দিষ্ট key দিয়ে লুকআপের জন্য
+      // (MOQ, Material Composition ইত্যাদি — অন্যান্য অনেক জায়গায় ব্যবহৃত) অপরিবর্তিত।
+      const specOrder = validRows.map(([k]) => k);
+      await upsertProduct({ ...product, excel_fields, specOrder });
       toast.success(isEditing ? 'প্রোডাক্ট আপডেট হয়েছে।' : 'নতুন প্রোডাক্ট তৈরি হয়েছে।');
       navigate('/admin/products');
     } catch (err) {

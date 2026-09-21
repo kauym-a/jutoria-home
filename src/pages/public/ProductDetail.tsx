@@ -30,6 +30,15 @@ export default function ProductDetail(){
   }
 
   const images = product.images || [];
+  // specOrder থাকলে সেই ক্রম মেনে specs দেখানো হয় — Firestore-এর excel_fields ম্যাপ
+  // নিজে থেকে কোনো ক্রম রাখে না (দেখুন products.ts-এর specOrder কমেন্ট), তাই
+  // Object.entries() সরাসরি ব্যবহার করলে Admin Panel-এ যে ক্রমে spec যোগ করা হয়েছিল
+  // সেটা এখানে অন্যরকম দেখাতে পারত। specOrder না থাকা (পুরনো) প্রোডাক্টে
+  // Object.entries()-এ ফলব্যাক করে, আগের মতোই।
+  const specFields = product.excel_fields || {};
+  const specKeyOrder = product.specOrder?.filter((k) => k in specFields) || Object.keys(specFields);
+  const specExtraKeys = Object.keys(specFields).filter((k) => !specKeyOrder.includes(k));
+  const orderedSpecs = [...specKeyOrder, ...specExtraKeys].map((k) => [k, specFields[k]] as const);
   const canonicalPath = `/product/${encodeURIComponent(product.sku)}`;
   const pageTitle = `${product.name} | JUTORIA - Premium Eco-Friendly Home Décor`;
   const pageDescription =
@@ -117,10 +126,10 @@ export default function ProductDetail(){
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <tbody>
-                  {Object.entries(product.excel_fields || {}).map(([k,v]) => (
+                  {orderedSpecs.map(([k,v]) => (
                     <tr key={k} className="border-b border-brand-navy/10 last:border-b-0">
                       <th className="py-2 pr-4 align-top text-sm font-semibold text-brand-navy/80 w-40">{k}</th>
-                      <td className="py-2 text-sm text-brand-navy/70">{v as string}</td>
+                      <td className="py-2 text-sm text-brand-navy/70">{v}</td>
                     </tr>
                   ))}
                 </tbody>

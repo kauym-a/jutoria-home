@@ -32,6 +32,16 @@ export type Product = {
   active?: boolean; // false = hidden from public site, still editable in admin
   relatedSkus?: string[];
   excel_fields?: Record<string, string>;
+  // excel_fields একটা Firestore map field — Firestore write-then-read-এ map-এর ভেতরের
+  // key-দের insertion order গ্যারান্টি রাখে না (এটাই সেই বাগ যেখানে Admin Panel-এ
+  // Add Row দিয়ে যে ক্রমে spec যোগ করা হয়, সেভ করার পর সেই ক্রম আর থাকে না — Firestore
+  // নিজের ইচ্ছামতো একটা ক্রমে key-গুলো ফেরত দেয়)। Firestore *array* field অবশ্য
+  // insertion order ঠিক রাখে, তাই শুধু key-গুলোর সঠিক ক্রমটা এই আলাদা array-তে রাখা
+  // হচ্ছে — excel_fields ম্যাপটা (নির্দিষ্ট key দিয়ে লুকআপের জন্য, যেমন
+  // excel_fields['MOQ']) অপরিবর্তিতই থাকছে। যেসব প্রোডাক্ট এই ফিচার আসার আগে সেভ
+  // হয়েছে তাদের specOrder নেই — সেক্ষেত্রে কলাররা Object.keys(excel_fields)-এ
+  // ফলব্যাক করে (আগের behavior-ই, নতুন করে কিছু ভাঙে না)।
+  specOrder?: string[];
   updatedAt?: unknown;
 };
 
