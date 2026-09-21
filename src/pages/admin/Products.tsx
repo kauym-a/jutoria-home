@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown, ListOrdered } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   fetchAllProducts,
@@ -10,7 +10,7 @@ import {
   upsertProduct,
   type Product,
 } from '../../services/firebase/products';
-import { optimizeExistingProductImages } from '../../services/firebase/productsAdmin';
+import { optimizeExistingProductImages, applyStandardSpecOrder } from '../../services/firebase/productsAdmin';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,6 +18,8 @@ export default function AdminProducts() {
   const [seeding, setSeeding] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [optimizeProgress, setOptimizeProgress] = useState('');
+  const [ordering, setOrdering] = useState(false);
+  const [orderingProgress, setOrderingProgress] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -76,6 +78,28 @@ export default function AdminProducts() {
     }
   };
 
+  // Admin-এর সাথে ঠিক করা স্ট্যান্ডার্ড ক্রম (Brand → Material → Color → ... → MOQ,
+  // পুরো তালিকা productsAdmin.ts-এ) সব প্রোডাক্টে একসাথে প্রয়োগ করে — একটা একটা করে
+  // প্রোডাক্টে গিয়ে up/down তীর দিয়ে ম্যানুয়ালি সাজানোর দরকার নেই।
+  const handleApplyStandardOrder = async () => {
+    if (!window.confirm('সব প্রোডাক্টের Specifications একটা স্ট্যান্ডার্ড ক্রমে (Brand, Material, Color... শেষে MOQ) সাজানো হবে। যেসব ফিল্ড এই তালিকায় নেই সেগুলো আগের আপেক্ষিক ক্রমেই শেষে থেকে যাবে — কিছু হারাবে না। এগোতে চান?')) return;
+    setOrdering(true);
+    setOrderingProgress('শুরু হচ্ছে...');
+    try {
+      const result = await applyStandardSpecOrder((done, total, sku) => {
+        setOrderingProgress(sku ? `${done + 1}/${total} — ${sku}` : `সম্পন্ন (${total}/${total})`);
+      });
+      toast.success(`${result.productsUpdated}টা প্রোডাক্টের ক্রম আপডেট হয়েছে (${result.productsUnchanged}টা আগে থেকেই ঠিক ছিল, স্কিপ)।`);
+      await load();
+    } catch (err) {
+      console.error(err);
+      toast.error('ক্রম প্রয়োগ করতে সমস্যা হয়েছে — Firestore নিয়ম/লগইন চেক করুন।');
+    } finally {
+      setOrdering(false);
+      setOrderingProgress('');
+    }
+  };
+
   const handleDelete = async (sku: string) => {
     if (!window.confirm(`প্রোডাক্ট "${sku}" মুছে ফেলতে চান? এই কাজ ফিরিয়ে নেওয়া যাবে না।`)) return;
     try {
@@ -130,6 +154,15 @@ export default function AdminProducts() {
             >
               <ImageDown size={16} />
               {optimizing ? optimizeProgress || 'Optimizing…' : 'Optimize Existing Images'}
+            </button>
+            <button
+              onClick={handleApplyStandardOrder}
+              disabled={ordering}
+              className="flex items-center gap-2 border border-brand-navy/20 text-brand-navy px-4 py-2.5 text-sm font-semibold hover:border-brand-gold hover:text-brand-gold transition-colors disabled:opacity-50"
+              title="সব প্রোডাক্টের Specifications-এর ক্রম একটা স্ট্যান্ডার্ড ক্রমে (Brand, Material, Color... শেষে MOQ) সাজিয়ে দেয়"
+            >
+              <ListOrdered size={16} />
+              {ordering ? orderingProgress || 'Ordering…' : 'Apply Standard Spec Order'}
             </button>
             <Link
               to="/admin/products/new"
