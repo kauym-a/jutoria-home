@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown, ListOrdered } from 'lucide-react';
+import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown, ListOrdered, Search, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   fetchAllProducts,
@@ -20,6 +20,16 @@ export default function AdminProducts() {
   const [optimizeProgress, setOptimizeProgress] = useState('');
   const [ordering, setOrdering] = useState(false);
   const [orderingProgress, setOrderingProgress] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // এখন ৬৭+ প্রোডাক্ট — নির্দিষ্ট একটা প্রোডাক্ট (যেমন ওয়েবসাইটে সমস্যা দেখে ঠিক করতে
+  // হবে) খুঁজে পেতে পুরো লিস্ট স্ক্রল করার দরকার নেই, SKU বা নাম দিয়ে সরাসরি ফিল্টার
+  // করা যায়। # কলামের নম্বরও এই ফিল্টার করা লিস্টের নিজস্ব পজিশন অনুযায়ী দেখায়।
+  const filteredProducts = (() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p) => p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q));
+  })();
 
   const load = async () => {
     setLoading(true);
@@ -180,6 +190,34 @@ export default function AdminProducts() {
           </div>
         )}
 
+        {products.length > 0 && (
+          <div className="relative max-w-sm">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-navy/40" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="SKU বা নাম দিয়ে প্রোডাক্ট খুঁজুন…"
+              className="w-full pl-10 pr-9 py-2.5 border border-brand-navy/15 bg-white rounded-md text-sm focus:outline-none focus:border-brand-gold transition-colors font-sans"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-navy/40 hover:text-brand-navy"
+                title="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+        )}
+
+        {!loading && searchQuery && (
+          <p className="font-sans text-xs text-brand-navy/50 -mt-4">
+            {filteredProducts.length} result{filteredProducts.length === 1 ? '' : 's'} for "{searchQuery}"
+          </p>
+        )}
+
         <div className="bg-white border border-brand-navy/10 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -202,8 +240,15 @@ export default function AdminProducts() {
                     </td>
                   </tr>
                 )}
+                {!loading && filteredProducts.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-brand-navy/50">
+                      "{searchQuery}"-এর সাথে মিলে এমন কোনো প্রোডাক্ট পাওয়া যায়নি।
+                    </td>
+                  </tr>
+                )}
                 {!loading &&
-                  products.map((p, index) => {
+                  filteredProducts.map((p, index) => {
                     const thumb = p.images?.[0]?.url;
                     return (
                       <tr key={p.sku} className="hover:bg-brand-navy/5 transition-colors">
