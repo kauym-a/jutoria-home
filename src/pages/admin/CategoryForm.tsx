@@ -5,6 +5,7 @@ import { ArrowLeft, Save, UploadCloud, Loader2, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   fetchCategory,
+  fetchAllCategories,
   upsertCategory,
   type Category,
 } from '../../services/firebase/categories';
@@ -53,6 +54,23 @@ export default function AdminCategoryForm() {
       })
       .finally(() => setLoading(false));
   }, [slug, isEditing, navigate]);
+
+  // ⚠️ আবিষ্কৃত বাগ: EMPTY_CATEGORY.order আগে হার্ডকোড করা 1 ছিল — Jute-রও order 1,
+  // ফলে নতুন category সেভ করলে দুটোর order সমান হয়ে যেত। sort() টাই হলে Firestore
+  // যে ক্রমে ডকুমেন্ট ফেরত দেয় সেটাই থেকে যায় (stable sort) — যেটা গ্যারান্টিড না যে
+  // Jute-ই আগে থাকবে, তাই হোমপেজের "Our Materials" গ্রিডে নতুন category মাঝেমধ্যে ১
+  // নম্বর (বড়, featured) কার্ডের জায়গা নিয়ে নিত, Jute সরে যেত। এখন নতুন category
+  // তৈরি করার সময় (এডিট না) বিদ্যমান সবগুলোর সর্বোচ্চ order + 1 বসে — মানে নতুন
+  // category সবসময় লিস্টের *শেষে* যোগ হবে, কারো জায়গা নেবে না।
+  useEffect(() => {
+    if (isEditing) return;
+    fetchAllCategories()
+      .then((all) => {
+        const maxOrder = all.reduce((max, c) => Math.max(max, c.order ?? 0), 0);
+        setCategory((c) => ({ ...c, order: maxOrder + 1 }));
+      })
+      .catch((err) => console.error('Could not compute next category order:', err));
+  }, [isEditing]);
 
   const update = <K extends keyof Category>(key: K, value: Category[K]) => {
     setCategory((c) => ({ ...c, [key]: value }));
