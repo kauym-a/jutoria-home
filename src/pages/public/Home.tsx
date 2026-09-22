@@ -133,6 +133,29 @@ export default function Home() {
   // Hook for Mobile Product Image Toggle
   const [toggledProducts, setToggledProducts] = useState<Record<string, boolean>>({});
 
+  // সার্টিফিকেশন লোগো (নিচে দেখুন) — fetchPriority="low" আলাদাভাবে যথেষ্ট প্রমাণিত হয়নি
+  // (রিয়েল প্রোব-এ মাত্র ~100ms উন্নতি) — Chrome-এর network throttling emulation দুটো
+  // "High" priority রিসোর্সের (হিরো ছবি + এই লোগোগুলো) মধ্যে প্রায় সমান ব্যান্ডউইথ ভাগ
+  // করছিল, ফলে হিরো পোস্টারের ডাউনলোড/LCP প্রায় ২.৫ সেকেন্ড দেরি হচ্ছিল। লোগোগুলো পুরোপুরি
+  // সরিয়ে টেস্ট করে দেখা গেছে LCP প্রায় ৮০০ms কমে — তাই এখন এগুলোর `src` client-side-এ
+  // window 'load' ইভেন্টের *পরে* বসানো হয়, আগে না — critical LCP উইন্ডোতে এরা কোনো
+  // ব্যান্ডউইথই নেয় না। window.__PRERENDER__ চেক (দেখুন AuthProvider.tsx-এর একই প্যাটার্ন)
+  // ইচ্ছাকৃত: build-time prerender স্ন্যাপশট (scripts/prerender.mjs) যেন এই "লোড হয়নি"
+  // অবস্থাতেই HTML-এ বেক হয় — নাহলে prerender ৩৫০০ms অপেক্ষা করে বলে ততক্ষণে এই effect-ও
+  // চলে গিয়ে src বেক হয়ে যেত, রিয়েল ইউজারদের জন্যও deferral অকার্যকর হয়ে পড়ত।
+  const [logosLoaded, setLogosLoaded] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if ((window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ === true) return;
+    if (document.readyState === 'complete') {
+      setLogosLoaded(true);
+      return;
+    }
+    const onLoad = () => setLogosLoaded(true);
+    window.addEventListener('load', onLoad);
+    return () => window.removeEventListener('load', onLoad);
+  }, []);
+
   // Hooks for Lifestyle Editorial Section
   const lifestyleRef = useRef<HTMLDivElement>(null);
   const [isLifestyleVisible, setIsLifestyleVisible] = useState(false);
@@ -332,11 +355,18 @@ export default function Home() {
                 <div key={logo.name} className="flex h-16 items-center justify-center rounded-[14px] border border-brand-navy/5 bg-[#fbfaf7] p-3 sm:h-20 lg:h-24">
                   {/* সব লোগোর দৃশ্যমান উচ্চতা এক (h-9 → sm:h-11 → lg:60px), w-auto + object-contain
                       দিয়ে aspect ratio ঠিক থাকে। mix-blend-multiply সাদা JPEG ব্যাকগ্রাউন্ডকে
-                      টাইলের সাথে মিশিয়ে দেয়, grayscale টোন এক করে — hover-এ আসল রং ফিরে আসে। */}
+                      টাইলের সাথে মিশিয়ে দেয়, grayscale টোন এক করে — hover-এ আসল রং ফিরে আসে।
+                      src শুধু logosLoaded true হলেই বসে (window 'load'-এর পরে, উপরের
+                      কমেন্ট দেখুন) — তার আগে src না থাকায় ব্রাউজার কোনো রিকোয়েস্টই পাঠায় না,
+                      হিরো ছবির সাথে ব্যান্ডউইথ কম্পিট করার সুযোগই থাকে না। প্যারেন্ট div-এর
+                      ফিক্সড উচ্চতা (h-16/sm:h-20/lg:h-24) থাকায় src না থাকা অবস্থাতেও কোনো
+                      layout shift হয় না (CLS-নিরাপদ)। fetchPriority="low" বাড়তি সিগন্যাল হিসেবে
+                      রাখা হলো — লোড হওয়ার পরও যেন অন্য কিছুর চেয়ে অগ্রাধিকার না পায়। */}
                   <img
-                    src={logo.src}
+                    src={logosLoaded ? logo.src : undefined}
                     alt={logo.name}
                     loading="lazy"
+                    fetchPriority="low"
                     className="h-9 w-auto max-w-full object-contain opacity-70 grayscale mix-blend-multiply transition duration-300 ease-out hover:opacity-100 hover:grayscale-0 sm:h-11 lg:h-[60px]"
                   />
                 </div>
