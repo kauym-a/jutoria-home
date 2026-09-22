@@ -39,3 +39,20 @@ jobs:
           protocol: ftp
           local-dir: ./dist/
           server-dir: /domains/jutoriahome.com/public_html/
+
+      # Cloudflare-এ HTML পেজের জন্য একটা Cache Rule আছে (Edge TTL 2h, Free প্ল্যানের
+      # সর্বনিম্ন — origin-এর no-cache হেডার সত্ত্বেও edge-এ ক্যাশ হয়, TTFB/LCP স্থিতিশীল
+      # রাখার জন্য)। এর মানে প্রতিটা নতুন ডিপ্লয়ের পর পুরনো cached HTML সর্বোচ্চ ২ ঘণ্টা
+      # ধরে কিছু Cloudflare এজে থেকে যেতে পারে — আর যেহেতু vite build প্রতিটা ডিপ্লয়ে
+      # নতুন hash-নামের JS/CSS বানায় (পুরনোগুলো FTP আপলোডে ওভাররাইট/মুছে যায়), সেই পুরনো
+      # cached HTML যদি ইতিমধ্যে মুছে ফেলা asset রেফার করে তাহলে কিছু ভিজিটর broken page
+      # দেখতে পারতেন যতক্ষণ না cache নিজে থেকে expire হয়। তাই প্রতিটা সফল ডিপ্লয়ের ঠিক
+      # পরেই পুরো zone-এর cache purge করে দেওয়া হচ্ছে — নতুন HTML পরের রিকোয়েস্টেই আবার
+      # ফ্রেশভাবে re-cache হবে।
+      - name: Purge Cloudflare cache
+        run: |
+          curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}' \
+            --fail-with-body
