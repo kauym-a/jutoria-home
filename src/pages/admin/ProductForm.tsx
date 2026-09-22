@@ -4,7 +4,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, UploadCloud, Loader2, ChevronUp, ChevronDown, ListOrdered } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchProduct, fetchAllProducts, upsertProduct, type Product, type ProductImage } from '../../services/firebase/products';
-import { uploadProductImage, sortSpecKeys } from '../../services/firebase/productsAdmin';
+import { uploadProductImage, sortSpecKeys, ensureDefaultBrand } from '../../services/firebase/productsAdmin';
 import { useCategories } from '../../hooks/useCategories';
 
 const CATEGORIES = ['Placemats', 'Planter Baskets', 'Laundry Baskets', 'Organizer Baskets', 'Floor Mats / Rugs'];
@@ -33,7 +33,11 @@ export default function AdminProductForm() {
   const [product, setProduct] = useState<Product>(EMPTY_PRODUCT);
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
-  const [specRows, setSpecRows] = useState<[string, string][]>([]);
+  // নতুন প্রোডাক্টে Brand: JUTORIA ডিফল্ট হিসেবে বসানো থাকে (Admin-এর অনুরোধ — সব
+  // প্রোডাক্টই এই এক ব্র্যান্ডের, তাই প্রতিবার হাতে টাইপ করার দরকার নেই)। এডিট মোডে এই
+  // ইনিশিয়াল ভ্যালু কোনো প্রভাব ফেলে না — নিচের useEffect আসল ডেটা লোড হলেই এটা
+  // প্রতিস্থাপন করে দেয়।
+  const [specRows, setSpecRows] = useState<[string, string][]>(isEditing ? [] : [['Brand', 'JUTORIA']]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -181,13 +185,14 @@ export default function AdminProductForm() {
   const addSpecRow = () => setSpecRows((rows) => [...rows, ['', '']]);
 
   // Admin Products লিস্ট পেজের বাল্ক "Apply Standard Spec Order" বাটনের মতোই একই
-  // sortSpecKeys() লজিক ব্যবহার করে, কিন্তু এখানে শুধু এই একটা প্রোডাক্টে, তাৎক্ষণিকভাবে
-  // ফর্ম state-এ (Firestore-এ কিছু লেখা হয় না যতক্ষণ না "Save Product" চাপা হয়) — এডিট
-  // করার সময়ই এক ক্লিকে সাজানোর জন্য, আলাদা করে বাল্ক পেজে যাওয়ার দরকার নেই।
+  // sortSpecKeys()/ensureDefaultBrand() লজিক ব্যবহার করে, কিন্তু এখানে শুধু এই একটা
+  // প্রোডাক্টে, তাৎক্ষণিকভাবে ফর্ম state-এ (Firestore-এ কিছু লেখা হয় না যতক্ষণ না
+  // "Save Product" চাপা হয়) — এডিট করার সময়ই এক ক্লিকে সাজানোর জন্য, আলাদা করে বাল্ক
+  // পেজে যাওয়ার দরকার নেই। Brand ফিল্ড খালি/অনুপস্থিত থাকলে "JUTORIA" বসিয়ে দেয়।
   const sortSpecRows = () => {
     setSpecRows((rows) => {
-      const valueByKey = new Map(rows.map(([k, v]) => [k, v]));
-      return sortSpecKeys(rows.map(([k]) => k)).map((k) => [k, valueByKey.get(k) ?? ''] as [string, string]);
+      const valueByKey = ensureDefaultBrand(Object.fromEntries(rows));
+      return sortSpecKeys(Object.keys(valueByKey)).map((k) => [k, valueByKey[k] ?? ''] as [string, string]);
     });
   };
   const removeSpecRow = (index: number) => setSpecRows((rows) => rows.filter((_, i) => i !== index));

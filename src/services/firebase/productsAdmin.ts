@@ -196,6 +196,16 @@ export function sortSpecKeys(existingKeys: string[]): string[] {
 }
 
 /**
+ * সব প্রোডাক্টই JUTORIA-র নিজস্ব ব্র্যান্ড — তাই "Brand" ফিল্ড খালি/অনুপস্থিত থাকলে
+ * "JUTORIA" ডিফল্ট হিসেবে বসিয়ে দেয়। ইতিমধ্যে কোনো মান থাকলে (এমনকি ভিন্ন কিছু হলেও)
+ * touch করা হয় না — শুধু সত্যিই খালি থাকা প্রোডাক্টগুলোতেই বসে।
+ */
+export function ensureDefaultBrand(fields: Record<string, string>): Record<string, string> {
+  if (fields.Brand?.trim()) return fields;
+  return { ...fields, Brand: 'JUTORIA' };
+}
+
+/**
  * সব প্রোডাক্টের excel_fields-এর key-গুলো sortSpecKeys() দিয়ে সাজিয়ে specOrder হিসেবে
  * সেভ করে দেয় (দেখুন products.ts-এর specOrder কমেন্ট — এটাই আসল display-order-এর
  * সোর্স, excel_fields নিজে Firestore map বলে ক্রম রাখে না)। তালিকায় নেই এমন ফিল্ড
@@ -215,18 +225,19 @@ export async function applyStandardSpecOrder(
     const product = products[i];
     onProgress?.(i, products.length, product.sku);
 
-    const fields = product.excel_fields || {};
+    const fields = ensureDefaultBrand(product.excel_fields || {});
     const existingKeys = Object.keys(fields);
     const newOrder = sortSpecKeys(existingKeys);
 
-    const currentOrder = product.specOrder?.filter((k) => k in fields) || existingKeys;
-    const isSame = currentOrder.length === newOrder.length && currentOrder.every((k, idx) => k === newOrder[idx]);
+    const currentOrder = product.specOrder?.filter((k) => k in fields) || Object.keys(product.excel_fields || {});
+    const fieldsChanged = fields !== (product.excel_fields || {}); // ensureDefaultBrand নতুন object দেয় শুধু বদলালে
+    const isSame = !fieldsChanged && currentOrder.length === newOrder.length && currentOrder.every((k, idx) => k === newOrder[idx]);
     if (isSame) {
       productsUnchanged += 1;
       continue;
     }
 
-    await upsertProduct({ ...product, specOrder: newOrder });
+    await upsertProduct({ ...product, excel_fields: fields, specOrder: newOrder });
     productsUpdated += 1;
   }
 
