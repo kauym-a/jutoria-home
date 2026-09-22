@@ -108,36 +108,69 @@ export async function optimizeExistingProductImages(
 }
 
 // ============================================================
-// Admin-এর সাথে আলোচনা করে ঠিক করা "Specifications" ফিল্ডের স্ট্যান্ডার্ড ক্রম — identity
-// (Brand/Product Type) → material/appearance (Material/Color/Shape/Design/Style) →
-// construction (Weave/Pattern) → size (Size/Dimensions/Weight) → quantity (Set/Pieces) →
-// hardware (Handles/Closure/Mounting) → care → usage (Suitable For/Perfect For) → MOQ
-// সবার শেষে (এটা প্রোডাক্টের বর্ণনা না, অর্ডারের শর্ত)। বিভিন্ন প্রোডাক্টে একই ধরনের
-// ফিল্ডের নাম একটু আলাদা আলাদা টাইপ হয়েছে (যেমন "Recommended Use" বনাম "Recommended
-// Uses") — তাই প্রতিটা variant আলাদা এন্ট্রি হিসেবে (একই জায়গায়) রাখা হয়েছে, ফাজি
+// Admin-এর সাথে আলোচনা করে ঠিক করা "Specifications" ফিল্ডের সম্পূর্ণ স্ট্যান্ডার্ড ক্রম।
+// প্রথম দুইবার শুধু সবচেয়ে বেশি-ব্যবহৃত ~৮০টা ফিল্ড কভার করা হয়েছিল, বাকি ~১০০টা
+// (Medium Basket, Size Details Medium/Large/Small ইত্যাদির মতো কম-ব্যবহৃত কিন্তু আসল
+// ডেটায় থাকা ফিল্ড) "unmatched" হয়ে এলোমেলো থেকে যাচ্ছিল। এবার Firestore-এর সব
+// প্রোডাক্টের excel_fields থেকে *প্রতিটা* distinct key (মোট ১৭৮টা) বের করে প্রতিটাকে
+// একটা category-তে বসানো হয়েছে — স্ক্রিপ্ট দিয়ে verify করা হয়েছে এই তালিকায় সবগুলো
+// আসল ফিল্ড ঠিক একবার করে আছে (miss/duplicate নেই)।
+//
+// Category ক্রম: identity → material/color → size & dimensions (Shape সহ, তার পরই
+// Medium/Large/Small Basket-এর মতো সব সাইজ-ভ্যারিয়েন্ট, Admin-এর সুনির্দিষ্ট অনুরোধে)
+// → design/style → construction → weight → quantity/set → hardware → mounting/
+// electrical → care → context/placement → features → usage (Perfect For/Primary Use/
+// Suitable For সবার শেষে) → MOQ (সবচেয়ে শেষে, এটা প্রোডাক্টের বর্ণনা না অর্ডারের শর্ত)।
+//
+// বিভিন্ন প্রোডাক্টে একই ধরনের ফিল্ডের নাম একটু আলাদা টাইপ হয়েছে (যেমন "Recommended Use"
+// বনাম "Recommended Uses") — প্রতিটা variant আলাদা এন্ট্রি হিসেবে রাখা হয়েছে, ফাজি
 // ম্যাচিং না করে exact match করা হয় যাতে ভুলবশত ভিন্ন জিনিস এক করে না ফেলে।
 export const CANONICAL_SPEC_ORDER = [
-  'Brand', 'Product Type', 'Country of Origin',
-  // Color আর Size পাশাপাশি — Admin-এর সুনির্দিষ্ট অনুরোধ (আগে Color ছিল একদম শুরুর দিকে,
-  // Size ছিল অনেক পরে, Construction/Weave-এর পরে)।
-  'Material', 'Color', 'Primary Color',
-  'Size', 'Available Sizes', 'Available Size Options', 'Placemat Size', 'Napkin Ring Size',
-  'Dimensions', 'Metric Dimensions', 'Overall Listed Dimensions', 'Diameter', 'Height',
-  'Shape', 'Design', 'Design Style', 'Style', 'Theme',
-  'Construction', 'Craftsmanship', 'Production Technique', 'Handmade', 'Weave', 'Weave Type',
-  'Pattern', 'Pattern/Texture', 'Fiber', 'Structure',
+  // পরিচয়
+  'Brand', 'Product Type', 'SKU', 'Country of Origin',
+  // Material ও Color
+  'Material', 'Fabric', 'Fiber', 'Structure', 'Color', 'Primary Color', 'Main Color', 'Trim Color', 'Light Color',
+  // Size ও Dimensions (Shape সহ, তার পরপরই সব সাইজ-ভ্যারিয়েন্ট — Admin-এর সুনির্দিষ্ট অনুরোধ)
+  'Size', 'Available Sizes', 'Available Size Options', 'Sizes:', 'Sizes Medium', 'Sizes Large', 'Sizes Small', 'Sizes Extra Small',
+  'Dimensions', 'Metric Dimensions', 'Overall Listed Dimensions',
+  'Shape',
+  'Medium Basket', 'Large Basket', 'Small Basket', 'Large Basket Size', 'Small Basket Size',
+  'Size Details Medium', 'Size Details Large', 'Size Details Small',
+  'Size Specifications: Medium', 'Size Specifications: Large', 'Size Specifications: Small',
+  'Small', 'Large', 'Storage',
+  'Diameter', 'Opening', 'Opening Diameter', 'Height', 'Bottom Width', 'Basket Width', 'Strap Drop',
+  'Placemat Size', 'Napkin Ring Size', 'Wood Holder Size', 'Shade Size', 'Shade Diameter', 'Shade Height',
+  'Canopy Thickness', 'Ceiling Canopy Diameter', 'Fixture Width', 'Overall Hanging Height', 'Overall Hanging Length', 'Cord Length',
+  'Pile Height', 'Recommended Pot Size',
+  // Design ও Style
+  'Design', 'Design Style', 'Style', 'Theme', 'Pattern', 'Pattern/Texture', 'Edge Design', 'Decorative Detail', 'Light Fixture Form', 'Orientation',
+  // Construction ও Craftsmanship
+  'Construction', 'Craftsmanship', 'Production Technique', 'Handmade', 'Handcrafted', 'Weave', 'Weave Type', 'Pile Type', 'Stitching',
+  // Weight ও Thickness
   'Thickness', 'Weight', 'Listed Weight', 'Weight per Piece',
-  'Capacity', 'Number of Baskets', 'Set', 'Set Includes', 'Set Size', 'Set Quantity',
-  'Number of Bags', 'Package Includes', 'Included Components', 'Included Component',
-  'Pieces', 'Piece Count', 'Total Pieces', 'Quantity', 'Compartments', 'Number of Compartments',
+  // Quantity ও Set
+  'Capacity', 'Number of Baskets', 'Set', 'Set Includes', 'Set Size', 'Set Quantity', 'Number of Bags',
+  'Package Includes', 'Included Components', 'Included Component', 'Pieces', 'Piece Count', 'Total Pieces',
+  'Quantity', 'Compartments', 'Number of Compartments', 'Front Compartments', 'Front Compartment Width',
+  'Number of Lights', 'Number of Light Sources',
+  // Hardware ও Functional Parts
   'Finish', 'Handles', 'Handle', 'Handle Material', 'Closure', 'Closure Type', 'Lid', 'Lid/Closure',
-  'Mounting', 'Mounting Type', 'Installation',
-  'Care', 'Care Instructions', 'Care & Maintenance', 'Water Resistance', 'Heat Resistance',
-  'Indoor/Outdoor', 'Indoor Use', 'Outdoor Use',
-  'Suitable Rooms', 'Suitable Room', 'Suitable Spaces', 'Room Type',
-  'Use', 'Recommended Use', 'Recommended Uses', 'Suggested Uses', 'Specific Uses', 'Additional Use',
-  // Admin-এর সুনির্দিষ্ট অনুরোধ — এই তিনটা একদম শেষে, MOQ-এর ঠিক উপরে, এই ক্রমেই।
+  'Liner', 'Liner Function', 'Inner Lining', 'Lining', 'Lining Material', 'Frame', 'Holder', 'Cushion',
+  'Container Type', 'Back Material', 'Feet', 'Feet/Legs', 'Shade', 'Shade Material',
+  // Mounting ও Electrical (মূলত লাইট-জাতীয় প্রোডাক্টের জন্য)
+  'Mounting', 'Mounting Type', 'Installation', 'Hanging System', 'Switch', 'Plug', 'Light Control',
+  'Light Socket', 'Bulb Base', 'Compatible Bulbs', 'Power Source', 'Voltage', 'Input Voltage', 'Wattage', 'Brightness',
+  // Care ও Durability
+  'Care', 'Care Instructions', 'Care & Maintenance', 'Care & Maintenance:', 'Water Resistance', 'Heat Resistance', 'Breathability', 'Season',
+  // Context / Placement
+  'Indoor/Outdoor', 'Indoor / Outdoor', 'Indoor Use', 'Outdoor Use', 'Suitable Rooms', 'Suitable Room',
+  'Suitable Spaces', 'Room Type', 'Interior', 'Placement', 'Planter Form', 'Compatible Plant Type', 'Recommended Cat Weight',
+  // Features
+  'Features', 'Special Features', 'Special Feature', 'Interactive Feature', 'Surface', 'Commercial Applications',
+  // Usage — Admin-এর সুনির্দিষ্ট অনুরোধে Perfect For/Primary Use/Suitable For একদম শেষে, এই ক্রমেই
+  'Use', 'Recommended Use', 'Recommended Uses', 'Recommended Uses:', 'Suggested Uses', 'Specific Uses', 'Additional Use',
   'Perfect For', 'Primary Use', 'Suitable For',
+  // Order টার্ম — সবচেয়ে শেষে
   'MOQ',
 ];
 
