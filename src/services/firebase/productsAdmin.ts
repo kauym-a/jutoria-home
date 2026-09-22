@@ -117,37 +117,49 @@ export async function optimizeExistingProductImages(
 // Uses") — তাই প্রতিটা variant আলাদা এন্ট্রি হিসেবে (একই জায়গায়) রাখা হয়েছে, ফাজি
 // ম্যাচিং না করে exact match করা হয় যাতে ভুলবশত ভিন্ন জিনিস এক করে না ফেলে।
 export const CANONICAL_SPEC_ORDER = [
-  'Brand', 'Product Type',
-  'Material', 'Color', 'Primary Color', 'Shape', 'Design', 'Design Style', 'Style', 'Theme',
+  'Brand', 'Product Type', 'Country of Origin',
+  // Color আর Size পাশাপাশি — Admin-এর সুনির্দিষ্ট অনুরোধ (আগে Color ছিল একদম শুরুর দিকে,
+  // Size ছিল অনেক পরে, Construction/Weave-এর পরে)।
+  'Material', 'Color', 'Primary Color',
+  'Size', 'Available Sizes', 'Available Size Options', 'Placemat Size', 'Napkin Ring Size',
+  'Dimensions', 'Metric Dimensions', 'Overall Listed Dimensions', 'Diameter', 'Height',
+  'Shape', 'Design', 'Design Style', 'Style', 'Theme',
   'Construction', 'Craftsmanship', 'Production Technique', 'Handmade', 'Weave', 'Weave Type',
   'Pattern', 'Pattern/Texture', 'Fiber', 'Structure',
-  'Size', 'Available Sizes', 'Available Size Options', 'Placemat Size', 'Napkin Ring Size',
-  'Dimensions', 'Metric Dimensions', 'Overall Listed Dimensions', 'Diameter', 'Height', 'Thickness',
-  'Weight', 'Listed Weight', 'Weight per Piece',
+  'Thickness', 'Weight', 'Listed Weight', 'Weight per Piece',
   'Capacity', 'Number of Baskets', 'Set', 'Set Includes', 'Set Size', 'Set Quantity',
   'Number of Bags', 'Package Includes', 'Included Components', 'Included Component',
   'Pieces', 'Piece Count', 'Total Pieces', 'Quantity', 'Compartments', 'Number of Compartments',
   'Finish', 'Handles', 'Handle', 'Handle Material', 'Closure', 'Closure Type', 'Lid', 'Lid/Closure',
   'Mounting', 'Mounting Type', 'Installation',
   'Care', 'Care Instructions', 'Care & Maintenance', 'Water Resistance', 'Heat Resistance',
-  'Suitable For', 'Suitable Rooms', 'Suitable Room', 'Suitable Spaces', 'Room Type', 'Perfect For',
-  'Use', 'Primary Use', 'Recommended Use', 'Recommended Uses', 'Suggested Uses', 'Specific Uses',
-  'Additional Use', 'Indoor/Outdoor', 'Indoor Use', 'Outdoor Use', 'Country of Origin',
+  'Indoor/Outdoor', 'Indoor Use', 'Outdoor Use',
+  'Suitable Rooms', 'Suitable Room', 'Suitable Spaces', 'Room Type',
+  'Use', 'Recommended Use', 'Recommended Uses', 'Suggested Uses', 'Specific Uses', 'Additional Use',
+  // Admin-এর সুনির্দিষ্ট অনুরোধ — এই তিনটা একদম শেষে, MOQ-এর ঠিক উপরে, এই ক্রমেই।
+  'Perfect For', 'Primary Use', 'Suitable For',
   'MOQ',
 ];
+
+// Admin-এর সুনির্দিষ্ট অনুরোধ: এই ফিল্ডগুলো *সবার শেষে* থাকবে (এই ক্রমেই) — এমনকি সেই
+// প্রোডাক্টের নিজস্ব বিশেষ (unmatched, CANONICAL_SPEC_ORDER-এ নেই এমন) ফিল্ডের পরেও।
+// সাধারণ নিয়ম (matched ফিল্ড আগে, তারপর unmatched) অনুসরণ করলে এই ফিল্ডগুলো
+// CANONICAL_SPEC_ORDER-এ যেখানেই থাকুক না কেন "matched" গ্রুপের অংশ হয়ে unmatched
+// ফিল্ডের *আগে* চলে যেত (যেমন lamp-এর "Shade Diameter"-এর আগে) — তাই এদের আলাদাভাবে,
+// সবকিছুর শেষে জোর করে বসানো হচ্ছে।
+const TRAILING_FIELDS = ['Perfect For', 'Primary Use', 'Suitable For', 'MOQ'];
 
 /**
  * একটা প্রোডাক্টের excel_fields key-গুলোকে CANONICAL_SPEC_ORDER অনুযায়ী সাজিয়ে নতুন
  * ক্রম ফেরত দেয় — bulk applyStandardSpecOrder() আর ProductForm.tsx-এর "Sort by
  * Standard Order" বাটন দুটোই এই একই ফাংশন ব্যবহার করে, যাতে দুই জায়গায় লজিক আলাদা
- * হয়ে না যায়। MOQ বিশেষভাবে সবার শেষে রাখা হয় — এমনকি "unmatched" (তালিকায় নেই এমন,
- * প্রোডাক্ট-নির্দিষ্ট) ফিল্ডের পরেও, যাতে ম্যাচ-করা ফিল্ড আগে + unmatched পরে এই সাধারণ
- * নিয়মটা MOQ-কে মাঝামাঝি ঠেলে না দেয়।
+ * হয়ে না যায়।
  */
 export function sortSpecKeys(existingKeys: string[]): string[] {
-  const matched = CANONICAL_SPEC_ORDER.filter((k) => k !== 'MOQ' && existingKeys.includes(k));
-  const unmatched = existingKeys.filter((k) => k !== 'MOQ' && !CANONICAL_SPEC_ORDER.includes(k));
-  return [...matched, ...unmatched, ...(existingKeys.includes('MOQ') ? ['MOQ'] : [])];
+  const matched = CANONICAL_SPEC_ORDER.filter((k) => !TRAILING_FIELDS.includes(k) && existingKeys.includes(k));
+  const unmatched = existingKeys.filter((k) => !TRAILING_FIELDS.includes(k) && !CANONICAL_SPEC_ORDER.includes(k));
+  const trailing = TRAILING_FIELDS.filter((k) => existingKeys.includes(k));
+  return [...matched, ...unmatched, ...trailing];
 }
 
 /**
