@@ -185,6 +185,7 @@ export default function AdminProducts() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-offwhite text-brand-navy/70 font-sans text-xs uppercase tracking-wider">
+                  <th className="p-4 font-semibold w-12">#</th>
                   <th className="p-4 font-semibold">Product</th>
                   <th className="p-4 font-semibold">SKU</th>
                   <th className="p-4 font-semibold">Materials</th>
@@ -196,16 +197,17 @@ export default function AdminProducts() {
               <tbody className="divide-y divide-brand-navy/5 font-sans text-sm">
                 {loading && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-brand-navy/50">
+                    <td colSpan={7} className="p-8 text-center text-brand-navy/50">
                       Loading…
                     </td>
                   </tr>
                 )}
                 {!loading &&
-                  products.map((p) => {
+                  products.map((p, index) => {
                     const thumb = p.images?.[0]?.url;
                     return (
                       <tr key={p.sku} className="hover:bg-brand-navy/5 transition-colors">
+                        <td className="p-4 text-brand-navy/50 font-mono text-xs">{index + 1}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
                             {thumb ? (
