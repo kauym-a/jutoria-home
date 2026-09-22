@@ -20,7 +20,12 @@ export type Category = {
   name: string;
   desc: string; // short — কার্ডে দেখায়
   longDesc: string; // বিস্তারিত — /materials/:slug পেজে দেখায়
-  image: string; // কার্ড/হিরো ব্যাকগ্রাউন্ড
+  image: string; // /materials/:slug-এর 55vh hero ব্যাকগ্রাউন্ড — বড় থাকা দরকার
+  // Home.tsx-এর "Our Materials" গ্রিড ও /materials লিস্টিং-এর ছোট কার্ডের (~280px) জন্য
+  // আলাদা, ছোট ভার্সন — image (hero) ব্যবহার করলে PageSpeed-এ "Improve image
+  // delivery"-তে বড় penalty হতো (প্রতিটা ~1600px/৩০০KB ছবি একটা ~280px কার্ডে)। না
+  // থাকলে (পুরনো/না-অপ্টিমাইজড ক্যাটাগরি) কলাররা image-এই ফলব্যাক করে।
+  cardImage?: string;
   order: number; // পজিশন (ছোট আগে)
   active: boolean; // false = সাইট থেকে লুকানো, admin-এ এখনো এডিটযোগ্য
   updatedAt?: unknown;

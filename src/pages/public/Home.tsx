@@ -402,7 +402,7 @@ export default function Home() {
                       এখন আসল <img loading="lazy"> (gradient overlay-র নিচে absolute
                       positioned), যাতে ব্রাউজার ফোল্ডের কাছে না আসা পর্যন্ত এটা ফেচ না করে। */}
                   <img
-                    src={material.image}
+                    src={material.cardImage || material.image}
                     alt={material.name}
                     loading="lazy"
                     decoding="async"

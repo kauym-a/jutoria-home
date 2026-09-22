@@ -56,7 +56,7 @@ export default function Materials() {
                     viewport-এ না এলেও। এখন <img loading="lazy"> (gradient overlay-র
                     নিচে absolute positioned)। */}
                 <img
-                  src={material.image}
+                  src={material.cardImage || material.image}
                   alt={material.name}
                   loading="lazy"
                   decoding="async"

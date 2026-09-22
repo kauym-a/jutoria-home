@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Database, ExternalLink } from 'lucide-react';
+import { Plus, Pencil, Trash2, Database, ExternalLink, ImageDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   fetchAllCategories,
@@ -11,11 +11,14 @@ import {
   displayNumber,
   type Category,
 } from '../../services/firebase/categories';
+import { optimizeExistingCategoryImages } from '../../services/firebase/categoriesAdmin';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
+  const [optimizeProgress, setOptimizeProgress] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -70,6 +73,30 @@ export default function AdminCategories() {
     }
   };
 
+  // হোমপেজের "Our Materials" গ্রিড ও /materials-এর ছোট কার্ডে (~280px) এতদিন সরাসরি
+  // বড় hero ছবি (1600px, /materials/:slug ডিটেইল পেজের জন্য) সার্ভ হচ্ছিল — PageSpeed-এর
+  // "Improve image delivery" রিগ্রেশনের মূল কারণ। এই বাটন প্রতিটা ক্যাটাগরির বিদ্যমান
+  // image থেকে একটা ছোট cardImage বানিয়ে দেয় (দেখুন categoriesAdmin.ts)। বারবার
+  // চাপলেও সমস্যা নেই — প্রতিবার বর্তমান image থেকেই cardImage রিজেনারেট হয়।
+  const handleOptimizeImages = async () => {
+    if (!window.confirm('প্রতিটা ক্যাটাগরির বর্তমান ছবি থেকে ছোট "কার্ড" ভার্সন বানিয়ে Firebase Storage-এ আপলোড হবে (হোমপেজ/Materials গ্রিডের জন্য)। এগোতে চান?')) return;
+    setOptimizing(true);
+    setOptimizeProgress('শুরু হচ্ছে...');
+    try {
+      const result = await optimizeExistingCategoryImages((done, total, slug) => {
+        setOptimizeProgress(slug ? `${done + 1}/${total} — ${slug}` : `সম্পন্ন (${total}/${total})`);
+      });
+      toast.success(`${result.categoriesUpdated}টা ক্যাটাগরির কার্ড ইমেজ তৈরি হয়েছে (${result.categoriesSkipped}টা স্কিপ)।`);
+      await load();
+    } catch (err) {
+      console.error(err);
+      toast.error('কার্ড ইমেজ তৈরি করতে সমস্যা হয়েছে — Firestore/Storage নিয়ম চেক করুন।');
+    } finally {
+      setOptimizing(false);
+      setOptimizeProgress('');
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -94,6 +121,15 @@ export default function AdminCategories() {
             >
               <Database size={16} />
               {seeding ? 'Seeding…' : 'Seed Existing Categories'}
+            </button>
+            <button
+              onClick={handleOptimizeImages}
+              disabled={optimizing}
+              className="flex items-center gap-2 border border-brand-navy/20 text-brand-navy px-4 py-2.5 text-sm font-semibold hover:border-brand-gold hover:text-brand-gold transition-colors disabled:opacity-50"
+              title="প্রতিটা ক্যাটাগরির বিদ্যমান ছবি থেকে ছোট 'কার্ড' ভার্সন বানায় — হোমপেজ/Materials গ্রিডের লোড স্পিড বাড়ানোর জন্য"
+            >
+              <ImageDown size={16} />
+              {optimizing ? optimizeProgress || 'Optimizing…' : 'Optimize Card Images'}
             </button>
             <Link
               to="/admin/categories/new"

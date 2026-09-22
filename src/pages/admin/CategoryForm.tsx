@@ -98,9 +98,9 @@ export default function AdminCategoryForm() {
 
     setUploading(true);
     try {
-      const url = await uploadCategoryImage(uploadSlug, file);
-      update('image', url);
-      toast.success('ছবি আপলোড হয়েছে। এখন "Save Category" চাপুন।');
+      const { image, cardImage } = await uploadCategoryImage(uploadSlug, file);
+      setCategory((c) => ({ ...c, image, cardImage }));
+      toast.success('ছবি আপলোড হয়েছে (হিরো + কার্ড দুই সাইজেই)। এখন "Save Category" চাপুন।');
     } catch (err) {
       console.error(err);
       toast.error('ছবি আপলোড ব্যর্থ হয়েছে।');
@@ -283,6 +283,26 @@ export default function AdminCategoryForm() {
                 </button>
               )}
             </div>
+            {/* cardImage-এর নিজস্ব ইনপুট নেই — Upload Image বাটনেই স্বয়ংক্রিয়ভাবে তৈরি
+                হয়ে যায় (দেখুন categoriesAdmin.ts uploadCategoryImage())। এই ছোট প্রিভিউটা
+                শুধু নিশ্চিত করার জন্য যে হোমপেজ/Materials গ্রিডের ছোট কার্ড ভার্সনও সেট আছে। */}
+            <p className="text-xs text-brand-navy/40 mt-3 flex items-center gap-2">
+              {category.cardImage ? (
+                <>
+                  <img
+                    src={category.cardImage}
+                    alt=""
+                    loading="lazy"
+                    className="w-8 h-8 object-cover rounded border border-brand-navy/10"
+                  />
+                  Card (small grid) ভার্সনও সেট আছে — হোমপেজ/Materials গ্রিডে এটা দেখাবে।
+                </>
+              ) : (
+                <span className="text-amber-700">
+                  ⚠ Card ভার্সন নেই — Admin Categories পেজের "Optimize Card Images" বাটন চাপুন, নাহলে গ্রিডে বড় hero ছবিটাই সার্ভ হবে।
+                </span>
+              )}
+            </p>
           </div>
 
           <div className="flex justify-end gap-3">
