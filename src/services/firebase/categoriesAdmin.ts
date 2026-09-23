@@ -52,11 +52,15 @@ export async function uploadCategoryImage(slug: string, file: File): Promise<{ i
  */
 export async function optimizeExistingCategoryImages(
   onProgress?: (done: number, total: number, slug: string) => void,
-): Promise<{ categoriesUpdated: number; categoriesSkipped: number }> {
+): Promise<{ categoriesUpdated: number; categoriesSkipped: number; categoriesFailed: number }> {
   const categories = await fetchAllCategories();
   const storage = await getFirebaseStorage();
   let categoriesUpdated = 0;
   let categoriesSkipped = 0;
+  // productsAdmin.ts-এর optimizeExistingProductImages()-এ একই ভুল ধরা পড়ার পর এখানেও
+  // আলাদা করা হলো — categoriesSkipped শুধু "image field-ই নেই" (স্বাভাবিক) বোঝাবে,
+  // আসল fetch/upload ব্যর্থতা categoriesFailed-এ আলাদাভাবে গুনবে।
+  let categoriesFailed = 0;
 
   for (let i = 0; i < categories.length; i++) {
     const category = categories[i];
@@ -80,10 +84,10 @@ export async function optimizeExistingCategoryImages(
       categoriesUpdated += 1;
     } catch (err) {
       console.error(`Card image optimize failed for ${category.slug}:`, err);
-      categoriesSkipped += 1;
+      categoriesFailed += 1;
     }
   }
 
   onProgress?.(categories.length, categories.length, '');
-  return { categoriesUpdated, categoriesSkipped };
+  return { categoriesUpdated, categoriesSkipped, categoriesFailed };
 }

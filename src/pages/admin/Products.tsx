@@ -75,18 +75,19 @@ export default function AdminProducts() {
         setOptimizeProgress(sku ? `${done + 1}/${total} — ${sku}` : `সম্পন্ন (${total}/${total})`);
       });
       const savedKB = Math.round((result.bytesBefore - result.bytesAfter) / 1024);
-      // ⚠️ আবিষ্কৃত বাগ (categoriesAdmin.ts-এর একই ধরনের বাগ ধরা পড়ার পর এখানেও চেক করা
-      // হলো): productsUpdated===0 হলেও আগে সবসময় toast.success() দেখাতো। Firebase
-      // Storage-এ CORS কনফিগার করা না থাকলে fetch(img.url) প্রতিটা non-webp ছবির জন্য
-      // silently fail করে (imagesSkipped-এ যোগ হয়), অ্যাডমিন ভুল করে ভাবতে পারতেন কাজ
-      // হয়ে গেছে অথচ Firestore-এ কিছুই বদলায়নি।
-      if (result.productsUpdated === 0 && result.imagesSkipped > 0) {
+      // ⚠️ আগের বাগ ফিক্সে ভুল ছিল: imagesSkipped-এ "আগে থেকেই webp" (স্বাভাবিক) আর
+      // "fetch ব্যর্থ" (আসল সমস্যা) দুটোই মিশে থাকায়, সব ছবি ইতিমধ্যে অপ্টিমাইজড থাকা
+      // অবস্থায় (productsUpdated=0, কিন্তু imagesSkipped=সব) ভুল করে CORS এরর দেখাচ্ছিল।
+      // এখন productsAdmin.ts-এর আলাদা imagesFailed কাউন্টার (শুধু আসল fetch/upload
+      // ব্যর্থতা) ব্যবহার করা হচ্ছে — "সব আগে থেকেই ঠিক আছে" আর "সত্যিই ব্যর্থ হয়েছে"
+      // এখন আলাদা করে দেখানো হয়।
+      if (result.imagesFailed > 0) {
         toast.error(
-          `০টা প্রোডাক্ট আপডেট হয়নি (${result.imagesSkipped}টা ছবি স্কিপ) — সম্ভবত Firebase Storage-এ CORS কনফিগার করা নেই। Console-এ বিস্তারিত এরর দেখুন।`,
+          `${result.imagesFailed}টা ছবি প্রসেস করতে ব্যর্থ হয়েছে — সম্ভবত Firebase Storage-এ CORS কনফিগার করা নেই। Console-এ বিস্তারিত এরর দেখুন। (${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে, ${result.imagesConverted}টা ছবি কনভার্ট।)`,
         );
       } else {
         toast.success(
-          `${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে — ${result.imagesConverted}টা ছবি কনভার্ট (${result.imagesSkipped}টা আগে থেকেই WebP/static, স্কিপ)। প্রায় ${savedKB} KB বাঁচল।`,
+          `${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে — ${result.imagesConverted}টা ছবি কনভার্ট (${result.imagesSkipped}টা আগে থেকেই WebP/static)। প্রায় ${savedKB} KB বাঁচল।`,
         );
       }
       await load();

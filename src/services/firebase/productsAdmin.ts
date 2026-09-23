@@ -52,12 +52,27 @@ export async function uploadProductImage(sku: string, file: File): Promise<strin
  */
 export async function optimizeExistingProductImages(
   onProgress?: (done: number, total: number, sku: string) => void,
-): Promise<{ productsUpdated: number; imagesConverted: number; imagesSkipped: number; bytesBefore: number; bytesAfter: number }> {
+): Promise<{
+  productsUpdated: number;
+  imagesConverted: number;
+  imagesSkipped: number;
+  imagesFailed: number;
+  bytesBefore: number;
+  bytesAfter: number;
+}> {
   const products = await fetchAllProducts();
   const storage = await getFirebaseStorage();
   let productsUpdated = 0;
   let imagesConverted = 0;
   let imagesSkipped = 0;
+  // ⚠️ আবিষ্কৃত বাগ: আগে এই ফাংশন "আগে থেকেই webp" (স্বাভাবিক, কিছু করার দরকার নেই) আর
+  // "fetch ব্যর্থ হয়েছে" (আসল সমস্যা, যেমন Storage-এ CORS কনফিগার করা না থাকা) — দুটো
+  // সম্পূর্ণ আলাদা কারণকেই একই imagesSkipped কাউন্টারে গুনত। ফলে Products.tsx-এর
+  // "0টা আপডেট হলে CORS এরর দেখাও" লজিকটা প্রথমবার CORS ঠিক হওয়ার পরের রানেও ভুলভাবে
+  // ট্রিগার হয়ে যাচ্ছিল — কারণ ততক্ষণে বেশিরভাগ ছবি ইতিমধ্যে webp (legitimate skip),
+  // কিন্তু productsUpdated তখনো 0 (নতুন কিছু কনভার্ট করার ছিল না) হওয়ায় ভুল করে
+  // "CORS নেই" এরর দেখাচ্ছিল। এখন আসল ব্যর্থতা (imagesFailed) আলাদাভাবে গোনা হয়।
+  let imagesFailed = 0;
   let bytesBefore = 0;
   let bytesAfter = 0;
 
@@ -91,7 +106,7 @@ export async function optimizeExistingProductImages(
           return { ...img, url: newUrl, filename: processed.name };
         } catch (err) {
           console.error(`Image optimize failed for ${product.sku} (${img.url}):`, err);
-          imagesSkipped += 1;
+          imagesFailed += 1;
           return img;
         }
       }),
@@ -104,7 +119,7 @@ export async function optimizeExistingProductImages(
   }
 
   onProgress?.(products.length, products.length, '');
-  return { productsUpdated, imagesConverted, imagesSkipped, bytesBefore, bytesAfter };
+  return { productsUpdated, imagesConverted, imagesSkipped, imagesFailed, bytesBefore, bytesAfter };
 }
 
 // ============================================================
