@@ -98,7 +98,7 @@ export default function PeopleArtisans() {
                 Meaningful Work.
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-5">
-                Every JUTORIA piece begins with people. Skilled artisans work with natural fibres using techniques shaped by experience, patience and careful attention to detail.
+                Every JUTORIA piece begins with people. Skilled artisans work with natural fibers using techniques shaped by experience, patience and careful attention to detail.
               </p>
               <p className="font-sans text-base text-brand-navy/55 font-light leading-relaxed">
                 The character that defines each finished piece — its texture, its weight, its form — comes from this process of careful, considered handwork.
@@ -160,7 +160,7 @@ export default function PeopleArtisans() {
 
           <div className="max-w-2xl">
             <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
-              From preparing natural fibres to shaping and finishing each piece, skilled hands remain at the heart of the JUTORIA process.
+              From preparing natural fibers to shaping and finishing each piece, skilled hands remain at the heart of the JUTORIA process.
             </p>
           </div>
 
@@ -330,7 +330,7 @@ export default function PeopleArtisans() {
                 Natural materials reveal their character through texture, shape and variation. Careful handcrafting gives each piece its own distinctive character.
               </p>
               <p className="font-sans text-base text-brand-navy/55 font-light leading-relaxed">
-                What makes a JUTORIA piece recognisable is not decoration but material honesty — the weave, the weight, the subtle irregularities that only handwork creates.
+                What makes a JUTORIA piece recognizable is not decoration but material honesty — the weave, the weight, the subtle irregularities that only handwork creates.
               </p>
             </div>
 

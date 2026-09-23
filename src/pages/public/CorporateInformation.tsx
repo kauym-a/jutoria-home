@@ -58,7 +58,7 @@ const LEADERSHIP_TEAM = [
     photo: '/team/uk-warehouse-director.webp',
   },
   {
-    name: 'MST KAZI SANZIDA AHAMMAD',
+    name: 'Mst Kazi Sanzida Ahammad',
     title: 'Product Designer & Marketing Director',
     desc: 'Product design leadership and marketing strategy',
     location: 'Bangladesh',
@@ -87,7 +87,7 @@ export default function CorporateInformation() {
         <title>Corporate Information | JUTORIA</title>
         <meta
           name="description"
-          content="Corporate information for JUTORIA, a premium natural home décor brand operated by SIRCOMMERCE GROUP LTD."
+          content="Corporate information for JUTORIA, a premium natural home décor brand operated by Sir Commerce Group Ltd."
         />
         <link rel="canonical" href={absoluteUrl('/corporate-information')} />
         <link rel="preload" as="image" href={src(IMG.registration)} fetchPriority="high" type="image/webp" />
@@ -102,7 +102,7 @@ export default function CorporateInformation() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('${src(IMG.registration)}')`, backgroundPosition: 'center 40%' }}
           role="img"
-          aria-label="Corporate registration documentation for SIRCOMMERCE GROUP LTD"
+          aria-label="Corporate registration documentation for Sir Commerce Group Ltd"
         />
         {/* Gradients */}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent" />
@@ -115,10 +115,10 @@ export default function CorporateInformation() {
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-serif font-bold text-brand-ivory leading-[1.06] max-w-4xl mb-7">
             JUTORIA, Operated by<br />
-            SIRCOMMERCE GROUP LTD
+            Sir Commerce Group Ltd
           </h1>
           <p className="max-w-2xl font-sans text-base md:text-lg text-brand-ivory/85 font-light leading-relaxed mb-10">
-            JUTORIA is a premium natural home décor brand operated by SIRCOMMERCE GROUP LTD, a United Kingdom registered company serving an international market.
+            JUTORIA is a premium natural home décor brand operated by Sir Commerce Group Ltd, a United Kingdom registered company serving an international market.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
@@ -148,7 +148,7 @@ export default function CorporateInformation() {
             <div className="flex items-center justify-center lg:justify-start p-8 bg-white border border-brand-navy/10 rounded-[2px] shadow-premium aspect-[4/3] lg:aspect-auto lg:h-[400px]">
               <img
                 src={src(IMG.logo)}
-                alt="SIRCOMMERCE GROUP LTD logo"
+                alt="Sir Commerce Group Ltd logo"
                 className="w-full max-w-[280px] h-auto object-contain mix-blend-multiply"
                 width={746}
                 height={528}
@@ -162,17 +162,17 @@ export default function CorporateInformation() {
                 Company
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
-                SIRCOMMERCE GROUP LTD
+                Sir Commerce Group Ltd
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-10">
-                SIRCOMMERCE GROUP LTD is the company behind JUTORIA. JUTORIA is developed as a premium natural home décor brand focused on natural materials, skilled craftsmanship and thoughtful design for modern living.
+                Sir Commerce Group Ltd is the company behind JUTORIA. JUTORIA is developed as a premium natural home décor brand focused on natural materials, skilled craftsmanship and thoughtful design for modern living.
               </p>
 
               {/* Info List */}
               <div className="space-y-6">
                 <div className="border-b border-brand-navy/15 pb-4">
                   <span className="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Company Name</span>
-                  <span className="font-sans text-base text-brand-navy">SIRCOMMERCE GROUP LTD</span>
+                  <span className="font-sans text-base text-brand-navy">Sir Commerce Group Ltd</span>
                 </div>
                 <div className="border-b border-brand-navy/15 pb-4">
                   <span className="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Company Number</span>
@@ -206,7 +206,7 @@ export default function CorporateInformation() {
                 UK Business Presence
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-10">
-                Our UK presence provides a direct business contact point for customers, partners and wholesale enquiries.
+                Our UK presence provides a direct business contact point for customers, partners and wholesale inquiries.
               </p>
               
               <div className="bg-brand-ivory p-8 md:p-10 rounded-[2px] shadow-premium">
@@ -263,7 +263,7 @@ export default function CorporateInformation() {
             Global Contact
           </h2>
           <p className="font-sans text-base md:text-lg text-brand-ivory/70 font-light leading-relaxed mb-16 max-w-2xl mx-auto">
-            For business, wholesale and general enquiries, JUTORIA can be contacted through the following business contact points.
+            For business, wholesale and general inquiries, JUTORIA can be contacted through the following business contact points.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 text-left">
@@ -272,7 +272,7 @@ export default function CorporateInformation() {
               <h3 className="font-serif text-xl font-bold text-brand-gold mb-6 border-b border-brand-ivory/15 pb-4">United Kingdom</h3>
               
               <div className="mb-6">
-                <span className="block font-sans text-[11px] font-bold tracking-[0.15em] text-brand-ivory/50 uppercase mb-2">SIRCOMMERCE GROUP LTD</span>
+                <span className="block font-sans text-[11px] font-bold tracking-[0.15em] text-brand-ivory/50 uppercase mb-2">Sir Commerce Group Ltd</span>
                 <span className="block font-sans text-[10px] text-brand-ivory/40 uppercase mb-1">Phone:</span>
                 <a href="tel:+447311127176" className="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+44 7311 127176</a>
                 <a
@@ -321,7 +321,7 @@ export default function CorporateInformation() {
                   </a>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <a href="tel:+8801324438566" className="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+880 13 2443 8566</a>
+                  <a href="tel:+8801324438566" className="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+880 1324-438566</a>
                   <a
                     href="https://wa.me/8801324438566"
                     target="_blank"
@@ -424,7 +424,7 @@ export default function CorporateInformation() {
                 className="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
                 style={{ backgroundImage: `url('${src(IMG.registration)}')`, backgroundPosition: 'center' }}
                 role="img"
-                aria-label="Corporate registration documentation for SIRCOMMERCE GROUP LTD"
+                aria-label="Corporate registration documentation for Sir Commerce Group Ltd"
               />
             </div>
 
@@ -455,7 +455,7 @@ export default function CorporateInformation() {
                 JUTORIA Brand Presence
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
-                JUTORIA is being developed as an international consumer brand under SIRCOMMERCE GROUP LTD.
+                JUTORIA is being developed as an international consumer brand under Sir Commerce Group Ltd.
               </p>
             </div>
 
@@ -509,7 +509,7 @@ export default function CorporateInformation() {
             Let’s Connect
           </h2>
           <p className="font-sans text-base text-brand-ivory/65 font-light leading-relaxed max-w-lg mx-auto mb-12">
-            For wholesale enquiries, business partnerships and general questions, contact the JUTORIA team.
+            For wholesale inquiries, business partnerships and general questions, contact the JUTORIA team.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

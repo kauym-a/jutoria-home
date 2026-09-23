@@ -30,7 +30,7 @@ export default function Products() {
     <>
       <Helmet>
         <title>Products | JUTORIA - Premium Eco-Friendly Home Décor</title>
-        <meta name="description" content="Browse the complete JUTORIA product catalogue — filter by material or search by name and SKU. Available for international wholesale and retail." />
+        <meta name="description" content="Browse the complete JUTORIA product catalog — filter by material or search by name and SKU. Available for international wholesale and retail." />
         <link rel="canonical" href={absoluteUrl('/products')} />
         <link rel="preload" as="image" href="/laundry-basket-lifestyle.webp" fetchPriority="high" type="image/webp" />
       </Helmet>
@@ -44,7 +44,7 @@ export default function Products() {
                 Our Collection
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6">
-                Every Product.<br />One Catalogue.
+                Every Product.<br />One Catalog.
               </h1>
               <p className="max-w-lg font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
                 Browse the full JUTORIA range — filter by material or search by name and SKU to find exactly what you're sourcing for.

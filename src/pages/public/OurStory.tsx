@@ -36,7 +36,7 @@ export default function OurStory() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/jutoria-story-hero.webp')", backgroundPosition: 'center 30%' }}
           role="img"
-          aria-label="Bangladeshi women artisans handcrafting natural fibre products"
+          aria-label="Bangladeshi women artisans handcrafting natural fiber products"
         />
         {/* Layered gradient: preserves image character, grounds text */}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/55 to-transparent" />
@@ -52,7 +52,7 @@ export default function OurStory() {
             Contemporary Living
           </h1>
           <p className="max-w-xl font-sans text-base md:text-lg text-brand-ivory/85 font-light leading-relaxed mb-10">
-            JUTORIA brings together time-honoured techniques and sustainable natural fibres to create beautiful, enduring pieces for modern homes. Our work celebrates the skilled hands and craftsmanship behind every piece.
+            JUTORIA brings together time-honored techniques and sustainable natural fibers to create beautiful, enduring pieces for modern homes. Our work celebrates the skilled hands and craftsmanship behind every piece.
           </p>
           <Link
             to="/products"
@@ -81,7 +81,7 @@ export default function OurStory() {
                 Meet Skilled Hands
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-6">
-                JUTORIA begins with the natural materials that have long been part of traditional craft in Bangladesh. Jute, grasses and other plant-based fibres are transformed through careful preparation and patient handwork.
+                JUTORIA begins with the natural materials that have long been part of traditional craft in Bangladesh. Jute, grasses and other plant-based fibers are transformed through careful preparation and patient handwork.
               </p>
               <p className="font-sans text-base text-brand-navy/60 font-light leading-relaxed">
                 Each material carries the character of the land — its texture, weight and warmth shaped long before it reaches an artisan's hands.
@@ -94,7 +94,7 @@ export default function OurStory() {
                 className="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
                 style={{ backgroundImage: "url('/jutoria-story-natural-materials.webp')", backgroundPosition: 'center 20%' }}
                 role="img"
-                aria-label="Bangladeshi women artisans working with natural fibres"
+                aria-label="Bangladeshi women artisans working with natural fibers"
               />
               {/* Subtle gold accent line */}
               <div className="absolute -bottom-4 -left-4 w-24 h-1 bg-brand-gold/50 hidden lg:block" />
@@ -117,7 +117,7 @@ export default function OurStory() {
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
                 style={{ backgroundImage: "url('/jutoria-story-material.webp')", backgroundPosition: 'center 25%' }}
                 role="img"
-                aria-label="Bangladeshi artisan preparing natural fibres for handcrafting"
+                aria-label="Bangladeshi artisan preparing natural fibers for handcrafting"
               />
               <div className="absolute -top-4 -right-4 w-24 h-1 bg-brand-gold/40 hidden lg:block" />
             </div>
@@ -128,18 +128,18 @@ export default function OurStory() {
                 The Material
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">
-                From Natural Fibre<br />
+                From Natural Fiber<br />
                 to Crafted Form
               </h2>
               <p className="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-8">
-                Before a finished piece takes shape, natural fibres are carefully selected, prepared and worked by hand. This process preserves the character of the material while allowing each piece to develop its own texture and form.
+                Before a finished piece takes shape, natural fibers are carefully selected, prepared and worked by hand. This process preserves the character of the material while allowing each piece to develop its own texture and form.
               </p>
 
               {/* Material process labels */}
               <div className="flex flex-col gap-4">
                 {[
-                  { label: 'Natural Fibre', desc: 'Jute, grasses and plant-based fibres selected at source.' },
-                  { label: 'Careful Preparation', desc: 'Fibres cleaned, sorted and readied for the weaving process.' },
+                  { label: 'Natural Fiber', desc: 'Jute, grasses and plant-based fibers selected at source.' },
+                  { label: 'Careful Preparation', desc: 'Fibers cleaned, sorted and readied for the weaving process.' },
                   { label: 'Handcrafted Process', desc: 'Every step worked by hand — no shortcuts, no substitutes.' },
                 ].map(({ label, desc }) => (
                   <div key={label} className="flex items-start gap-4">
@@ -170,7 +170,7 @@ export default function OurStory() {
         <div className="relative">
           <img
             src="/jutoria-story-hands.webp"
-            alt="Bangladeshi woman artisan hand-weaving a natural fibre product"
+            alt="Bangladeshi woman artisan hand-weaving a natural fiber product"
             className="w-full object-cover object-center"
             style={{ maxHeight: '680px', objectPosition: 'center 15%' }}
             width={1024}
@@ -195,7 +195,7 @@ export default function OurStory() {
                   in Skilled Hands
                 </h2>
                 <p className="font-sans text-base md:text-lg text-brand-ivory/80 font-light leading-relaxed">
-                  Behind every handcrafted piece are skilled hands, practiced techniques and attention to detail. JUTORIA's story is inseparable from the artisans who transform natural fibres into objects made for everyday living.
+                  Behind every handcrafted piece are skilled hands, practiced techniques and attention to detail. JUTORIA's story is inseparable from the artisans who transform natural fibers into objects made for everyday living.
                 </p>
               </div>
             </div>
@@ -212,7 +212,7 @@ export default function OurStory() {
             in Skilled Hands
           </h2>
           <p className="font-sans text-base text-brand-ivory/75 font-light leading-relaxed">
-            Behind every handcrafted piece are skilled hands, practiced techniques and attention to detail. JUTORIA's story is inseparable from the artisans who transform natural fibres into objects made for everyday living.
+            Behind every handcrafted piece are skilled hands, practiced techniques and attention to detail. JUTORIA's story is inseparable from the artisans who transform natural fibers into objects made for everyday living.
           </p>
         </div>
       </section>
@@ -279,7 +279,7 @@ export default function OurStory() {
           <div className="relative overflow-hidden rounded-[2px] shadow-premium-hover mb-12 md:mb-16">
             <img
               src="/jutoria-story-modern-living.webp"
-              alt="Handcrafted natural fibre décor connecting Bangladeshi craftsmanship with modern living"
+              alt="Handcrafted natural fiber décor connecting Bangladeshi craftsmanship with modern living"
               className="w-full object-cover object-center"
               style={{ maxHeight: '520px', objectPosition: 'center 30%' }}
               width={1024}
@@ -338,7 +338,7 @@ export default function OurStory() {
             {[
               {
                 title: 'Natural Materials',
-                body: 'Thoughtfully selected natural fibres and materials — jute, grasses and plant-based sources that carry the character of their origin.',
+                body: 'Thoughtfully selected natural fibers and materials — jute, grasses and plant-based sources that carry the character of their origin.',
               },
               {
                 title: 'Skilled Craftsmanship',

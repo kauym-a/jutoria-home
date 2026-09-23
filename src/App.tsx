@@ -95,7 +95,7 @@ function App() {
               <Route path="/corporate-information" element={<CorporateInformation />} />
 
               {/* OUR GALLERY */}
-              <Route path="/gallery/products" element={<PlaceholderPage eyebrow="Our Gallery" title="Product Gallery" description="A full visual catalogue of JUTORIA products, styled and photographed." />} />
+              <Route path="/gallery/products" element={<PlaceholderPage eyebrow="Our Gallery" title="Product Gallery" description="A full visual catalog of JUTORIA products, styled and photographed." />} />
               <Route path="/gallery/lifestyle" element={<PlaceholderPage eyebrow="Our Gallery" title="Lifestyle" description="JUTORIA pieces styled in real living spaces." />} />
               <Route path="/gallery/craftsmanship" element={<PlaceholderPage eyebrow="Our Gallery" title="Craftsmanship" description="Behind-the-scenes photos of the hand-weaving and sewing process." />} />
               <Route path="/gallery/materials" element={<PlaceholderPage eyebrow="Our Gallery" title="Materials Gallery" description="Close-up photography of jute, seagrass, bamboo and every natural fiber we work with." />} />

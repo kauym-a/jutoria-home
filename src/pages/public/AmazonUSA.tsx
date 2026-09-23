@@ -20,7 +20,7 @@ const SHOP_CONFIDENCE = [
 ];
 
 const WHY_JUTORIA = [
-  { icon: Leaf, title: 'Natural Fibres', desc: 'Jute, seagrass and other natural materials.' },
+  { icon: Leaf, title: 'Natural Fibers', desc: 'Jute, seagrass and other natural materials.' },
   { icon: Hand, title: 'Handcrafted Character', desc: 'Natural variation is part of the beauty.' },
   { icon: Sparkles, title: 'Contemporary Design', desc: 'Designed for modern homes and global lifestyles.' },
 ];

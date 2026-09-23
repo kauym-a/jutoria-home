@@ -6,7 +6,7 @@ export default function ShippingPolicy() {
       <p>
         This Shipping Policy applies to wholesale and bulk orders placed directly with JUTORIA
         (operated by Sir Commerce Group Ltd). It does not apply to purchases made through Amazon,
-        which are covered by Amazon's own shipping and fulfilment policies.
+        which are covered by Amazon's own shipping and fulfillment policies.
       </p>
 
       <h2>Production Lead Time</h2>
@@ -27,7 +27,7 @@ export default function ShippingPolicy() {
       <h2>Delivery Timeline</h2>
       <p>
         Total delivery time — production plus shipping — varies by destination and shipping method
-        selected, and is confirmed with you before an order is finalised. We are happy to discuss
+        selected, and is confirmed with you before an order is finalized. We are happy to discuss
         timelines for your specific market as part of the wholesale inquiry process.
       </p>
 

@@ -20,7 +20,7 @@ export default function Sustainability() {
             Responsible Materials. Lasting Value.
           </h1>
           <p className="font-sans text-lg opacity-90 font-light leading-relaxed mb-8">
-            We prioritize natural, renewable fibers and low-impact production methods to minimise environmental footprint and support resilient livelihoods for our craft partners.
+            We prioritize natural, renewable fibers and low-impact production methods to minimize environmental footprint and support resilient livelihoods for our craft partners.
           </p>
           <div className="mt-8">
             <Link to="/wholesale" className="inline-flex items-center gap-3 bg-brand-gold text-brand-navy px-8 py-3 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:bg-brand-offwhite hover:text-brand-navy rounded-[2px]">

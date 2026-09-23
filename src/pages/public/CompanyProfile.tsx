@@ -19,7 +19,7 @@ export default function CompanyProfile() {
         <title>Company Profile | JUTORIA</title>
         <meta
           name="description"
-          content="JUTORIA is a premium eco-friendly natural home décor brand, operated by Sircommerce Group Ltd (UK Company No. 17029469)."
+          content="JUTORIA is a premium eco-friendly natural home décor brand, operated by Sir Commerce Group Ltd (UK Company No. 17029469)."
         />
         <link rel="canonical" href={absoluteUrl('/company-profile')} />
         <link rel="preload" as="image" href="/jute-basket-lifestyle.webp" fetchPriority="high" type="image/webp" />
@@ -82,11 +82,11 @@ export default function CompanyProfile() {
             Corporate Foundation
           </span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-8">
-            JUTORIA &amp; Sircommerce Group Ltd
+            JUTORIA &amp; Sir Commerce Group Ltd
           </h2>
           <p className="font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed max-w-2xl mx-auto">
             JUTORIA is the brand identity for premium eco-friendly natural home décor, operated by{' '}
-            <strong className="font-semibold text-brand-navy">Sircommerce Group Ltd</strong>, a company registered
+            <strong className="font-semibold text-brand-navy">Sir Commerce Group Ltd</strong>, a company registered
             in the United Kingdom under Company No.{' '}
             <strong className="font-semibold text-brand-navy">17029469</strong>.
           </p>
@@ -200,7 +200,7 @@ export default function CompanyProfile() {
         <div className="container mx-auto max-w-3xl px-4">
           <div className="bg-white border border-brand-navy/10 rounded-[2px] shadow-premium p-8 md:p-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
             {[
-              ['Company', 'Sircommerce Group Ltd'],
+              ['Company', 'Sir Commerce Group Ltd'],
               ['Company No.', '17029469'],
               ['Brand', 'JUTORIA'],
               ['Positioning', 'Premium Eco-Friendly Natural Home Décor'],

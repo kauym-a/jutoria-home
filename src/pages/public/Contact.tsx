@@ -51,13 +51,13 @@ const HELP_PATHS = [
   },
   {
     icon: HelpCircle,
-    title: 'General Product Enquiries',
+    title: 'General Product Inquiries',
     desc: 'For questions about collections, materials, products and availability.',
   },
 ];
 
 const WHY_PARTNER = [
-  { icon: Leaf, title: 'Natural Materials', desc: 'Responsibly sourced natural fibres and authentic handcrafted products.' },
+  { icon: Leaf, title: 'Natural Materials', desc: 'Responsibly sourced natural fibers and authentic handcrafted products.' },
   { icon: Hammer, title: 'Skilled Craftsmanship', desc: 'Traditional Bangladeshi craftsmanship combined with contemporary design.' },
   { icon: Compass, title: 'Flexible Sourcing', desc: 'Product development and sourcing capabilities for different business requirements.' },
   { icon: Globe, title: 'International Focus', desc: 'Designed to serve global retailers, hospitality businesses and design professionals.' },
@@ -178,7 +178,7 @@ export default function Contact() {
                   </div>
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <a href="tel:+8801324438566" className="font-sans text-sm font-medium text-brand-navy hover:text-brand-gold transition-colors">
-                      +880 13 2443 8566
+                      +880 1324-438566
                     </a>
                     <a href="https://wa.me/8801324438566" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors">
                       <WhatsAppIcon className="h-3.5 w-3.5" /> WhatsApp
@@ -194,7 +194,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-brand-navy mb-1">Custom & Product Development</h4>
-                  <p className="font-sans text-sm text-brand-navy/60">Custom designs, material enquiries, product development</p>
+                  <p className="font-sans text-sm text-brand-navy/60">Custom designs, material inquiries, product development</p>
                 </div>
               </div>
             </div>
@@ -326,7 +326,7 @@ export default function Contact() {
               Rooted in Natural Materials
             </h2>
             <p className="font-sans text-brand-navy/65 font-light leading-relaxed">
-              Explore the natural materials behind our collections and discover the craftsmanship, character and possibilities of each fibre.
+              Explore the natural materials behind our collections and discover the craftsmanship, character and possibilities of each fiber.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">

@@ -51,7 +51,7 @@ const OFFER_CARDS = [
     link: '/materials/jute',
   },
   {
-    name: 'Sea Grass',
+    name: 'Seagrass',
     desc: 'Placemats, baskets and natural décor pieces woven from seagrass.',
     image: '/product-master/sea-grass-natura/sea-grass-natural-lifestyle.webp',
     link: '/materials/seagrass',
@@ -367,7 +367,7 @@ export default function Wholesale() {
                 Materials & Craftsmanship
               </span>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-8 leading-tight">
-                From Natural Fibre to Finished Form
+                From Natural Fiber to Finished Form
               </h2>
               <div className="space-y-8">
                 <div>

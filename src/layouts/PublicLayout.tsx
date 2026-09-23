@@ -74,9 +74,15 @@ function SocialBrandIcon({ platform }: { platform: string }) {
   }
 }
 
-// Wholesale product catalog (PDF). Drop the file at `public/jutoria-catalog.pdf`
-// — until then this link 404s gracefully. Kept as one const so the desktop bar
-// and the mobile drawer stay in sync.
+// Wholesale product catalog (PDF). ⚠️ আবিষ্কৃত বাগ: এই বাটন আগে সবসময় দেখানো হতো, কিন্তু
+// public/jutoria-catalog.pdf ফাইলটা কখনো আপলোড হয়নি — লিংকে ক্লিক করলে 404 না দিয়ে
+// .htaccess-এর SPA fallback rule-এর কারণে সরাসরি হোমপেজের HTML ডাউনলোড হতো (প্রতিটা
+// পেজের হেডার/মোবাইল মেনুতে দৃশ্যমান, তাই যেকোনো ভিজিটর/বায়ার এই ভাঙা বাটনে পড়তে
+// পারতেন)। AmazonUSA.tsx-এর AMAZON_STOREFRONT_LIVE একই প্যাটার্ন অনুসরণ করে এখন
+// CATALOG_AVAILABLE=false থাকলে বাটন দুটোই (ডেস্কটপ + মোবাইল) সম্পূর্ণ লুকানো থাকে।
+// আসল PDF public/jutoria-catalog.pdf-এ রাখার পর এই flag true করে দিন — বাটন দুটো
+// আবার দেখা যাবে, আলাদা কোনো কোড পরিবর্তন লাগবে না।
+const CATALOG_AVAILABLE = false;
 const CATALOG_URL = '/jutoria-catalog.pdf';
 
 export default function PublicLayout() {
@@ -176,7 +182,7 @@ export default function PublicLayout() {
       region: 'Bangladesh',
       numbers: [
         { display: '+880 1833-093349', tel: '+8801833093349', wa: '8801833093349' },
-        { display: '+880 13 2443 8566', tel: '+8801324438566', wa: '8801324438566' },
+        { display: '+880 1324-438566', tel: '+8801324438566', wa: '8801324438566' },
       ],
     },
   ];
@@ -286,25 +292,27 @@ export default function PublicLayout() {
                 at max-w-7xl, so a full text button would crowd the nav); the
                 mobile drawer carries the fully-labelled "Download Catalog" button.
                 Branded CSS tooltip on hover/focus — no native `title` delay. */}
-            <div className="group relative hidden md:block">
-              <a
-                href={CATALOG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                aria-label="Download Catalog"
-                className="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
-              >
-                <Download size={16} strokeWidth={2} className="shrink-0" />
-              </a>
-              <span
-                role="tooltip"
-                className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-brand-navy px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.15em] text-brand-ivory opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
-              >
-                <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-brand-navy" />
-                Download Catalog
-              </span>
-            </div>
+            {CATALOG_AVAILABLE && (
+              <div className="group relative hidden md:block">
+                <a
+                  href={CATALOG_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  aria-label="Download Catalog"
+                  className="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
+                >
+                  <Download size={16} strokeWidth={2} className="shrink-0" />
+                </a>
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-brand-navy px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.15em] text-brand-ivory opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+                >
+                  <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-brand-navy" />
+                  Download Catalog
+                </span>
+              </div>
+            )}
 
             {/* Premium CTA Button */}
             <Link
@@ -414,17 +422,19 @@ export default function PublicLayout() {
             >
               Wholesale Inquiry
             </Link>
-            <a
-              href={CATALOG_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-              onClick={closeMenu}
-              className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
-            >
-              <Download size={15} strokeWidth={2} className="shrink-0" />
-              Download Catalog
-            </a>
+            {CATALOG_AVAILABLE && (
+              <a
+                href={CATALOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                onClick={closeMenu}
+                className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]"
+              >
+                <Download size={15} strokeWidth={2} className="shrink-0" />
+                Download Catalog
+              </a>
+            )}
           </div>
         </nav>
         

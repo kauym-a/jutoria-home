@@ -20,7 +20,7 @@ export function organizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    legalName: 'SIRCOMMERCE GROUP LTD',
+    legalName: 'Sir Commerce Group Ltd',
     url: SITE_URL,
     logo: absoluteUrl('/logo.webp'),
     address: {
