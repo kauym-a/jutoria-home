@@ -183,12 +183,19 @@ export default function Wholesale() {
         {/* LCP ইমেজ (hero) — PageSpeed Insights রিপোর্টে LCP 8.8s ফ্ল্যাগ হয়েছিল।
             preload দিলে ব্রাউজার JS পার্স/এক্সিকিউট হওয়ার জন্য অপেক্ষা না করেই এই
             ইমেজের ডাউনলোড শুরু করে দেয় (HTML parser নিজেই <head> স্ক্যান করার সময় এটা
-            ধরে ফেলে) — নিচের <img fetchPriority="high"> এর সাথে মিলিয়ে ব্যবহার করা হয়েছে। */}
+            ধরে ফেলে) — নিচের <img fetchPriority="high"> এর সাথে মিলিয়ে ব্যবহার করা হয়েছে।
+
+            ⚠️ আবিষ্কৃত বাগ: srcset-এ আগে 640w/960w/1774w ছিল — কিন্তু PageSpeed যে ডিভাইস
+            (Moto G Power) emulate করে তার devicePixelRatio ~2.625, তাই ~412px CSS-প্রস্থ
+            mobile viewport-এর জন্য আসলে ~1082 physical px দরকার। 960w এই থ্রেশহোল্ডের নিচে
+            পড়ায় ব্রাউজার বাধ্য হয়ে সরাসরি সবচেয়ে বড় ১৭৭৪w/153KB ফাইলটাই বেছে নিচ্ছিল —
+            "Improve image delivery"-তে এটাই ফ্ল্যাগ হচ্ছিল, ছোট ভ্যারিয়েন্ট থাকা সত্ত্বেও।
+            মাঝে একটা 1100w/57KB ভ্যারিয়েন্ট যোগ করে এই ফাঁকটা ভরাট করা হলো। */}
         <link
           rel="preload"
           as="image"
           href="/wholesale-hero-natural-home-decor.webp"
-          imageSrcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor.webp 1774w"
+          imageSrcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor-1100w.webp 1100w, /wholesale-hero-natural-home-decor.webp 1774w"
           imageSizes="(max-width: 1023px) 100vw, 50vw"
           fetchPriority="high"
           type="image/webp"
@@ -222,7 +229,7 @@ export default function Wholesale() {
           <div className="relative min-h-[320px] lg:min-h-[640px]">
             <img
               src="/wholesale-hero-natural-home-decor.webp"
-              srcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor.webp 1774w"
+              srcSet="/wholesale-hero-natural-home-decor-640w.webp 640w, /wholesale-hero-natural-home-decor-960w.webp 960w, /wholesale-hero-natural-home-decor-1100w.webp 1100w, /wholesale-hero-natural-home-decor.webp 1774w"
               sizes="(max-width: 1023px) 100vw, 50vw"
               alt="Natural-fiber woven placemats, baskets and décor styled in a warm, modern interior"
               className="absolute inset-0 w-full h-full object-cover"
