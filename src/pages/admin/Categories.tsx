@@ -86,7 +86,18 @@ export default function AdminCategories() {
       const result = await optimizeExistingCategoryImages((done, total, slug) => {
         setOptimizeProgress(slug ? `${done + 1}/${total} — ${slug}` : `সম্পন্ন (${total}/${total})`);
       });
-      toast.success(`${result.categoriesUpdated}টা ক্যাটাগরির কার্ড ইমেজ তৈরি হয়েছে (${result.categoriesSkipped}টা স্কিপ)।`);
+      // ⚠️ আবিষ্কৃত বাগ: আগে updated===0 হলেও সবসময় toast.success() দেখাতো — কিন্তু
+      // Firebase Storage-এ CORS কনফিগার করা না থাকলে প্রতিটা category-র fetch(image)
+      // ব্রাউজারে silently fail করে (try/catch-এ ধরা পড়ে categoriesSkipped-এ যোগ হয়),
+      // ফলে অ্যাডমিন সবুজ "success" টোস্ট দেখেও বুঝতে পারেননি যে আসলে ০টা কাজ হয়েছে।
+      // এখন updated===0 &&  skipped>0 হলে স্পষ্ট warning/error টোস্ট দেখানো হচ্ছে।
+      if (result.categoriesUpdated === 0 && result.categoriesSkipped > 0) {
+        toast.error(
+          `০টা কার্ড ইমেজ তৈরি হয়নি (${result.categoriesSkipped}টা স্কিপ) — সম্ভবত Firebase Storage-এ CORS কনফিগার করা নেই। Console-এ বিস্তারিত এরর দেখুন।`,
+        );
+      } else {
+        toast.success(`${result.categoriesUpdated}টা ক্যাটাগরির কার্ড ইমেজ তৈরি হয়েছে (${result.categoriesSkipped}টা স্কিপ)।`);
+      }
       await load();
     } catch (err) {
       console.error(err);

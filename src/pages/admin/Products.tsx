@@ -75,9 +75,20 @@ export default function AdminProducts() {
         setOptimizeProgress(sku ? `${done + 1}/${total} — ${sku}` : `সম্পন্ন (${total}/${total})`);
       });
       const savedKB = Math.round((result.bytesBefore - result.bytesAfter) / 1024);
-      toast.success(
-        `${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে — ${result.imagesConverted}টা ছবি কনভার্ট (${result.imagesSkipped}টা আগে থেকেই WebP/static, স্কিপ)। প্রায় ${savedKB} KB বাঁচল।`,
-      );
+      // ⚠️ আবিষ্কৃত বাগ (categoriesAdmin.ts-এর একই ধরনের বাগ ধরা পড়ার পর এখানেও চেক করা
+      // হলো): productsUpdated===0 হলেও আগে সবসময় toast.success() দেখাতো। Firebase
+      // Storage-এ CORS কনফিগার করা না থাকলে fetch(img.url) প্রতিটা non-webp ছবির জন্য
+      // silently fail করে (imagesSkipped-এ যোগ হয়), অ্যাডমিন ভুল করে ভাবতে পারতেন কাজ
+      // হয়ে গেছে অথচ Firestore-এ কিছুই বদলায়নি।
+      if (result.productsUpdated === 0 && result.imagesSkipped > 0) {
+        toast.error(
+          `০টা প্রোডাক্ট আপডেট হয়নি (${result.imagesSkipped}টা ছবি স্কিপ) — সম্ভবত Firebase Storage-এ CORS কনফিগার করা নেই। Console-এ বিস্তারিত এরর দেখুন।`,
+        );
+      } else {
+        toast.success(
+          `${result.productsUpdated}টা প্রোডাক্ট আপডেট হয়েছে — ${result.imagesConverted}টা ছবি কনভার্ট (${result.imagesSkipped}টা আগে থেকেই WebP/static, স্কিপ)। প্রায় ${savedKB} KB বাঁচল।`,
+        );
+      }
       await load();
     } catch (err) {
       console.error(err);
