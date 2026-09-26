@@ -492,10 +492,9 @@ export default function PublicLayout() {
                 UK Registered Office
               </p>
               <p className="font-sans text-sm text-brand-navy/80 leading-relaxed">
-                OFFICE 16785<br />
-                182–184 High Street North<br />
-                East Ham<br />
-                London E6 2JA<br />
+                69 Wingfield Road<br />
+                Great Barr<br />
+                Birmingham B42 2QB<br />
                 United Kingdom
               </p>
             </div>

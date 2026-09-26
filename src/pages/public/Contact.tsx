@@ -386,9 +386,9 @@ export default function Contact() {
             <div className="bg-white border border-brand-navy/10 p-7 rounded-[2px]">
               <h3 className="font-serif font-bold text-brand-navy text-lg mb-3">UK Registered Office</h3>
               <p className="font-sans text-sm text-brand-navy/70 leading-relaxed">
-                OFFICE 16785 <br />
-                182–184 High Street North <br />
-                East Ham, London E6 2JA <br />
+                69 Wingfield Road <br />
+                Great Barr <br />
+                Birmingham B42 2QB <br />
                 United Kingdom
               </p>
             </div>
