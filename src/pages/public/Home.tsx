@@ -371,7 +371,10 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-[24px] border border-brand-navy/10 bg-white/80 px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8 shadow-[0_12px_32px_rgba(15,23,42,0.03)]">
             <div className="mb-5 flex justify-center">
-              <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.24em] uppercase text-brand-navy/60">
+              {/* text-brand-navy/60 এর কন্ট্রাস্ট এই bg-white/80 কার্ডে মাত্র ~4.3:1 —
+                  WCAG AA-এর 4.5:1 থ্রেশহোল্ডে সামান্য ফেল করছিল (PageSpeed accessibility
+                  audit-এ ফ্ল্যাগ)। /70-এ বাড়ানোয় ~5.9:1, দৃশ্যত প্রায় অপরিবর্তিত। */}
+              <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.24em] uppercase text-brand-navy/70">
                 Certifications & Export Recognition
               </span>
             </div>
@@ -606,7 +609,13 @@ export default function Home() {
                   </button>
 
                   <div className="flex flex-col flex-grow text-left">
-                    <span className="font-sans text-brand-gold text-[11px] font-bold tracking-[0.15em] uppercase mb-3">
+                    {/* brand-gold ফুল-অপাসিটিতে সাদা ব্যাকগ্রাউন্ডে (এই সেকশনটা bg-white)
+                        মাত্র ~2.6:1 কন্ট্রাস্ট দেয় — WCAG AA-এর 4.5:1-এ বড় ব্যবধানে ফেল
+                        করছিল। Wholesale.tsx-এর একই সমস্যার জন্য আগে ব্যবহৃত darker গোল্ড
+                        শেড (#8a6a29, ~5.9:1) এখানেও প্রয়োগ করা হলো — নেভি ব্যাকগ্রাউন্ডের
+                        (যেমন B2B সেকশন) eyebrow লেবেল টাচ করা হয়নি, সেখানে ফুল-অপাসিটি
+                        gold-ই যথেষ্ট কন্ট্রাস্ট দেয়। */}
+                    <span className="font-sans text-[#8a6a29] text-[11px] font-bold tracking-[0.15em] uppercase mb-3">
                       {product.category}
                     </span>
                     <h3 className="text-2xl font-serif font-bold text-brand-navy mb-4">

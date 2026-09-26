@@ -43,6 +43,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(ROOT, 'dist');
 const PORT = 4173; // arbitrary local-only port, not the app's real dev/preview port
+const SITE_URL = 'https://jutoriahome.com'; // src/lib/seo.ts-এর SITE_URL-এর সাথে সিঙ্কে রাখুন
 
 function resolveChromePath() {
   if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
@@ -115,30 +116,114 @@ function loadStaticFallbackRoutes() {
  * SKU-র জন্য fake/স্ট্যাটিক ডেটা বেক করলে ভুল দাবি করা হতো, প্রকৃত অবস্থা (Not Found)
  * প্রতিফলিত হতো না।
  */
+function getProjectId() {
+  const configPath = path.join(ROOT, 'src/services/firebase/config.ts');
+  const configSrc = fs.readFileSync(configPath, 'utf8');
+  const projectId = configSrc.match(/projectId:\s*"([^"]+)"/)?.[1];
+  if (!projectId) throw new Error('config.ts থেকে projectId পার্স করা যায়নি');
+  return projectId;
+}
+
+// prerenderRoute()-এর লুপের জন্য শুধু {sku, route} দরকার, কিন্তু sitemap বানানোর জন্য
+// category ও active ফিল্ডও লাগে (দেখুন generateSitemap()) — তাই একই ফেচ থেকে পুরো
+// ডকুমেন্ট রেখে দেওয়া হচ্ছে (প্রতিটাতে .fields), শুধু route-loop backward-compatible
+// রাখতে {sku, route} spread করা থাকছে।
 async function loadProductRoutes() {
   try {
-    const configPath = path.join(ROOT, 'src/services/firebase/config.ts');
-    const configSrc = fs.readFileSync(configPath, 'utf8');
-    const projectId = configSrc.match(/projectId:\s*"([^"]+)"/)?.[1];
-    if (!projectId) throw new Error('config.ts থেকে projectId পার্স করা যায়নি');
-
+    const projectId = getProjectId();
     const res = await fetch(
       `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/products?pageSize=300`,
     );
     if (!res.ok) throw new Error(`Firestore REST ${res.status}`);
     const data = await res.json();
-    const skus = (data.documents || []).map((d) => d.name.split('/').pop());
-    if (skus.length === 0) throw new Error('Firestore-এ কোনো প্রোডাক্ট পাওয়া যায়নি');
+    const docs = data.documents || [];
+    if (docs.length === 0) throw new Error('Firestore-এ কোনো প্রোডাক্ট পাওয়া যায়নি');
 
-    console.log(`[prerender] Firestore থেকে ${skus.length}টা প্রোডাক্ট SKU পাওয়া গেছে।`);
-    return skus.map((sku) => ({ sku, route: `/product/${encodeURIComponent(sku)}` }));
+    console.log(`[prerender] Firestore থেকে ${docs.length}টা প্রোডাক্ট SKU পাওয়া গেছে।`);
+    return docs.map((d) => {
+      const sku = d.name.split('/').pop();
+      const active = d.fields?.active?.booleanValue !== false; // ফিল্ড অনুপস্থিত হলেও ডিফল্ট visible
+      const category = d.fields?.category?.stringValue || '';
+      return { sku, route: `/product/${encodeURIComponent(sku)}`, active, category };
+    });
   } catch (err) {
     console.warn(
       `[prerender] ⚠ Firestore থেকে প্রোডাক্ট লিস্ট আনতে ব্যর্থ (${err.message}) — ` +
         `src/data/products.json থেকে fallback রুট লিস্ট ব্যবহার হচ্ছে (নেটওয়ার্ক না থাকলে/বিল্ড অফলাইন হলে এটাই একমাত্র উপায়)।`,
     );
-    return loadStaticFallbackRoutes();
+    return loadStaticFallbackRoutes().map((r) => ({ ...r, active: true, category: '' }));
   }
+}
+
+// ============================================================
+// sitemap.xml আগে public/-এ একটা হাতে-লেখা static ফাইল ছিল — সময়ের সাথে সাথে stale
+// হয়ে গিয়েছিল (পুরনো নেমিং কনভেনশনের অস্তিত্বহীন SKU যেমন "JTR-JFR-6090-J" ছিল, কিন্তু
+// /categories/:slug ও /materials/:slug ডিটেইল পেজ একটাও ছিল না)। এখন প্রতিটা বিল্ডে
+// আসল Firestore ডেটা থেকে অটো-জেনারেট হয় — /categories/:slug স্লাগ ঠিক
+// useProductCategories.ts-এর একই slugify() লজিক দিয়ে বানানো হচ্ছে (ওই হুকের কমেন্টে
+// verify করা আছে যে src/data/categories.ts-এর সবগুলো curated slug এমনিতেই plain
+// slugify(name)-এর সাথে হুবহু মেলে, তাই এখানে সেই ফাইল ইম্পোর্ট করার দরকার নেই)।
+function slugify(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+async function loadMaterialSlugs() {
+  try {
+    const projectId = getProjectId();
+    const res = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/categories?pageSize=50`,
+    );
+    if (!res.ok) throw new Error(`Firestore REST ${res.status}`);
+    const data = await res.json();
+    return (data.documents || [])
+      .filter((d) => d.fields?.active?.booleanValue !== false)
+      .map((d) => d.name.split('/').pop());
+  } catch (err) {
+    console.warn(`[prerender] ⚠ sitemap-এর জন্য material slug আনতে ব্যর্থ (${err.message}) — বাদ দেওয়া হচ্ছে।`);
+    return [];
+  }
+}
+
+function generateSitemap(productRoutes, materialSlugs) {
+  const activeProducts = productRoutes.filter((p) => p.active);
+
+  const productCategorySlugs = [...new Set(
+    activeProducts.map((p) => p.category?.trim()).filter(Boolean).map(slugify),
+  )];
+
+  const urls = [
+    { loc: '/', changefreq: 'daily', priority: '1.0' },
+    { loc: '/products', changefreq: 'daily', priority: '0.9' },
+    { loc: '/categories', changefreq: 'weekly', priority: '0.8' },
+    { loc: '/materials', changefreq: 'weekly', priority: '0.8' },
+    { loc: '/wholesale', changefreq: 'weekly', priority: '0.9' },
+    ...STATIC_ROUTES.filter((r) => r.route !== '/wholesale').map((r) => ({
+      loc: r.route,
+      changefreq: 'monthly',
+      priority: '0.6',
+    })),
+    ...productCategorySlugs.map((slug) => ({ loc: `/categories/${slug}`, changefreq: 'weekly', priority: '0.7' })),
+    ...materialSlugs.map((slug) => ({ loc: `/materials/${slug}`, changefreq: 'weekly', priority: '0.7' })),
+    ...activeProducts.map((p) => ({ loc: p.route, changefreq: 'weekly', priority: '0.6' })),
+  ];
+
+  const xml =
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls
+      .map(
+        (u) =>
+          `  <url>\n    <loc>${SITE_URL}${u.loc}</loc>\n    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`,
+      )
+      .join('\n') +
+    '\n</urlset>\n';
+
+  fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml, 'utf8');
+  console.log(`[prerender] sitemap.xml জেনারেট হয়েছে — ${urls.length}টা URL।`);
 }
 
 const DEFAULT_TITLE = 'JUTORIA | Premium Eco-Friendly Handmade Home Décor';
@@ -322,6 +407,13 @@ async function main() {
   }
 
   let routes = await loadProductRoutes();
+
+  // sitemap.xml পুরো (debug-filter হওয়ার আগের) routes লিস্ট থেকেই বানানো হয় — PRERENDER_LIMIT/
+  // PRERENDER_ONLY শুধু লোকাল ডেভ-টেস্টিং শর্টকাট, real CI বিল্ডে কখনো সেট করা থাকে না,
+  // কিন্তু সিদ্ধান্তহীনভাবে ভুলবশত সেট থাকলেও sitemap যেন আংশিক না হয়ে যায়।
+  const materialSlugs = await loadMaterialSlugs();
+  generateSitemap(routes, materialSlugs);
+
   const limit = Number(process.env.PRERENDER_LIMIT || 0);
   const debug = process.env.PRERENDER_DEBUG === '1';
   if (process.env.PRERENDER_ONLY) {
