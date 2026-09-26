@@ -133,6 +133,31 @@ export default function Home() {
   // Hook for Mobile Product Image Toggle
   const [toggledProducts, setToggledProducts] = useState<Record<string, boolean>>({});
 
+  // ⚠️ আবিষ্কৃত বাগ: PageSpeed-এর "LCP breakdown"-এ ধরা পড়েছে যে হিরো poster ছবি
+  // preload+fetchPriority="high" থাকা সত্ত্বেও "Resource load delay" ১.২৬ সেকেন্ড
+  // দেখাচ্ছিল — সন্দেহ হয় autoPlay video নিজেই এর কারণ: Chrome poster ইমেজের পেইন্টের
+  // পরে video-র আসল প্রথম ফ্রেম পেইন্ট হলে সেটাকে একটা *নতুন, পরবর্তী* LCP candidate
+  // হিসেবে ধরতে পারে (poster-এর চেয়ে ভিন্ন রেন্ডার সারফেস), আর স্লো কানেকশনে ২.৯MB
+  // ভিডিওর প্রথম প্লেয়েবল ফ্রেম বাফার হতে যে সময় লাগে সেটাই চূড়ান্ত LCP টাইমিং হয়ে
+  // যায় (poster-এর নিজের দ্রুত পেইন্ট না)। এখন autoPlay অ্যাট্রিবিউট সরিয়ে window
+  // 'load'-এর পরে JS দিয়ে play() কল করা হচ্ছে (cert লোগোর মতোই একই deferred-load
+  // প্যাটার্ন, __PRERENDER__ চেক-সহ) — poster-ই একমাত্র/স্থিতিশীল LCP candidate থাকে,
+  // ভিডিও প্লেব্যাক ক্রিটিক্যাল উইন্ডোর *পরে* নিরবচ্ছিন্নভাবে শুরু হয়।
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if ((window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ === true) return;
+    const startPlayback = () => {
+      heroVideoRef.current?.play().catch(() => {});
+    };
+    if (document.readyState === 'complete') {
+      startPlayback();
+      return;
+    }
+    window.addEventListener('load', startPlayback);
+    return () => window.removeEventListener('load', startPlayback);
+  }, []);
+
   // সার্টিফিকেশন লোগো (নিচে দেখুন) — fetchPriority="low" আলাদাভাবে যথেষ্ট প্রমাণিত হয়নি
   // (রিয়েল প্রোব-এ মাত্র ~100ms উন্নতি) — Chrome-এর network throttling emulation দুটো
   // "High" priority রিসোর্সের (হিরো ছবি + এই লোগোগুলো) মধ্যে প্রায় সমান ব্যান্ডউইথ ভাগ
@@ -302,10 +327,11 @@ export default function Home() {
         <div className="relative w-full h-[50vh] lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5 lg:h-full">
           <div className="absolute inset-0 bg-gradient-to-t from-brand-ivory via-transparent to-transparent z-10 lg:bg-gradient-to-r lg:from-brand-ivory lg:via-brand-ivory/70 lg:to-transparent"></div>
           {/* preload="auto" আগে পুরো ২.৯MB ফাইলটা eagerly buffer করাতো (PageSpeed-এ
-              ফ্ল্যাগ হয়েছিল) — "metadata" শুধু duration/dimensions আনে, autoplay তখনো
-              কাজ করে (browser নিজে থেকেই playback শুরুর জন্য যথেষ্ট বাফার করে নেয়),
-              কিন্তু পুরো ফাইলটা প্রথম পেইন্টের আগেই ডাউনলোড করার জন্য অপেক্ষা করায় না। */}
-          <video autoPlay loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" className="w-full h-full object-cover">
+              ফ্ল্যাগ হয়েছিল) — "metadata" শুধু duration/dimensions আনে, কিন্তু পুরো
+              ফাইলটা প্রথম পেইন্টের আগেই ডাউনলোড করার জন্য অপেক্ষা করায় না।
+              autoPlay অ্যাট্রিবিউট ইচ্ছাকৃতভাবে নেই — উপরের heroVideoRef effect
+              window 'load'-এর পরে play() কল করে (দেখুন সেখানকার কমেন্ট)। */}
+          <video ref={heroVideoRef} loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" className="w-full h-full object-cover">
             <source src="/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
