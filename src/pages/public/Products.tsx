@@ -7,7 +7,7 @@ import { materials } from '../../data/materials';
 import { absoluteUrl } from '../../lib/seo';
 
 export default function Products() {
-  const { products } = useProducts(); // Firestore-backed, static ডেটায় fallback করে
+  const { products, loading } = useProducts(); // Firestore-backed, static ডেটায় fallback করে
   const [materialFilter, setMaterialFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -129,7 +129,11 @@ export default function Products() {
                 <ProductCard key={product.sku} product={product as any} priority={index < 3} />
               ))}
             </div>
-          ) : (
+          ) : loading ? null : (
+            // ⚠️ useProducts()-এর initial state এখন খালি (দেখুন সেই hook-এর কমেন্ট) —
+            // loading true থাকা অবস্থায় "No products match your filters" ভুলভাবে
+            // দেখানো ঠেকাতে এই চেক। Firestore fetch শেষ হওয়ার পরও filteredProducts
+            // খালি থাকলেই (আসল কারণ ফিল্টার/সার্চ, ডেটা লোডিং না) এই মেসেজ দেখাবে।
             <div className="text-center py-20">
               <p className="font-sans text-brand-navy/60 mb-4">No products match your filters.</p>
               <button
