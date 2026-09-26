@@ -1,4 +1,5 @@
 import { getFirestoreCtx } from './config';
+import { fetchCollectionViaRest } from './firestoreRest';
 import staticProducts from '../../data/products.json';
 
 // ============================================================
@@ -52,12 +53,16 @@ export async function fetchAllProducts(): Promise<Product[]> {
   return snap.docs.map((d) => d.data() as Product);
 }
 
-/** শুধু active প্রোডাক্ট আনে (পাবলিক সাইটের জন্য)। */
+/**
+ * শুধু active প্রোডাক্ট আনে (পাবলিক সাইটের জন্য) — plain REST fetch() দিয়ে, Firestore
+ * SDK ছাড়াই (দেখুন firestoreRest.ts-এর কমেন্ট — SDK-এর persistent Listen/channel
+ * connection Lighthouse-এর critical path-কে ভয়াবহভাবে পিছিয়ে দিচ্ছিল)। useProducts()
+ * hook-ই এর একমাত্র কলার, তাই এই একটা পরিবর্তনেই সব পাবলিক পেজ (Home, Products,
+ * ProductDetail, MaterialDetail) উপকৃত হয়।
+ */
 export async function fetchActiveProducts(): Promise<Product[]> {
-  const { db, collection, query, where, getDocs } = await getFirestoreCtx();
-  const q = query(collection(db, PRODUCTS_COLLECTION), where('active', '!=', false));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => d.data() as Product);
+  const all = await fetchCollectionViaRest<Product>(PRODUCTS_COLLECTION);
+  return all.filter((p) => p.active !== false);
 }
 
 /** একটা নির্দিষ্ট SKU-র প্রোডাক্ট আনে। */

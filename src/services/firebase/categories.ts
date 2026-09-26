@@ -1,4 +1,5 @@
 import { getFirestoreCtx } from './config';
+import { fetchCollectionViaRest } from './firestoreRest';
 import { materials } from '../../data/materials';
 
 // ============================================================
@@ -40,14 +41,14 @@ export async function fetchAllCategories(): Promise<Category[]> {
   return snap.docs.map((d) => d.data() as Category).sort(byOrder);
 }
 
-/** শুধু active ক্যাটাগরি আনে (পাবলিক সাইটের জন্য), order অনুসারে সাজানো। */
+/**
+ * শুধু active ক্যাটাগরি আনে (পাবলিক সাইটের জন্য) — plain REST fetch() দিয়ে, Firestore
+ * SDK ছাড়াই (দেখুন firestoreRest.ts-এর কমেন্ট ও products.ts-এর fetchActiveProducts()
+ * — একই কারণ)। useCategories() hook-ই এর একমাত্র কলার।
+ */
 export async function fetchActiveCategories(): Promise<Category[]> {
-  const { db, collection, getDocs } = await getFirestoreCtx();
-  const snap = await getDocs(collection(db, CATEGORIES_COLLECTION));
-  return snap.docs
-    .map((d) => d.data() as Category)
-    .filter((c) => c.active !== false)
-    .sort(byOrder);
+  const all = await fetchCollectionViaRest<Category>(CATEGORIES_COLLECTION);
+  return all.filter((c) => c.active !== false).sort(byOrder);
 }
 
 /** একটা নির্দিষ্ট slug-এর ক্যাটাগরি আনে। */
