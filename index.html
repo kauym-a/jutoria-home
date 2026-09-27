@@ -49,45 +49,33 @@
     <meta property="og:image" content="https://jutoriahome.com/laundry-basket-lifestyle.webp" />
     <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
 
-    <!-- Google Analytics (GA4) — আগে সরাসরি async <script> ট্যাগ হিসেবে ছিল, যেটা
-         পেজ লোড হওয়ার সাথে সাথেই (ফার্স্ট পেইন্টের আগেও) ডাউনলোড+পার্স+এক্সিকিউট শুরু
-         করে দিত ("167 KiB unused JavaScript" হিসেবে PageSpeed-এ ফ্ল্যাগ হয়েছিল, যেহেতু
-         এই কোড ফার্স্ট পেইন্ট/ইন্টারঅ্যাক্টিভিটির জন্য জরুরি নয়)। এখন window 'load'-এর পরে
-         প্রথম real user interaction (বা একটা fallback timeout) পর্যন্ত অপেক্ষা করে স্ক্রিপ্ট
-         ট্যাগ ডাইনামিকালি তৈরি করা হয় (নিচের কমেন্টে বিস্তারিত) — analytics ডেটা তখনো
-         সঠিকভাবে ট্র্যাক হয়, শুধু ক্রিটিক্যাল রেন্ডারিং পাথ থেকে সম্পূর্ণ সরে যায়। -->
+    <!-- Google Analytics (GA4) — Partytown দিয়ে মেইন থ্রেডের বদলে একটা আলাদা Web Worker-এ
+         রান করানো হচ্ছে। আগে window 'load' + interaction-defer দিয়ে GTM-এর এক্সিকিউশন
+         পিছিয়ে দেওয়ার চেষ্টা হয়েছিল, কিন্তু সেটা শুধু *কখন* main thread-এ কস্টটা পড়ে সেটা
+         পিছিয়ে দিত — TTI নিজেই সেই পরে-আসা লং টাস্ককে ধরার জন্য পিছিয়ে যেত (কারণ Time to
+         Interactive-এর হিসাব একটা quiet window খোঁজে FCP থেকে শুরু করে, আর দেরিতে আসা
+         টাস্ক সেই quiet window-কেও পিছিয়ে দেয়) — ফলে Total Blocking Time-এ নেট কোনো লাভ
+         হচ্ছিল না। Partytown এই সমস্যাটা root থেকে সমাধান করে: GTM-এর ~730-900ms স্ক্রিপ্ট
+         এক্সিকিউশন main thread থেকে *সম্পূর্ণ সরে* যায় (শুধু রিশিডিউল না), তাই TBT/TTI-এর
+         হিসাবেই আসে না। forward: ['dataLayer.push'] — worker-এর ভেতরে লোড হওয়া gtag.js
+         যখন dataLayer.push() কল করে, Partytown সেটা রিয়েল main-thread window.dataLayer
+         অ্যারেতে প্রক্সি করে দেয় (এটাই Partytown-এর ডকুমেন্টেড GA/GTM ইন্টিগ্রেশন প্যাটার্ন)।
+         লাইব্রেরি ফাইল public/~partytown/-এ আছে (`npx partytown copylib public/~partytown`
+         দিয়ে জেনারেট করা — Partytown ভার্সন আপগ্রেড করলে আবার রান করতে হবে)। -->
+    <script>
+      window.partytown = { forward: ['dataLayer.push'] };
+    </script>
+    <script async src="/~partytown/partytown.js"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-51YWD5QZ8X');
       window.addEventListener('load', function () {
-        // GTM-এর নিজের স্ক্রিপ্ট এক্সিকিউশনই (নেটওয়ার্ক ফেচ নয়) মেইন থ্রেডে ~৭৩০ms
-        // ব্লকিং টাইম নেয় (Lighthouse third-parties audit)। আগে requestIdleCallback
-        // ব্যবহার হতো, কিন্তু 'load'-এর অল্প পরেই idle callback ফায়ার হয়ে যেত, যখন
-        // ব্রাউজার তখনো পেজ settle করছিল — তাই এই খরচ এখনো Total Blocking Time-এ যোগ
-        // হচ্ছিল। এখন প্রথম real user interaction (scroll/click/touch/key) পর্যন্ত
-        // অপেক্ষা করানো হচ্ছে — তখন পেজ আসলেই idle, তাই এই কস্ট আর কোনো পারফরম্যান্স
-        // মেট্রিকে (TBT, TTI) ধরা পড়ে না। কখনো ইন্টারঅ্যাক্ট না করা ভিজিটরদের জন্য একটা
-        // জেনারাস ৮s fallback আছে যাতে analytics ডেটা miss না হয় — dataLayer আগে থেকেই
-        // gtag() কলগুলো কিউ করে রাখে, তাই ডেটা হারায় না।
-        var loaded = false;
-        var loadGtm = function () {
-          if (loaded) return;
-          loaded = true;
-          var s = document.createElement('script');
-          s.async = true;
-          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
-          document.head.appendChild(s);
-        };
-        // 'scroll' ইচ্ছাকৃতভাবে বাদ — src/components/ScrollToTop.tsx প্রতিটা রুট মাউন্টেই
-        // window.scrollTo(0, 0) কল করে, যেটা নিজেই একটা native 'scroll' ইভেন্ট ফায়ার করে
-        // দিতে পারে (আসল ইউজার ইন্টারঅ্যাকশন না হওয়া সত্ত্বেও) — Lighthouse-এর ট্রেসে GTM
-        // ~৭s-এ লোড হতে দেখে এটা ধরা পড়েছিল, যেটা ৮s fallback-এর চেয়েও আগে।
-        ['click', 'touchstart', 'keydown', 'mousemove'].forEach(function (evt) {
-          window.addEventListener(evt, loadGtm, { passive: true, once: true });
-        });
-        setTimeout(loadGtm, 8000);
+        var s = document.createElement('script');
+        s.type = 'text/partytown';
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
+        document.head.appendChild(s);
       });
     </script>
   </head>
