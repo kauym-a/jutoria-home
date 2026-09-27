@@ -29,7 +29,7 @@ export default function LegalPageLayout({
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory leading-tight mb-4">
             {title}
           </h1>
-          <p className="font-sans text-sm text-brand-ivory/55">Last updated: {lastUpdated}</p>
+          <p className="font-sans text-sm text-brand-ivory/55">{`Last updated: ${lastUpdated}`}</p>
         </div>
       </section>
 

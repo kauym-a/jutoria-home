@@ -94,7 +94,7 @@ export default function ProductDetail(){
           <h1 className="mb-3 text-2xl font-serif font-bold text-brand-navy md:text-3xl lg:text-4xl">
             {product.name}
           </h1>
-          <p className="mb-6 text-sm text-brand-navy/60">SKU: {product.sku}</p>
+          <p className="mb-6 text-sm text-brand-navy/60">{`SKU: ${product.sku}`}</p>
 
           {product.description && (
             <p className="mb-6 text-base text-brand-navy/75 leading-relaxed">

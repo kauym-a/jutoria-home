@@ -56,7 +56,7 @@ export default function CategoryDetail() {
         {category.image && (
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${category.image})` }}
+            style={{ backgroundImage: `url("${category.image}")` }}
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-brand-navy/10" />
@@ -121,7 +121,7 @@ export default function CategoryDetail() {
         <div className="container mx-auto max-w-3xl px-4 flex items-center justify-between">
           <span className="font-sans text-xs uppercase tracking-[0.2em] text-brand-navy/50">Next Category</span>
           <Link to={`/categories/${next.slug}`} className="font-serif text-xl md:text-2xl font-bold text-brand-navy hover:text-brand-gold transition-colors flex items-center gap-3">
-            {next.name} <ArrowRight size={20} />
+            {`${next.name} `}<ArrowRight size={20} />
           </Link>
         </div>
       </section>

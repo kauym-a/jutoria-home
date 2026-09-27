@@ -289,7 +289,7 @@ export default function Contact() {
                     disabled={submitting}
                     className="w-full inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px] disabled:opacity-60"
                   >
-                    {submitting ? 'Submitting…' : 'Submit Inquiry'} <ArrowRight size={16} />
+                    {submitting ? 'Submitting… ' : 'Submit Inquiry '}<ArrowRight size={16} />
                   </button>
                 </form>
               )}

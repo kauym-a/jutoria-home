@@ -51,7 +51,7 @@ export default function PeopleArtisans() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('${src(IMG.hero)}')`, backgroundPosition: 'center 25%' }}
+          style={{ backgroundImage: `url("${src(IMG.hero)}")`, backgroundPosition: 'center 25%' }}
           role="img"
           aria-label="Bangladeshi women artisans weaving natural fibers in a rural craft workshop"
         />
@@ -109,7 +109,7 @@ export default function PeopleArtisans() {
             <div className="relative">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.skilledHands)}')`, backgroundPosition: 'center 20%' }}
+                style={{ backgroundImage: `url("${src(IMG.skilledHands)}")`, backgroundPosition: 'center 20%' }}
                 role="img"
                 aria-label="Bangladeshi woman artisan working by hand with natural fiber"
               />
@@ -142,7 +142,7 @@ export default function PeopleArtisans() {
             <div className="lg:col-span-3">
               <div
                 className="aspect-video rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.weaving)}')`, backgroundPosition: 'center 30%' }}
+                style={{ backgroundImage: `url("${src(IMG.weaving)}")`, backgroundPosition: 'center 30%' }}
                 role="img"
                 aria-label="Bangladeshi women artisans weaving natural fiber by hand"
               />
@@ -151,7 +151,7 @@ export default function PeopleArtisans() {
             <div className="lg:col-span-2 lg:pt-14">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.hands)}')`, backgroundPosition: 'center 25%' }}
+                style={{ backgroundImage: `url("${src(IMG.hands)}")`, backgroundPosition: 'center 25%' }}
                 role="img"
                 aria-label="Close-up of artisan hands weaving natural fiber"
               />
@@ -211,7 +211,7 @@ export default function PeopleArtisans() {
               <div key={step} className="group">
                 <div
                   className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden mb-5"
-                  style={{ backgroundImage: `url('${src(img)}')`, backgroundPosition: 'center 20%' }}
+                  style={{ backgroundImage: `url("${src(img)}")`, backgroundPosition: 'center 20%' }}
                   role="img"
                   aria-label={alt}
                 />
@@ -304,13 +304,13 @@ export default function PeopleArtisans() {
               <div className="grid grid-cols-2 gap-4">
                 <div
                   className="aspect-square rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                  style={{ backgroundImage: `url('${src(IMG.craftDetail)}')`, backgroundPosition: 'center' }}
+                  style={{ backgroundImage: `url("${src(IMG.craftDetail)}")`, backgroundPosition: 'center' }}
                   role="img"
                   aria-label="Close-up detail of handmade natural-fiber weaving"
                 />
                 <div
                   className="aspect-square rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden mt-8"
-                  style={{ backgroundImage: `url('${src(IMG.finishedDetail)}')`, backgroundPosition: 'center 20%' }}
+                  style={{ backgroundImage: `url("${src(IMG.finishedDetail)}")`, backgroundPosition: 'center 20%' }}
                   role="img"
                   aria-label="Artisan hands examining a finished natural-fiber craft"
                 />
@@ -366,7 +366,7 @@ export default function PeopleArtisans() {
               <div key={i} className="group">
                 <div
                   className="aspect-[4/5] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                  style={{ backgroundImage: `url('${src(img)}')`, backgroundPosition: 'center 15%' }}
+                  style={{ backgroundImage: `url("${src(img)}")`, backgroundPosition: 'center 15%' }}
                   role="img"
                   aria-label={alt}
                 />

@@ -49,7 +49,7 @@ export default function MaterialDetail() {
       <section className="relative w-full min-h-[55vh] flex items-end bg-brand-navy overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${material.image})` }}
+          style={{ backgroundImage: `url("${material.image}")` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-brand-navy/10" />
         <div className="relative z-10 container mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-14 md:pb-20">
@@ -114,7 +114,7 @@ export default function MaterialDetail() {
         <div className="container mx-auto max-w-3xl px-4 flex items-center justify-between">
           <span className="font-sans text-xs uppercase tracking-[0.2em] text-brand-navy/50">Next Material</span>
           <Link to={`/materials/${next.slug}`} className="font-serif text-xl md:text-2xl font-bold text-brand-navy hover:text-brand-gold transition-colors flex items-center gap-3">
-            {next.name} <ArrowRight size={20} />
+            {`${next.name} `}<ArrowRight size={20} />
           </Link>
         </div>
       </section>

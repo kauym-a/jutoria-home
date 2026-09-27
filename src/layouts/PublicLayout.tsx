@@ -441,7 +441,11 @@ export default function PublicLayout() {
         {/* Drawer Footer with Safe Area */}
         <div className="mt-auto p-6 bg-brand-ivory border-t border-brand-navy/10 text-center pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           <p className="font-sans text-xs opacity-60 font-semibold tracking-wider uppercase">
-            &copy; {new Date().getFullYear()} JUTORIA.
+            {/* হার্ডকোড করা বছর, ডেস্কটপ ফুটারের (নিচে) মতোই — new Date().getFullYear()
+                রেন্ডারের সময় কল হলে hydrateRoot()-এ hydration mismatch হতো (prerendered
+                HTML বিল্ডের বছর বেক করে, real ভিজিটরের ব্রাউজার আবার হিসাব করত, শুধু
+                বর্ষশেষে/নতুন বছরে ভিন্ন হতো)। বছর বদলালে দুই জায়গাতেই ম্যানুয়ালি বদলাতে হবে। */}
+            &copy; 2026 JUTORIA.
           </p>
         </div>
       </div>

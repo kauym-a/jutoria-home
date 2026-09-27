@@ -547,7 +547,7 @@ export default function Wholesale() {
               </div>
 
               <button type="submit" disabled={submitting} className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-10 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px] disabled:opacity-60">
-                {submitting ? 'Submitting…' : 'Submit Wholesale Inquiry'} <ArrowRight size={16} />
+                {submitting ? 'Submitting… ' : 'Submit Wholesale Inquiry '}<ArrowRight size={16} />
               </button>
             </form>
           )}

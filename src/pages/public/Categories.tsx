@@ -27,7 +27,7 @@ export default function Categories() {
               বের হয়), তাই হেডলাইনেও হার্ডকোড করা সংখ্যার (আগে "Five") বদলে আসল সংখ্যা
               বসানো হলো — নতুন category যোগ/বাদ হলে এই টেক্সট নিজে থেকেই ঠিক থাকবে। */}
           <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">
-            {categories.length} {categories.length === 1 ? 'Category' : 'Categories'}. One Range.
+            {`${categories.length} ${categories.length === 1 ? 'Category' : 'Categories'}. One Range.`}
           </h1>
           <p className="max-w-2xl font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
             Browse the full JUTORIA range grouped by product category, for faster sourcing and

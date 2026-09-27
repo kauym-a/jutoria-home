@@ -33,7 +33,7 @@ export default function Materials() {
           {/* materials.length ডাইনামিক — হার্ডকোড করা সংখ্যা (আগে "Seven") Categories.tsx-এর
               মতোই একই কারণে stale হয়ে যেত, একটা material বাদ পড়লেই ভুল হয়ে যেত। */}
           <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">
-            {materials.length} Natural Fibers. One Craft Tradition.
+            {`${materials.length} Natural Fibers. One Craft Tradition.`}
           </h1>
           <p className="max-w-2xl font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
             Every JUTORIA piece begins with a raw, natural material — sourced responsibly across Bangladesh and shaped entirely by hand.

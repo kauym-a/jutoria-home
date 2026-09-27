@@ -34,7 +34,7 @@ export default function OurStory() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/jutoria-story-hero.webp')", backgroundPosition: 'center 30%' }}
+          style={{ backgroundImage: 'url("/jutoria-story-hero.webp")', backgroundPosition: 'center 30%' }}
           role="img"
           aria-label="Bangladeshi women artisans handcrafting natural fiber products"
         />
@@ -92,7 +92,7 @@ export default function OurStory() {
             <div className="relative">
               <div
                 className="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-natural-materials.webp')", backgroundPosition: 'center 20%' }}
+                style={{ backgroundImage: 'url("/jutoria-story-natural-materials.webp")', backgroundPosition: 'center 20%' }}
                 role="img"
                 aria-label="Bangladeshi women artisans working with natural fibers"
               />
@@ -115,7 +115,7 @@ export default function OurStory() {
             <div className="order-2 lg:order-1 relative">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-material.webp')", backgroundPosition: 'center 25%' }}
+                style={{ backgroundImage: 'url("/jutoria-story-material.webp")', backgroundPosition: 'center 25%' }}
                 role="img"
                 aria-label="Bangladeshi artisan preparing natural fibers for handcrafting"
               />
@@ -246,7 +246,7 @@ export default function OurStory() {
             <div className="relative">
               <div
                 className="aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: "url('/jutoria-story-finished-product.webp')", backgroundPosition: 'center 10%' }}
+                style={{ backgroundImage: 'url("/jutoria-story-finished-product.webp")', backgroundPosition: 'center 10%' }}
                 role="img"
                 aria-label="Bangladeshi woman artisan with a finished woven home décor piece"
               />

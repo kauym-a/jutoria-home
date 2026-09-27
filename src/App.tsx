@@ -68,11 +68,14 @@ function App() {
             AuthProvider.tsx-এর কমেন্ট)। */}
         <AuthProvider>
           <ScrollToTop />
-          {/* একটাই top-level Suspense — নিচের lazy() admin কম্পোনেন্টগুলোর যেকোনোটা suspend
-              করলে এটাই ধরে (React ট্রি-অনুযায়ী কাজ করে, JSX নেস্টিং-এ Route-এর মাঝে
-              Suspense বসানো যায় না — react-router এটা সাপোর্ট করে না)। পাবলিক পেজের কোনো
-              কম্পোনেন্ট lazy নয়, তাই তারা এটা কখনো ট্রিগার করে না। */}
-          <Suspense fallback={<AdminLoadingFallback />}>
+          {/* Suspense আগে <Routes>-এর পুরো ট্রি-কে wrap করত (পাবলিক+admin দুটোই), যাতে
+              lazy() admin কম্পোনেন্টগুলোর suspend ধরা যায়। কিন্তু hydrateRoot()-এ (main.tsx
+              দেখুন) এর ফলে পাবলিক রুটেও একটা Suspense boundary ancestor থেকে যাচ্ছিল —
+              hydration-এর প্রথম পাসে React Suspense boundary-কে বিশেষভাবে ট্রিট করে, ফলে
+              prerendered markup-এর সাথে মিসম্যাচ (React error #418) হচ্ছিল, যদিও পাবলিক
+              পেজের কোনো কম্পোনেন্টই আসলে lazy না। এখন Suspense শুধু admin-নির্দিষ্ট lazy
+              এলিমেন্টগুলোতেই (নিচে <Login>/<AdminLayout>) আলাদাভাবে বসানো হচ্ছে — পাবলিক
+              রুট ট্রি সম্পূর্ণ Suspense-মুক্ত। */}
           <Routes>
             {/* Public Routes - সাধারণ কাস্টমারদের জন্য */}
             <Route element={<PublicLayout />}>
@@ -126,11 +129,11 @@ function App() {
             </Route>
 
             {/* Admin Login - শুধু আপনার লগইন করার জন্য (এতে কোনো মেনু/ফুটার থাকবে না) */}
-            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/login" element={<Suspense fallback={<AdminLoadingFallback />}><Login /></Suspense>} />
 
             {/* Protected Admin Routes - লগইন ছাড়া কেউ এখানে ঢুকতে পারবে না */}
             <Route element={<ProtectedRoute />}>
-              <Route element={<AdminLayout />}>
+              <Route element={<Suspense fallback={<AdminLoadingFallback />}><AdminLayout /></Suspense>}>
                 <Route path="/admin/dashboard" element={<Dashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
                 <Route path="/admin/products/new" element={<AdminProductForm />} />
@@ -146,7 +149,6 @@ function App() {
               </Route>
             </Route>
           </Routes>
-          </Suspense>
         </AuthProvider>
       </BrowserRouter>
     </HelmetProvider>

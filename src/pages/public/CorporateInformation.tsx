@@ -110,7 +110,7 @@ export default function CorporateInformation() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('${src(IMG.registration)}')`, backgroundPosition: 'center 40%' }}
+          style={{ backgroundImage: `url("${src(IMG.registration)}")`, backgroundPosition: 'center 40%' }}
           role="img"
           aria-label="Corporate registration documentation for Sir Commerce Group Ltd"
         />
@@ -251,7 +251,7 @@ export default function CorporateInformation() {
             <div className="order-1 lg:order-2">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.ukPresence)}')`, backgroundPosition: 'center 30%' }}
+                style={{ backgroundImage: `url("${src(IMG.ukPresence)}")`, backgroundPosition: 'center 30%' }}
                 role="img"
                 aria-label="JUTORIA UK business and operational presence"
               />
@@ -432,7 +432,7 @@ export default function CorporateInformation() {
             <div>
                <div
                 className="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] bg-cover bg-center shadow-premium overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.registration)}')`, backgroundPosition: 'center' }}
+                style={{ backgroundImage: `url("${src(IMG.registration)}")`, backgroundPosition: 'center' }}
                 role="img"
                 aria-label="Corporate registration documentation for Sir Commerce Group Ltd"
               />
@@ -473,7 +473,7 @@ export default function CorporateInformation() {
             <div className="order-1 lg:order-2">
               <div
                 className="aspect-[4/3] rounded-[2px] bg-cover bg-center shadow-premium-hover overflow-hidden"
-                style={{ backgroundImage: `url('${src(IMG.trademark)}')`, backgroundPosition: 'center 20%' }}
+                style={{ backgroundImage: `url("${src(IMG.trademark)}")`, backgroundPosition: 'center 20%' }}
                 role="img"
                 aria-label="JUTORIA UK trademark documentation"
               />
@@ -490,7 +490,7 @@ export default function CorporateInformation() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${src(IMG.craftsmanship)}')`, backgroundPosition: 'center 30%' }}
+          style={{ backgroundImage: `url("${src(IMG.craftsmanship)}")`, backgroundPosition: 'center 30%' }}
           role="img"
           aria-label="Bangladeshi artisans creating natural-fiber handicrafts"
         />

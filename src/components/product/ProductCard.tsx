@@ -55,10 +55,10 @@ export default function ProductCard({ product, priority = false }:{ product: Pro
         </h3>
         <span className="mx-auto mb-3 flex w-fit items-center gap-1.5 rounded-full bg-brand-navy/[0.06] px-3 py-1 font-sans text-xs font-bold tracking-wide text-brand-navy">
           <Package size={13} strokeWidth={2} className="shrink-0 text-brand-gold" />
-          MOQ: {moq}
+          {`MOQ: ${moq}`}
         </span>
         <span className="text-sm font-sans text-brand-navy/60 border border-brand-navy/20 px-3 py-1 rounded-full inline-block">
-          SKU: {product.sku}
+          {`SKU: ${product.sku}`}
         </span>
       </div>
     </div>

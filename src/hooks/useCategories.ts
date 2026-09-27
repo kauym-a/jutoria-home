@@ -21,11 +21,26 @@ import {
 // দৃশ্যমান ফ্ল্যাশটাই অ্যাডমিন লক্ষ্য করেছিলেন (বিশেষত ইদানীং আপলোড করা নতুন
 // category card ছবিতে)। এখন initial state খালি রাখা হচ্ছে — static fallback শুধু
 // fetch সত্যিই ব্যর্থ হলে বা Firestore খালি থাকলেই বসে, আগেভাগে না।
+//
+// ⚠️ hydrateRoot()-এ যাওয়ার জন্য (main.tsx দেখুন) client-এর প্রথম রেন্ডার prerendered
+// HTML-এর সাথে হুবহু মিলতে হয় — useProducts.ts-এর একই কারণে/একই প্যাটার্নে (দেখুন সেই
+// ফাইলের কমেন্ট) window.__PRELOADED_CATEGORIES__ থেকে initial state seed করা হচ্ছে,
+// prerender.mjs যেটা এই hook-এরই prerender-সেশন resolved ডেটা থেকে বসায়।
 // ============================================================
 
+const isPrerendering =
+  typeof window !== 'undefined' && (window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__ === true;
+
+function getPreloadedCategories(): Category[] | undefined {
+  if (typeof window === 'undefined') return undefined;
+  const preloaded = (window as unknown as { __PRELOADED_CATEGORIES__?: unknown }).__PRELOADED_CATEGORIES__;
+  return Array.isArray(preloaded) ? (preloaded as Category[]) : undefined;
+}
+
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const preloaded = getPreloadedCategories();
+  const [categories, setCategories] = useState<Category[]>(preloaded ?? []);
+  const [loading, setLoading] = useState(!preloaded);
   const [source, setSource] = useState<'firestore' | 'static'>('firestore');
 
   useEffect(() => {
@@ -34,19 +49,18 @@ export function useCategories() {
     fetchActiveCategories()
       .then((fromFirestore) => {
         if (cancelled) return;
-        if (fromFirestore.length > 0) {
-          setCategories(fromFirestore);
-          setSource('firestore');
-        } else {
-          setCategories(getStaticFallbackCategories());
-          setSource('static');
-        }
+        const resolved = fromFirestore.length > 0 ? fromFirestore : getStaticFallbackCategories();
+        setCategories(resolved);
+        setSource(fromFirestore.length > 0 ? 'firestore' : 'static');
+        if (isPrerendering) (window as unknown as { __PRELOADED_CATEGORIES__?: Category[] }).__PRELOADED_CATEGORIES__ = resolved;
       })
       .catch((err) => {
         if (cancelled) return;
         console.warn('Could not load categories from Firestore, showing static fallback.', err);
-        setCategories(getStaticFallbackCategories());
+        const resolved = getStaticFallbackCategories();
+        setCategories(resolved);
         setSource('static');
+        if (isPrerendering) (window as unknown as { __PRELOADED_CATEGORIES__?: Category[] }).__PRELOADED_CATEGORIES__ = resolved;
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

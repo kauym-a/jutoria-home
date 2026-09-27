@@ -204,7 +204,7 @@ export function JutoriaAssistantPanel({ standalone = false }: { standalone?: boo
               <div className="flex flex-wrap items-center gap-3 mt-2">
                 {m.link && (
                   <Link to={m.link.to} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-navy transition-colors">
-                    {m.link.label} <ArrowRight size={12} />
+                    {`${m.link.label} `}<ArrowRight size={12} />
                   </Link>
                 )}
                 {m.whatsapp && (

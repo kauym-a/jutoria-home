@@ -26,10 +26,17 @@
 //   4. Captures the fully-rendered HTML (React mounted, react-helmet-async's <title> and
 //      <meta property="og:*"> tags baked into <head> for real) and writes it to disk.
 //
-// Real end users still get the normal client-rendered SPA (main.tsx calls
-// createRoot(...).render(...), which simply re-renders over this prerendered markup —
-// no hydration mismatch risk). This means crawlers AND the initial paint for real visitors
-// now get real content (hero image, text, og:tags) without waiting on any JavaScript.
+// Real end users get this prerendered markup HYDRATED (main.tsx calls hydrateRoot(...),
+// not createRoot(...).render(...) — React reuses this exact DOM instead of throwing it away
+// and rebuilding from scratch on every page load, which used to cost ~1-2s of main-thread
+// work per visit). Hydration requires the client's FIRST render (before any effect runs) to
+// match this file's markup byte-for-byte, so this script also captures whatever
+// window.__PRELOADED_PRODUCTS__/__PRELOADED_CATEGORIES__ ended up holding after the page's
+// own useProducts()/useCategories() hooks resolved (see those two files) and bakes that same
+// data into a <script> tag (see injectPreloadedData() below) — the client's initial useState
+// reads it back out, so its first render matches this snapshot exactly. This means crawlers
+// AND the initial paint for real visitors now get real content (hero image, text, og:tags)
+// without waiting on any JavaScript, AND real visitors' React doesn't have to rebuild the DOM.
 // ============================================================
 
 import fs from 'node:fs';
@@ -76,13 +83,29 @@ function resolveChromePath() {
   return found;
 }
 
+// ⚠️ আবিষ্কৃত বাগ (hydrateRoot()-এ যাওয়ার সময় ধরা পড়েছে): SPA fallback আগে প্রতিটা
+// unmatched রিকোয়েস্টে dist/index.html *ডিস্ক থেকে ফ্রেশ* পড়ত — কিন্তু STATIC_ROUTES-এর
+// '/' এন্ট্রি লুপের শুরুর দিকেই সেই একই dist/index.html-কে Home-এর পুরোপুরি populated
+// prerendered markup দিয়ে ওভাররাইট করে দেয়। ফলে লুপে পরে আসা রুটগুলো (যাদের নিজস্ব
+// dist/<route>/index.html তখনো লেখা হয়নি) fallback-এ Home-এর markup পেত, আর
+// hydrateRoot() সেই ভুল markup-এর সাথে আসল রুটের কম্পোনেন্ট মেলাতে গিয়ে মিসম্যাচ করত
+// (React error #418) — রিকভারিতে পুরো ট্রি আবার রেন্ডার হতো ঠিকই (তাই চূড়ান্ত title/
+// content সঠিকই থাকত), কিন্তু ব্যর্থ hydration attempt-এর ফাঁকে Home-এর effect-ও একবার
+// চলে যেত, ফলে window.__PRELOADED_CATEGORIES__ ভুলভাবে সেই রুটেও বসে যেত যেখানে আসল
+// পেজ কখনো useCategories() ব্যবহারই করে না (যেমন /products, /contact)। ফিক্স: vite
+// build-এর ঠিক পরের, prerender লুপ শুরু হওয়ার *আগের* pristine (খালি root) শেলটা মেমরিতে
+// একবার ক্যাপচার করে রাখা হচ্ছে — fallback সবসময় *এটাই* সার্ভ করবে, লুপ যতই dist/
+// index.html মিউটেট করুক না কেন। খালি root-এ hydrateRoot() মিসম্যাচ ছাড়াই সাধারণ ক্লায়েন্ট
+// রেন্ডার করে (React-এর ডকুমেন্টেড আচরণ — container-এ কোনো children না থাকলে hydrate না
+// করে প্লেইন রেন্ডার করে), তাই প্রতিটা রুট বরাবরই একটা ক্লিন, সাইড-এফেক্ট-মুক্ত শুরু পায়।
 function startStaticServer() {
+  const pristineShellHtml = fs.readFileSync(path.join(DIST_DIR, 'index.html'), 'utf8');
   const serve = serveStatic(DIST_DIR, { index: ['index.html'] });
   const server = http.createServer((req, res) => {
     serve(req, res, () => {
-      // SPA fallback — public/.htaccess-এ থাকা রুলের সমতুল্য: real file না পেলে index.html
+      // SPA fallback — public/.htaccess-এ থাকা রুলের সমতুল্য: real file না পেলে pristine শেল
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      fs.createReadStream(path.join(DIST_DIR, 'index.html')).pipe(res);
+      res.end(pristineShellHtml);
     });
   });
   return new Promise((resolve, reject) => {
@@ -252,6 +275,39 @@ function inlineCriticalCss(html) {
   return html.replace(linkTag, `<style>${css}</style>`);
 }
 
+// ============================================================
+// HYDRATION-এর জন্য ডেটা প্রিলোড ইনজেকশন — main.tsx এখন hydrateRoot() ব্যবহার করে
+// (আগে createRoot().render(), দেখুন এই ফাইলের উপরের কমেন্ট)। এর জন্য client-এর প্রথম
+// রেন্ডার prerendered HTML-এর সাথে হুবহু মিলতে হয়, কিন্তু useProducts.ts/useCategories.ts-এর
+// initial state ইচ্ছাকৃতভাবে খালি (আগের এক ফ্ল্যাশ-বাগ ফিক্সের জন্য) — অথচ prerendered
+// HTML-এ আসল populated ডেটা বেক করা থাকে (নিচের prerenderRoute() Firestore fetch শেষ
+// হওয়া পর্যন্ত অপেক্ষা করে তারপর snapshot নেয়)। তাই এখানে সেই একই resolved ডেটা
+// (window.__PRELOADED_PRODUCTS__/__PRELOADED_CATEGORIES__ — hook দুটো prerender সেশনে
+// নিজেরাই window-এ লিখে রাখে, দেখুন সেই ফাইলগুলোর কমেন্ট) বের করে <script> ট্যাগ হিসেবে
+// বসিয়ে দেওয়া হচ্ছে — client প্রথম রেন্ডারেই এটা initial state হিসেবে পড়ে prerendered
+// markup-এর সাথে মিলে যায়।
+//
+// ⚠️ prerender.mjs নিজে আলাদা Firestore fetch করে না (Node-সাইড দ্বিতীয় কল) — কারণ
+// Firestore REST "list documents"-এ orderBy ছাড়া অর্ডার কোনো গ্যারান্টিড কন্ট্রাক্ট না;
+// দুটো আলাদা HTTP কল ভিন্ন অর্ডারে ডেটা ফেরত দিলে ঠিক সেই mismatch-ই আবার তৈরি হতো যেটা
+// এখানে এড়ানোর চেষ্টা হচ্ছে। তার বদলে ব্রাউজারের নিজের resolved ডেটাই পুনর্ব্যবহার করা হয়।
+//
+// যে রুটের কম্পোনেন্ট useProducts()/useCategories() একদমই কল করে না, সেখানে সংশ্লিষ্ট
+// window global টা undefined-ই থেকে যায় — তাই এখানে আলাদা কোনো per-route লিস্ট রাখার
+// দরকার নেই, শুধু যেটা সত্যিই সেট হয়েছে সেটাই ইনজেক্ট হবে।
+function injectPreloadedData(html, preload) {
+  const assignments = [];
+  for (const [key, value] of Object.entries(preload)) {
+    if (value === undefined) continue;
+    // </script> সাব-স্ট্রিং (প্রোডাক্ট/ক্যাটাগরির নাম-বিবরণে থিওরিটিক্যালি থাকলে) স্ক্রিপ্ট
+    // ট্যাগ অকালে বন্ধ করে ফেলতে পারত বলে escape করা হচ্ছে — < সব জায়গায় < করলেই যথেষ্ট।
+    const json = JSON.stringify(value).replace(/</g, '\\u003c');
+    assignments.push(`window.__PRELOADED_${key.toUpperCase()}__=${json};`);
+  }
+  if (assignments.length === 0) return html;
+  return html.replace('</head>', `<script>${assignments.join('')}</script></head>`);
+}
+
 // স্ট্যাটিক মার্কেটিং রুট — এগুলোর কনটেন্ট বিল্ড-টাইমে ফিক্সড (Firestore-নির্ভর প্রোডাক্ট
 // ডেটার মতো ইউজার-জেনারেটেড নয়), তাই Firestore থেকে লিস্ট আনার দরকার নেই, হার্ডকোড করাই
 // যথেষ্ট। '/' রুটটা dist/index.html-কেই সরাসরি ওভাররাইট করে (Apache-এ "/" রিকোয়েস্ট
@@ -394,7 +450,15 @@ async function prerenderRoute(browser, baseUrl, route, debug = false) {
       rootChildren: document.getElementById('root')?.children.length || 0,
     }));
 
-    const html = inlineCriticalCss(await page.content());
+    // useProducts.ts/useCategories.ts এই দুটো global-এ নিজেদের resolved ডেটা লিখে রাখে
+    // (শুধু prerender সেশনে, window.__PRERENDER__ চেক করে) — যে হুক এই রুটে ব্যবহৃতই হয়নি,
+    // তার জন্য এটা undefined-ই থাকবে (injectPreloadedData() সেটা স্কিপ করে দেয়)।
+    const preload = await page.evaluate(() => ({
+      products: window.__PRELOADED_PRODUCTS__,
+      categories: window.__PRELOADED_CATEGORIES__,
+    }));
+
+    const html = injectPreloadedData(inlineCriticalCss(await page.content()), preload);
     return { html, meta };
   } finally {
     await page.close();
