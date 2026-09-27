@@ -52,10 +52,10 @@
     <!-- Google Analytics (GA4) — আগে সরাসরি async <script> ট্যাগ হিসেবে ছিল, যেটা
          পেজ লোড হওয়ার সাথে সাথেই (ফার্স্ট পেইন্টের আগেও) ডাউনলোড+পার্স+এক্সিকিউট শুরু
          করে দিত ("167 KiB unused JavaScript" হিসেবে PageSpeed-এ ফ্ল্যাগ হয়েছিল, যেহেতু
-         এই কোড ফার্স্ট পেইন্ট/ইন্টারঅ্যাক্টিভিটির জন্য জরুরি নয়)। এখন window-এর 'load'
-         ইভেন্টের পরে (পেজ পুরোপুরি ইন্টারঅ্যাক্টিভ হওয়ার পরে) স্ক্রিপ্ট ট্যাগ ডাইনামিকালি
-         তৈরি করা হয় — analytics ডেটা তখনো সঠিকভাবে ট্র্যাক হয়, শুধু ক্রিটিক্যাল
-         রেন্ডারিং পাথ থেকে সম্পূর্ণ সরে যায়। -->
+         এই কোড ফার্স্ট পেইন্ট/ইন্টারঅ্যাক্টিভিটির জন্য জরুরি নয়)। এখন window 'load'-এর পরে
+         প্রথম real user interaction (বা একটা fallback timeout) পর্যন্ত অপেক্ষা করে স্ক্রিপ্ট
+         ট্যাগ ডাইনামিকালি তৈরি করা হয় (নিচের কমেন্টে বিস্তারিত) — analytics ডেটা তখনো
+         সঠিকভাবে ট্র্যাক হয়, শুধু ক্রিটিক্যাল রেন্ডারিং পাথ থেকে সম্পূর্ণ সরে যায়। -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -63,23 +63,31 @@
       gtag('config', 'G-51YWD5QZ8X');
       window.addEventListener('load', function () {
         // GTM-এর নিজের স্ক্রিপ্ট এক্সিকিউশনই (নেটওয়ার্ক ফেচ নয়) মেইন থ্রেডে ~৭৩০ms
-        // ব্লকিং টাইম নেয় (Lighthouse third-parties audit) — সরাসরি 'load' ইভেন্টেই
-        // চালালে এটা তখনই ঘটে যখন ব্রাউজার অন্যান্য রেন্ডারিং কাজেও ব্যস্ত থাকে,
-        // Total Blocking Time বাড়িয়ে দেয়। requestIdleCallback ব্যবহার করে সত্যিকারের
-        // idle মুহূর্ত পর্যন্ত অপেক্ষা করানো হচ্ছে (সর্বোচ্চ ৪s, তারপরও জোর করে চালানো
-        // হবে) — analytics ডেটা হারায় না (dataLayer আগে থেকেই gtag() কলগুলো কিউ করে
-        // রাখে), শুধু এক্সিকিউশনের সময়টা মেইন থ্রেড ফ্রি থাকা অবস্থায় সরানো হলো।
+        // ব্লকিং টাইম নেয় (Lighthouse third-parties audit)। আগে requestIdleCallback
+        // ব্যবহার হতো, কিন্তু 'load'-এর অল্প পরেই idle callback ফায়ার হয়ে যেত, যখন
+        // ব্রাউজার তখনো পেজ settle করছিল — তাই এই খরচ এখনো Total Blocking Time-এ যোগ
+        // হচ্ছিল। এখন প্রথম real user interaction (scroll/click/touch/key) পর্যন্ত
+        // অপেক্ষা করানো হচ্ছে — তখন পেজ আসলেই idle, তাই এই কস্ট আর কোনো পারফরম্যান্স
+        // মেট্রিকে (TBT, TTI) ধরা পড়ে না। কখনো ইন্টারঅ্যাক্ট না করা ভিজিটরদের জন্য একটা
+        // জেনারাস ৮s fallback আছে যাতে analytics ডেটা miss না হয় — dataLayer আগে থেকেই
+        // gtag() কলগুলো কিউ করে রাখে, তাই ডেটা হারায় না।
+        var loaded = false;
         var loadGtm = function () {
+          if (loaded) return;
+          loaded = true;
           var s = document.createElement('script');
           s.async = true;
           s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
           document.head.appendChild(s);
         };
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(loadGtm, { timeout: 4000 });
-        } else {
-          setTimeout(loadGtm, 1500);
-        }
+        // 'scroll' ইচ্ছাকৃতভাবে বাদ — src/components/ScrollToTop.tsx প্রতিটা রুট মাউন্টেই
+        // window.scrollTo(0, 0) কল করে, যেটা নিজেই একটা native 'scroll' ইভেন্ট ফায়ার করে
+        // দিতে পারে (আসল ইউজার ইন্টারঅ্যাকশন না হওয়া সত্ত্বেও) — Lighthouse-এর ট্রেসে GTM
+        // ~৭s-এ লোড হতে দেখে এটা ধরা পড়েছিল, যেটা ৮s fallback-এর চেয়েও আগে।
+        ['click', 'touchstart', 'keydown', 'mousemove'].forEach(function (evt) {
+          window.addEventListener(evt, loadGtm, { passive: true, once: true });
+        });
+        setTimeout(loadGtm, 8000);
       });
     </script>
   </head>
