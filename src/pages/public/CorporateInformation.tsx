@@ -38,6 +38,16 @@ const LEADERSHIP_TEAM = [
     photo: '/team/founder-managing-director.webp',
   },
   {
+    name: 'Mohammed Shamsher Ali',
+    title: 'UK Sales Director',
+    desc: 'Leading UK sales operations and business development',
+    location: 'United Kingdom',
+    phone: '+44 7446 863995',
+    email: 'shamsher@jutoriahome.com',
+    linkedin: '',
+    photo: '/team/uk-sales-director.webp',
+  },
+  {
     name: 'S M Nasif Ali',
     title: 'UK & Bangladesh Marketing Director',
     desc: 'Overseeing marketing and operations across the UK and Bangladesh markets',
@@ -59,8 +69,8 @@ const LEADERSHIP_TEAM = [
   },
   {
     name: 'Mst Kazi Sanzida Ahammad',
-    title: 'Product Designer & Marketing Director',
-    desc: 'Product design leadership and marketing strategy',
+    title: 'Product Designer & Supply Chain Director',
+    desc: 'Product design leadership and supply chain strategy',
     location: 'Bangladesh',
     phone: '+880 1714-567000',
     email: 'sanjida@jutoriahome.com',
