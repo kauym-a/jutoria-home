@@ -330,8 +330,19 @@ export default function Home() {
               ফ্ল্যাগ হয়েছিল) — "metadata" শুধু duration/dimensions আনে, কিন্তু পুরো
               ফাইলটা প্রথম পেইন্টের আগেই ডাউনলোড করার জন্য অপেক্ষা করায় না।
               autoPlay অ্যাট্রিবিউট ইচ্ছাকৃতভাবে নেই — উপরের heroVideoRef effect
-              window 'load'-এর পরে play() কল করে (দেখুন সেখানকার কমেন্ট)। */}
+              window 'load'-এর পরে play() কল করে (দেখুন সেখানকার কমেন্ট)।
+              এমনকি metadata-only preload দিয়েও, load()-এর পর play() কল হলে ব্রাউজার
+              পুরো ভিডিও বাফার করা শুরু করে দেয় — Lighthouse-এ ধরা পড়েছিল আসল
+              hero-video.mp4 ফাইলটাই (আগে ২.৯MB, ১২৮০x৭২০, ১.৯Mbps বিটরেট — দৃশ্যমান
+              মানের প্রয়োজনের তুলনায় বহুগুণ বেশি ব্যান্ডউইথ ব্যবহার করছিল) থ্রটলড মোবাইল
+              কানেকশনে বাকি সব ক্রিটিক্যাল রিসোর্সের (Firestore ফেচ, ছবি) সাথে ব্যান্ডউইথের
+              জন্য প্রতিযোগিতা করে পুরো পেজ কনজেস্ট করে ফেলছিল। CRF-ভিত্তিক রি-এনকোডে
+              (libx264, দৃশ্যত অভিন্ন কোয়ালিটি ভেরিফাই করা হয়েছে) মোবাইলের জন্য ৮৫৪x৪৮০
+              ভ্যারিয়েন্ট ৭৩৬KB-তে (৭৫% ছোট) আর ডেস্কটপ ১২৮০x৭২০ ভ্যারিয়েন্ট ১.৪৬MB-তে
+              (৫০% ছোট) নামানো হয়েছে — <picture>-এর মতোই <source media> দিয়ে ভিউপোর্ট
+              অনুযায়ী সঠিক ফাইলটা বেছে নেওয়া হয়। */}
           <video ref={heroVideoRef} loop muted playsInline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" className="w-full h-full object-cover">
+            <source src="/hero-video-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
             <source src="/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>

@@ -23,6 +23,13 @@
          থাকা ব্রাউজার/ক্রলারদের জন্য। -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Firestore REST কল (categories/products, দেখুন firestoreRest.ts) আসলে হয় শুধু
+         মূল JS বান্ডল ডাউনলোড+পার্স+এক্সিকিউট হওয়ার পরে — Lighthouse-এর network
+         dependency tree-তে এটাই সবচেয়ে লম্বা চেইনের একটা ধাপ হিসেবে ধরা পড়েছিল।
+         preconnect দিয়ে TCP/TLS হ্যান্ডশেকটা JS বান্ডল ডাউনলোডের সাথে সমান্তরালে শুরু
+         হয়ে যায়, তাই ফেচ শুরু হওয়ার সময় কানেকশন-সেটআপ ল্যাটেন্সি (থ্রটলড মোবাইলে
+         উল্লেখযোগ্য) আর নতুন করে দিতে হয় না। -->
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
@@ -55,10 +62,24 @@
       gtag('js', new Date());
       gtag('config', 'G-51YWD5QZ8X');
       window.addEventListener('load', function () {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
-        document.head.appendChild(s);
+        // GTM-এর নিজের স্ক্রিপ্ট এক্সিকিউশনই (নেটওয়ার্ক ফেচ নয়) মেইন থ্রেডে ~৭৩০ms
+        // ব্লকিং টাইম নেয় (Lighthouse third-parties audit) — সরাসরি 'load' ইভেন্টেই
+        // চালালে এটা তখনই ঘটে যখন ব্রাউজার অন্যান্য রেন্ডারিং কাজেও ব্যস্ত থাকে,
+        // Total Blocking Time বাড়িয়ে দেয়। requestIdleCallback ব্যবহার করে সত্যিকারের
+        // idle মুহূর্ত পর্যন্ত অপেক্ষা করানো হচ্ছে (সর্বোচ্চ ৪s, তারপরও জোর করে চালানো
+        // হবে) — analytics ডেটা হারায় না (dataLayer আগে থেকেই gtag() কলগুলো কিউ করে
+        // রাখে), শুধু এক্সিকিউশনের সময়টা মেইন থ্রেড ফ্রি থাকা অবস্থায় সরানো হলো।
+        var loadGtm = function () {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
+          document.head.appendChild(s);
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGtm, { timeout: 4000 });
+        } else {
+          setTimeout(loadGtm, 1500);
+        }
       });
     </script>
   </head>
