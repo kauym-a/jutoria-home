@@ -30,6 +30,12 @@ const jutoriaImageCache = {
 export default defineConfig({
   integrations: [react(), jutoriaImageCache],
 
+  // CSS (~১২KB gzip) প্রতিটা পেজের <head>-এ ইনলাইন — আলাদা render-blocking রিকোয়েস্টের জন্য
+  // প্রথম পেইন্টের আগে একটা বাড়তি রাউন্ড-ট্রিপ বাঁচে (লাইভ মোবাইল Lighthouse-এ FCP-র একটা অংশ)।
+  build: {
+    inlineStylesheets: 'always',
+  },
+
   vite: {
     plugins: [tailwindcss()]
   }

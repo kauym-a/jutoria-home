@@ -12,6 +12,7 @@
 // ফলে হোমপেজেও কোনো React রানটাইম লোড হয় না।
 import PublicLayout from '../layouts/PublicLayout.astro';
 import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
 import SocialIcon from '../components/SocialIcon.astro';
 import { fetchActiveCategories, displayNumber } from '../lib/categories';
 import { optimizeImage } from '../lib/images';
@@ -90,7 +91,6 @@ const R = {
 
 <PublicLayout title={TITLE} description={DESCRIPTION} ogImage={socialImage}>
   <Fragment slot="head">
-    <link rel="preload" as="image" href="/jutoria-artisans-hero-poster.webp" fetchpriority="high" type="image/webp" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={TITLE} />
     <meta name="twitter:description" content={DESCRIPTION} />
@@ -106,7 +106,21 @@ const R = {
   <section class="relative w-full min-h-[100svh] flex flex-col lg:flex-row bg-brand-ivory overflow-hidden">
     <div class="relative w-full h-[50vh] lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5 lg:h-full">
       <div class="absolute inset-0 bg-gradient-to-t from-brand-ivory via-transparent to-transparent z-10 lg:bg-gradient-to-r lg:from-brand-ivory lg:via-brand-ivory/70 lg:to-transparent"></div>
-      <video data-hero-video loop muted playsinline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" class="w-full h-full object-cover">
+      {/* পোস্টার আগে <video poster="…">-এ ছিল — লাইভ Lighthouse-এ এটাই LCP এলিমেন্ট, আর ব্রাউজার
+          ভিডিও-পোস্টার সাধারণ ছবির মতো দক্ষভাবে আঁকে না (~১.৪s render delay), মোবাইলের জন্য ছোট
+          সাইজও দেওয়া যায় না। এখন নিচে একটা আসল রেস্পন্সিভ <img fetchpriority="high"> (এটাই LCP),
+          আর পোস্টার-ছাড়া ভিডিও তার ওপরে — প্লে শুরু না হওয়া পর্যন্ত ভিডিও স্বচ্ছ থাকে, তাই ছবিটাই
+          দেখা যায়; প্লে শুরু হলে ভিডিও সেটা ঢেকে দেয়। */}
+      <Img
+        src="/jutoria-artisans-hero-poster.webp"
+        widths={[480, 640, 900]}
+        sizes="(min-width: 1024px) 60vw, 100vw"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <video data-hero-video loop muted playsinline preload="metadata" class="relative w-full h-full object-cover">
         <source src="/hero-video-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
         <source src="/hero-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
