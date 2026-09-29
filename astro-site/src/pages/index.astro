@@ -1,17 +1,530 @@
 ---
+// মূল src/pages/public/Home.tsx থেকে পোর্ট করা। আগের React state/effect-গুলো:
+//   - হিরো ভিডিও window 'load'-এর পরে play() (poster-ই একমাত্র/স্থিতিশীল LCP candidate
+//     থাকে — মূল ফাইলের কমেন্ট দেখুন)            → নিচের <script>
+//   - সার্টিফিকেশন লোগোর src window 'load'-এর পরে (হিরোর সাথে ব্যান্ডউইথ কম্পিট না করতে)
+//                                                     → data-deferred-src + <script>
+//   - স্ক্রল-রিভিল অ্যানিমেশন (IntersectionObserver) + artisan ছবির প্যারালাক্স
+//                                                     → data-reveal-* + <script>
+//   - মোবাইলে ফিচার্ড প্রোডাক্ট ট্যাপ করলে lifestyle ছবি (toggledProducts state)
+//                                                     → লুকানো checkbox + group-has-[:checked]
+//   - "Our Materials" গ্রিড useCategories() হুক      → বিল্ড-টাইমে fetchActiveCategories()
+// ফলে হোমপেজেও কোনো React রানটাইম লোড হয় না।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { fetchActiveCategories, displayNumber } from '../lib/categories';
+import { optimizeImage } from '../lib/images';
+import { absoluteUrl, organizationJsonLd } from '../lib/seo';
 
+const INSTAGRAM_URL = 'https://www.instagram.com/jutoriahome/';
+const TITLE = 'JUTORIA | Premium Eco-Friendly Handmade Home Décor';
+const DESCRIPTION = 'Premium natural-fiber home décor, handcrafted by skilled artisans in Bangladesh for conscious living and global spaces.';
+
+// হোমপেজের গ্রিড থেকে Cane/Natural Rattan ইচ্ছাকৃতভাবে বাদ (/materials-এ আছে); Hogla Leaf
+// Firestore থেকে Admin-এ মুছে না ফেলা পর্যন্ত সেফটি-নেট হিসেবে ফিল্টার থাকছে।
+const HOME_HIDDEN_MATERIAL_SLUGS = new Set(['cane-rattan', 'hogla-leaf']);
+const homeMaterials = await Promise.all(
+  (await fetchActiveCategories())
+    .filter((c) => !HOME_HIDDEN_MATERIAL_SLUGS.has(c.slug))
+    .map(async (m, index) => ({
+      ...m,
+      card: await optimizeImage(m.cardImage || m.image, index === 0 ? [400, 640, 800, 1200] : [400, 640, 800]),
+    })),
+);
+
+const featuredProducts = await Promise.all(
+  [
+    { id: 'f1', name: 'Jute Storage Basket', category: 'Natural Jute', productImg: '/jute-basket-product-sm.webp', lifestyleImg: '/jute-basket-lifestyle-sm.webp' },
+    { id: 'f2', name: 'Woven Laundry Basket', category: 'Seagrass', productImg: '/laundry-basket-product-sm.webp', lifestyleImg: '/laundry-basket-lifestyle-sm.webp' },
+    { id: 'f3', name: 'Minimalist Organizer', category: 'Natural Fiber', productImg: '/organizer-basket-product-sm.webp', lifestyleImg: '/organizer-basket-lifestyle-sm.webp' },
+    { id: 'f4', name: 'Artisan Placemat', category: 'Seagrass', productImg: '/placemat-product-sm.webp', lifestyleImg: '/placemat-lifestyle-sm.webp' },
+  ].map(async (p) => ({
+    ...p,
+    product: (await optimizeImage(p.productImg, [400, 640, 800]))!,
+    lifestyle: (await optimizeImage(p.lifestyleImg, [400, 640, 800]))!,
+  })),
+);
+
+// লোগোগুলো ৩৬-৬০px উচ্চতায় দেখায় — আগে থেকেই ছোট "-sm" ভ্যারিয়েন্ট, src window 'load'-এর
+// পরে বসে (নিচের <script>), তাই এগুলো অপ্টিমাইজারে পাঠানো হয়নি।
+const certificationLogos = [
+  { name: 'Banglacraft', src: '/Banglacraft-Logo-sm.webp' },
+  { name: 'BSCI', src: '/BSCI_LOGO-sm.webp' },
+  { name: 'ENV Study', src: '/env-study-sm.webp' },
+  { name: 'EPB', src: '/epb-sm.webp' },
+  { name: 'Expo', src: '/EXPO%20LOGO.png' },
+  { name: 'JDPC', src: '/JDPC-sm.webp' },
+  { name: 'Phytosanitary Certificate', src: '/phytosanitary-certificate-logo.webp' },
+];
+
+const [artisanMobile, artisanDesktop, editorialLaundry, editorialJute, editorialPlacemat, editorialOrganizer] = await Promise.all([
+  optimizeImage('/jutoria-artisans-craftsmanship-mobile-sm.webp', [480, 800]),
+  optimizeImage('/jutoria-artisans-craftsmanship-desktop.webp', [640, 1000]),
+  optimizeImage('/laundry-basket-lifestyle-editorial.webp', [480, 750]),
+  optimizeImage('/jute-basket-lifestyle-editorial.webp', [480, 750]),
+  optimizeImage('/placemat-lifestyle-editorial.webp', [480, 750]),
+  optimizeImage('/organizer-basket-lifestyle-editorial.webp', [480, 750]),
+]);
+
+const instagramImages = await Promise.all(
+  [
+    { src: '/jutoria-instagram-natural-living-sm.webp', alt: 'JUTORIA natural fiber home décor styled in a living room' },
+    { src: '/jutoria-instagram-dining-table-sm.webp', alt: 'JUTORIA woven placemats and baskets on a dining table' },
+    { src: '/jutoria-instagram-modern-home-sm.webp', alt: 'JUTORIA natural fiber basket in a modern home' },
+  ].map(async (img) => ({ ...img, opt: (await optimizeImage(img.src, [400, 640]))! })),
+);
+
+const orgLd = organizationJsonLd();
+const socialImage = absoluteUrl('/laundry-basket-lifestyle.webp');
+
+// রিভিল অ্যানিমেশনের শুরুর/শেষের ক্লাস — মূল ফাইলের isXVisible ? '...' : '...' হুবহু।
+const R = {
+  up12: { from: 'opacity-0 translate-y-12', to: 'opacity-100 translate-y-0' },
+  up8: { from: 'opacity-0 translate-y-8', to: 'opacity-100 translate-y-0' },
+  right8: { from: 'opacity-0 translate-x-8', to: 'opacity-100 translate-x-0' },
+  zoom4: { from: 'scale-100', to: 'scale-[1.04]' },
+  zoom3: { from: 'scale-100', to: 'scale-[1.03]' },
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<PublicLayout title={TITLE} description={DESCRIPTION} ogImage={socialImage}>
+  <Fragment slot="head">
+    <link rel="preload" as="image" href="/jutoria-artisans-hero-poster.webp" fetchpriority="high" type="image/webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={TITLE} />
+    <meta name="twitter:description" content={DESCRIPTION} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
+    <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+    <noscript>
+      <style>[data-reveal-from]{opacity:1!important;translate:none!important;scale:none!important}</style>
+    </noscript>
+  </Fragment>
+
+  {/* ========== HERO ========== */}
+  <section class="relative w-full min-h-[100svh] flex flex-col lg:flex-row bg-brand-ivory overflow-hidden">
+    <div class="relative w-full h-[50vh] lg:absolute lg:inset-y-0 lg:right-0 lg:w-3/5 lg:h-full">
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-ivory via-transparent to-transparent z-10 lg:bg-gradient-to-r lg:from-brand-ivory lg:via-brand-ivory/70 lg:to-transparent"></div>
+      <video data-hero-video loop muted playsinline preload="metadata" poster="/jutoria-artisans-hero-poster.webp" class="w-full h-full object-cover">
+        <source src="/hero-video-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
+        <source src="/hero-video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="relative z-20 w-full flex-grow flex items-center bg-brand-ivory lg:bg-transparent lg:w-full">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-0">
+        <div class="max-w-2xl">
+          <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4">Sustainable Luxury</span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-brand-navy leading-[1.15] mb-6">
+            Crafted by Nature.<br />
+            <span class="italic font-light">Finished by Hand.</span>
+          </h1>
+          <p class="font-sans text-base sm:text-lg lg:text-xl text-brand-navy/80 font-light leading-relaxed mb-10 max-w-xl">{DESCRIPTION}</p>
+          <div class="flex flex-col sm:flex-row items-start gap-4 sm:items-center">
+            <a href="/products" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-gold px-8 py-4 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+              Explore Collection <Icon name="arrow-right" size={18} />
+            </a>
+            <a href="/wholesale" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/30 text-brand-navy px-8 py-4 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory rounded-[2px]">
+              Wholesale Inquiry
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== CERTIFICATIONS ========== */}
+  <section class="bg-[#f7f4ee] py-8 sm:py-10 lg:py-14">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="rounded-[24px] border border-brand-navy/10 bg-white/80 px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8 shadow-[0_12px_32px_rgba(15,23,42,0.03)]">
+        <div class="mb-5 flex justify-center">
+          <span class="font-sans text-[10px] sm:text-[11px] tracking-[0.24em] uppercase text-brand-navy/70">Certifications &amp; Export Recognition</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7 lg:gap-5">
+          {certificationLogos.map((logo) => (
+            <div class="flex h-16 items-center justify-center rounded-[14px] border border-brand-navy/5 bg-[#fbfaf7] p-3 sm:h-20 lg:h-24">
+              <img
+                data-deferred-src={logo.src}
+                alt={logo.name}
+                loading="lazy"
+                fetchpriority="low"
+                class="h-9 w-auto max-w-full object-contain opacity-70 grayscale mix-blend-multiply transition duration-300 ease-out hover:opacity-100 hover:grayscale-0 sm:h-11 lg:h-[60px]"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== BRAND STORY ========== */}
+  <section class="py-16 md:py-24 bg-brand-ivory flex items-center justify-center">
+    <div class="container mx-auto px-4 max-w-4xl text-center">
+      <div class="w-12 h-[2px] bg-brand-gold mx-auto mb-10"></div>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight mb-8">From Natural Fibers to Meaningful Spaces.</h2>
+      <p class="font-sans text-lg md:text-xl lg:text-2xl text-brand-navy/80 font-light leading-relaxed max-w-3xl mx-auto">
+        JUTORIA brings together Bangladesh's natural materials and skilled artisan craftsmanship to create beautiful products for homes, businesses and conscious lifestyles around the world.
+      </p>
+    </div>
+  </section>
+
+  {/* ========== OUR MATERIALS ========== */}
+  <section class="py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div class="max-w-3xl mb-16 md:mb-24">
+        <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4">Our Materials</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight mb-6">Rooted in Nature.<br />Crafted for Living.</h2>
+        <p class="font-sans text-lg text-brand-navy/70 font-light leading-relaxed max-w-2xl mb-8">
+          We transform responsibly sourced natural fibers into thoughtfully designed products, combining traditional craftsmanship with contemporary living.
+        </p>
+        <a href="/materials" class="inline-flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-navy border-b-2 border-brand-gold pb-1 hover:text-brand-gold transition-colors duration-300">
+          View All Materials <Icon name="arrow-right" size={14} />
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {homeMaterials.map((material, index) => {
+          const isFeatured = index === 0;
+          return (
+            <a
+              href={`/materials/${material.slug}`}
+              class={`group relative p-8 md:p-12 border-2 transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[300px] md:min-h-[350px] shadow-premium hover:shadow-premium-hover border-brand-navy/10 hover:border-brand-gold ${isFeatured ? 'md:col-span-2 lg:col-span-2' : ''}`}
+            >
+              <img
+                src={material.card?.src}
+                srcset={material.card?.srcset}
+                sizes={isFeatured ? '(min-width: 1024px) 60vw, 90vw' : '(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw'}
+                alt={material.name}
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 h-full w-full object-cover"
+              />
+              <div class="absolute inset-0" style="background-image: linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%)" />
+              {/* ফিল্টার করা লিস্টের নিজস্ব পজিশন থেকে 01-05 — material.order নয় (বাদ পড়া
+                  material-এর জন্য ব্যাজে গ্যাপ হতো)। */}
+              <span class="absolute top-6 right-8 font-serif text-6xl md:text-7xl font-bold transition-colors duration-500 text-brand-ivory/25 group-hover:text-brand-gold/60">
+                {displayNumber(index + 1)}
+              </span>
+              <div class="relative z-10 mt-auto">
+                <span class="block font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Explore Material</span>
+                <h3 class="text-2xl md:text-3xl font-serif font-bold mb-4 text-brand-ivory flex items-center gap-3">
+                  {material.name}
+                  <Icon name="arrow-right" size={20} class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-brand-gold" />
+                </h3>
+                <p class="font-sans font-light leading-relaxed max-w-md text-brand-ivory/85">{material.desc}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  {/* ========== ARTISAN STORY ========== */}
+  <section class="py-16 md:py-24 bg-brand-ivory overflow-hidden" data-reveal-section>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+        <div class="w-full lg:w-1/2">
+          <div class={`transition-all duration-1000 ease-out ${R.up12.from}`} data-reveal-from={R.up12.from} data-reveal-to={R.up12.to}>
+            <div class="relative overflow-hidden rounded-[2px] bg-brand-navy/5" data-parallax style="transition: transform 0.1s ease-out">
+              <img
+                src={artisanMobile?.src}
+                srcset={artisanMobile?.srcset}
+                sizes="calc(100vw - 32px)"
+                alt="JUTORIA artisans hand-weaving natural fiber baskets in Bangladesh"
+                class={`block lg:hidden w-full h-auto aspect-[1161/1355] object-cover origin-center transition-transform duration-[10s] ease-out motion-reduce:transition-none ${R.zoom4.from}`}
+                data-reveal-from={R.zoom4.from}
+                data-reveal-to={R.zoom4.to}
+                width="800"
+                height="934"
+                decoding="async"
+                loading="lazy"
+              />
+              <img
+                src={artisanDesktop?.src}
+                srcset={artisanDesktop?.srcset}
+                sizes="45vw"
+                alt="JUTORIA artisans hand-weaving natural fiber baskets in Bangladesh"
+                class={`hidden lg:block w-full h-auto aspect-[1537/1023] object-cover origin-center transition-transform duration-[10s] ease-out motion-reduce:transition-none ${R.zoom4.from}`}
+                data-reveal-from={R.zoom4.from}
+                data-reveal-to={R.zoom4.to}
+                width="1000"
+                height="666"
+                decoding="async"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2">
+          <div class={`max-w-xl transition-all duration-1000 delay-300 ease-out ${R.right8.from}`} data-reveal-from={R.right8.from} data-reveal-to={R.right8.to}>
+            <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">The Hands Behind Jutoria</span>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight mb-8">Made by Hands.<br />Made with Purpose.</h2>
+            <p class="font-sans text-lg md:text-xl text-brand-navy/80 font-light leading-relaxed mb-10">
+              Across rural Bangladesh, skilled artisans transform natural materials into thoughtfully crafted products. Their knowledge, patience and craftsmanship give every piece its character.
+            </p>
+            <div class="flex items-center gap-6 mt-12 pt-10 border-t border-brand-navy/10">
+              <div class="w-12 h-[2px] bg-brand-gold flex-shrink-0"></div>
+              <p class="font-serif text-xl text-brand-navy italic tracking-wide">Traditional skill, thoughtfully carried forward.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== FEATURED COLLECTION ========== */}
+  <section class="py-16 md:py-24 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div class="max-w-3xl mb-16 md:mb-24">
+        <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4">Featured Collection</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight mb-6">Crafted for Beautiful Living.</h2>
+        <p class="font-sans text-lg text-brand-navy/70 font-light leading-relaxed max-w-2xl">
+          A curated selection of natural-fiber pieces, thoughtfully handcrafted for refined and conscious spaces.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-16 gap-x-8 lg:gap-x-16">
+        {featuredProducts.map((product, index) => (
+          <div class={`group flex flex-col ${index % 2 !== 0 ? 'md:mt-16 lg:mt-24' : ''}`}>
+            {/* মোবাইলে ট্যাপ করলে lifestyle ছবি — আগে useState, এখন লুকানো checkbox; লেবেলের
+                group-has-[:checked] দিয়ে ছবি বদলায়, ডেস্কটপে hover (বাইরের group) আগের মতোই। */}
+            <label class="group/fp relative block w-full aspect-[4/5] overflow-hidden rounded-[2px] bg-brand-navy/5 mb-6 border border-brand-navy/5 cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-gold has-[:focus-visible]:ring-offset-2">
+              <input type="checkbox" class="sr-only" aria-label={`Toggle lifestyle image for ${product.name}`} />
+              <img
+                src={product.product.src}
+                srcset={product.product.srcset}
+                sizes="(min-width: 768px) 45vw, 90vw"
+                alt={product.name}
+                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0 group-has-[:checked]/fp:opacity-0"
+                decoding="async"
+                loading="lazy"
+              />
+              <img
+                src={product.lifestyle.src}
+                srcset={product.lifestyle.srcset}
+                sizes="(min-width: 768px) 45vw, 90vw"
+                alt={`${product.name} in lifestyle setting`}
+                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out opacity-0 group-hover:opacity-100 group-has-[:checked]/fp:opacity-100"
+                decoding="async"
+                loading="lazy"
+              />
+            </label>
+
+            <div class="flex flex-col flex-grow text-left">
+              <span class="font-sans text-[#8a6a29] text-[11px] font-bold tracking-[0.15em] uppercase mb-3">{product.category}</span>
+              <h3 class="text-2xl font-serif font-bold text-brand-navy mb-4">{product.name}</h3>
+              <div class="mt-auto pt-2">
+                <a href="/products" class="inline-flex items-center gap-3 text-brand-navy font-sans text-xs font-bold tracking-widest uppercase hover:text-brand-gold transition-colors duration-300">
+                  View Product <Icon name="arrow-right" size={16} />
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-20 md:mt-32 text-center">
+        <a href="/products" class="inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-10 py-5 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+          View Full Collection
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== LIFESTYLE EDITORIAL ========== */}
+  <section class="py-16 md:py-24 bg-brand-ivory overflow-hidden" data-reveal-section>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div class="lg:col-span-5 order-2 lg:order-1 flex flex-col justify-center">
+          <div class={`transition-all duration-1000 ease-out ${R.up8.from}`} data-reveal-from={R.up8.from} data-reveal-to={R.up8.to}>
+            <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">Living With Nature</span>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight mb-8">Natural Materials.<br />Beautifully Lived.</h2>
+            <p class="font-sans text-lg md:text-xl text-brand-navy/80 font-light leading-relaxed mb-8">
+              Thoughtfully crafted pieces that bring natural texture, warmth and quiet character into contemporary spaces.
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 order-1 lg:order-2">
+          <div class={`transition-all duration-1000 delay-200 ease-out ${R.up12.from}`} data-reveal-from={R.up12.from} data-reveal-to={R.up12.to}>
+            <div class="aspect-[4/5] lg:aspect-[3/4] overflow-hidden rounded-[2px] bg-brand-navy/5">
+              <img
+                src={editorialLaundry?.src}
+                srcset={editorialLaundry?.srcset}
+                sizes="(min-width: 1024px) 55vw, 90vw"
+                alt="JUTORIA beautiful living space"
+                class={`w-full h-full object-cover origin-center transition-transform duration-[10s] ease-out motion-reduce:transition-none ${R.zoom3.from}`}
+                data-reveal-from={R.zoom3.from}
+                data-reveal-to={R.zoom3.to}
+                width="750"
+                height="938"
+                decoding="async"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mt-16 lg:mt-24">
+        {[
+          { img: editorialJute, alt: 'Natural jute lifestyle detail', wrap: 'md:col-span-5 lg:col-span-4 delay-300', aspect: 'aspect-square md:aspect-[4/5]', sizes: '(min-width: 1024px) 30vw, (min-width: 768px) 40vw, 90vw' },
+          { img: editorialPlacemat, alt: 'Handcrafted placemat in natural setting', wrap: 'md:col-span-7 lg:col-span-5 delay-500', aspect: 'aspect-video md:aspect-[4/3] lg:aspect-[16/10]', sizes: '(min-width: 1024px) 40vw, (min-width: 768px) 55vw, 90vw' },
+          { img: editorialOrganizer, alt: 'Minimalist organizer lifestyle view', wrap: 'md:col-span-6 md:col-start-4 lg:col-span-3 lg:col-start-10 lg:-mt-32 delay-700', aspect: 'aspect-[4/5]', sizes: '(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 90vw' },
+        ].map((item) => (
+          <div class={`${item.wrap} transition-all duration-1000 ease-out ${R.up8.from}`} data-reveal-from={R.up8.from} data-reveal-to={R.up8.to}>
+            <div class={`${item.aspect} overflow-hidden rounded-[2px] bg-brand-navy/5`}>
+              <img
+                src={item.img?.src}
+                srcset={item.img?.srcset}
+                sizes={item.sizes}
+                alt={item.alt}
+                class={`w-full h-full object-cover origin-center transition-transform duration-[10s] ease-out motion-reduce:transition-none ${R.zoom3.from}`}
+                data-reveal-from={R.zoom3.from}
+                data-reveal-to={R.zoom3.to}
+                width="750"
+                height="938"
+                decoding="async"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ========== B2B / WHOLESALE ========== */}
+  <section class="py-16 md:py-24 bg-brand-navy text-center overflow-hidden" data-reveal-section>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+      <div class={`transition-all duration-1000 ease-out ${R.up12.from}`} data-reveal-from={R.up12.from} data-reveal-to={R.up12.to}>
+        <span class="block font-sans text-brand-gold font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">For Retailers &amp; Business</span>
+        <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-ivory leading-tight mb-8">Bring JUTORIA Into Your Collection.</h2>
+        <p class="font-sans text-lg md:text-xl text-brand-ivory/80 font-light leading-relaxed max-w-2xl mx-auto mb-12">
+          Partner with JUTORIA to source thoughtfully crafted natural-fiber products for retail, hospitality and curated spaces.
+        </p>
+        <div class="flex flex-col items-center justify-center">
+          <a href="/wholesale" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-12 py-5 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:bg-brand-ivory hover:text-brand-navy rounded-[2px]">
+            Wholesale Inquiry
+          </a>
+          <p class="font-serif text-brand-ivory/60 italic tracking-wide mt-8 text-sm md:text-base">
+            Designed for thoughtful collections. Crafted for lasting relationships.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== CRAFTED WITH INTENTION ========== */}
+  <section class="relative pt-28 pb-24 md:py-32 bg-brand-ivory">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-4xl text-center">
+        <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-8">Crafted with Intention</span>
+        <div class="w-16 h-px bg-brand-gold mx-auto mb-8"></div>
+        <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-brand-navy leading-[0.96] tracking-[-0.03em] mb-8">
+          Natural Living.<br class="hidden sm:block" />
+          <span class="italic font-light">Conscious Choices.</span>
+        </h2>
+        <p class="mx-auto max-w-2xl font-sans text-base sm:text-lg md:text-xl text-brand-navy/80 font-light leading-relaxed mb-8">
+          Thoughtfully crafted natural-fiber pieces, shaped by skilled hands and designed for spaces that value beauty, purpose and enduring character.
+        </p>
+        <p class="font-serif text-xl md:text-2xl text-brand-navy/90 italic tracking-[0.04em] mb-12">Rooted in nature. Made by hand. Designed for living.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="/products" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+            Explore Collection <Icon name="arrow-right" size={18} />
+          </a>
+          <a href="/wholesale" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/25 text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory rounded-[2px]">
+            Wholesale Inquiry
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== INSTAGRAM ========== */}
+  <section class="py-16 md:py-20 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div>
+          <span class="mb-3 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">Follow Along</span>
+          <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-navy">Natural Living Inspiration</h2>
+        </div>
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 font-sans font-bold tracking-normal text-sm normal-case text-brand-navy hover:text-brand-gold transition-colors">
+          <SocialIcon platform="instagram" class="h-4 w-4" /> @jutoriahome
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+        {instagramImages.map((img) => (
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="View JUTORIA on Instagram" class="group relative block aspect-square overflow-hidden rounded-[2px]">
+            <img
+              src={img.opt.src}
+              srcset={img.opt.srcset}
+              sizes="(min-width: 640px) 30vw, 90vw"
+              alt={img.alt}
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            />
+            <span class="absolute inset-0 flex items-center justify-center bg-brand-navy/0 text-brand-ivory opacity-0 transition-all duration-300 group-hover:bg-brand-navy/25 group-hover:opacity-100">
+              <SocialIcon platform="instagram" class="h-[26px] w-[26px]" />
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</PublicLayout>
+
+<script>
+  // ১. হিরো ভিডিও ও সার্টিফিকেশন লোগো — দুটোই window 'load'-এর পরে, যাতে হিরো poster
+  //    (LCP) লোড হওয়ার সময় এরা ব্যান্ডউইথ না নেয় (মূল Home.tsx-এর কমেন্ট দেখুন)।
+  const afterLoad = () => {
+    document.querySelector<HTMLVideoElement>('[data-hero-video]')?.play().catch(() => {});
+    document.querySelectorAll<HTMLImageElement>('img[data-deferred-src]').forEach((img) => {
+      img.src = img.dataset.deferredSrc!;
+    });
+  };
+  if (document.readyState === 'complete') afterLoad();
+  else window.addEventListener('load', afterLoad, { once: true });
+
+  // ২. স্ক্রল-রিভিল — প্রতিটা সেকশন একবার viewport-এ এলে তার ভেতরের সব data-reveal-from
+  //    এলিমেন্টের ক্লাস শেষ অবস্থায় বদলে যায় (মূল ফাইলের isArtisanVisible ইত্যাদি)।
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-reveal-section]').forEach((section) => {
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        section.querySelectorAll<HTMLElement>('[data-reveal-from]').forEach((el) => {
+          const isZoom = el.dataset.revealFrom!.startsWith('scale');
+          if (isZoom && reducedMotion) return;
+          el.classList.remove(...el.dataset.revealFrom!.split(' '));
+          el.classList.add(...el.dataset.revealTo!.split(' '));
+        });
+        io.disconnect();
+      },
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+    );
+    io.observe(section);
+  });
+
+  // ৩. Artisan ছবির সূক্ষ্ম প্যারালাক্স (reduced-motion-এ বন্ধ), rAF দিয়ে থ্রটল করা।
+  const parallax = document.querySelector<HTMLElement>('[data-parallax]');
+  if (parallax && !reducedMotion) {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = parallax.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top <= vh && rect.bottom >= 0) {
+        const distance = vh / 2 - (rect.top + rect.height / 2);
+        parallax.style.transform = `translateY(${distance * -0.04}px)`;
+      }
+    };
+    window.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+</script>

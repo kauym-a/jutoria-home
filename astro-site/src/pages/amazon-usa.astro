@@ -1,0 +1,185 @@
+---
+// মূল src/pages/public/AmazonUSA.tsx থেকে পোর্ট করা।
+// Amazon storefront এখনো live না — তাই এই পেজে কোথাও fake Amazon URL, fake "Buy Now"
+// লিংক, fake availability, review বা rating নেই। storefront live হলে
+// AMAZON_STOREFRONT_LIVE=true করে AMAZON_STOREFRONT_URL-এ আসল লিংক বসান।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+
+const AMAZON_STOREFRONT_LIVE = false;
+const AMAZON_STOREFRONT_URL = '';
+
+const SHOP_CONFIDENCE = [
+  { icon: 'shopping-bag', title: 'Convenient Shopping', desc: 'Browse and purchase JUTORIA products through Amazon Business.' },
+  { icon: 'shield-check', title: 'Secure Checkout', desc: "Complete your purchase through Amazon's established shopping platform." },
+  { icon: 'truck', title: 'Reliable Fulfillment', desc: 'Enjoy Amazon-supported delivery and order tracking where available.' },
+];
+const WHY_JUTORIA = [
+  { icon: 'leaf', title: 'Natural Fibers', desc: 'Jute, seagrass and other natural materials.' },
+  { icon: 'hand', title: 'Handcrafted Character', desc: 'Natural variation is part of the beauty.' },
+  { icon: 'sparkles', title: 'Contemporary Design', desc: 'Designed for modern homes and global lifestyles.' },
+];
+const JOURNEY_STEPS = [
+  { icon: 'compass', label: 'Discover JUTORIA' },
+  { icon: 'package-search', label: 'Explore the Collection' },
+  { icon: 'store', label: 'Shop on Amazon Business' },
+  { icon: 'house', label: 'Enjoy Your Natural Home' },
+];
+
+const outlineBtn = 'inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-7 py-3.5 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]';
+const goldBtn = 'inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]';
+const comingSoonBadge = 'inline-flex items-center gap-2 border border-brand-gold/40 text-brand-gold px-6 py-3 font-sans font-bold tracking-[0.2em] text-[11px] uppercase rounded-[2px]';
+---
+
+<PublicLayout
+  title="Shop JUTORIA on Amazon Business"
+  description="Discover JUTORIA's natural-fiber home décor collection on Amazon Business, with convenient shopping, secure checkout, and reliable delivery for wholesale and business buyers."
+>
+  {/* 1. HERO */}
+  <section class="relative bg-brand-navy overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 items-stretch">
+      <div class="relative z-10 px-4 sm:px-8 lg:px-16 py-20 md:py-28 flex flex-col justify-center">
+        <span class="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">Shop JUTORIA on Amazon Business</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.05] tracking-[-0.02em] text-brand-ivory mb-6 max-w-lg">
+          JUTORIA on <br /> Amazon Business
+        </h1>
+        <p class="font-sans text-base md:text-lg text-brand-ivory/75 font-light leading-relaxed mb-10 max-w-md">
+          Discover JUTORIA's natural-fiber home décor collection on Amazon Business — our B2B storefront for wholesale and bulk buyers, with convenient ordering, secure checkout, and reliable fulfillment.
+        </p>
+        {AMAZON_STOREFRONT_LIVE ? (
+          <a href={AMAZON_STOREFRONT_URL} target="_blank" rel="noopener noreferrer" class={`${goldBtn} w-fit`}>
+            Shop JUTORIA on Amazon Business <Icon name="arrow-right" size={16} />
+          </a>
+        ) : (
+          <div>
+            <span class={comingSoonBadge}>Amazon Storefront Coming Soon</span>
+            <p class="font-sans text-sm text-brand-ivory/60 mt-4 max-w-sm">
+              Our Amazon Business storefront is being prepared. In the meantime, explore our collections or contact us for wholesale pricing and product information.
+            </p>
+            <div class="flex flex-wrap gap-4 mt-6">
+              <a href="/products" class={outlineBtn}>Explore Collection</a>
+              <a href="/contact" class={outlineBtn}>Contact Us</a>
+            </div>
+          </div>
+        )}
+      </div>
+      <div class="relative min-h-[320px] lg:min-h-[640px]">
+        <Img
+          src="/amazon-usa-hero-premium-lifestyle.webp"
+          widths={[640, 800, 1200, 1600]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          alt="Natural-fiber woven placemats and baskets styled on a dining table in a warm interior"
+          class="absolute inset-0 w-full h-full object-cover"
+          width="1774"
+          height="887"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* 2. SHOP WITH CONFIDENCE */}
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">Shop With Confidence</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        {SHOP_CONFIDENCE.map(({ icon, title, desc }) => (
+          <div class="bg-white border border-brand-navy/10 p-7 rounded-[2px] text-center shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+            <div class="w-12 h-12 bg-brand-navy/5 text-brand-navy flex items-center justify-center rounded-full mx-auto mb-5">
+              <Icon name={icon} size={22} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/60 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 3. FEATURED COLLECTION — storefront live না হওয়া পর্যন্ত ইচ্ছাকৃতভাবে বাদ (fake লিংক এড়াতে)। */}
+
+  {/* 4. WHY JUTORIA */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-4xl px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">Natural Materials. Thoughtful Craftsmanship.</h2>
+      <p class="font-sans text-brand-navy/65 font-light leading-relaxed max-w-2xl mx-auto mb-14">
+        JUTORIA brings together natural materials, skilled Bangladeshi craftsmanship and contemporary design to create home décor with lasting character.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-left">
+        {WHY_JUTORIA.map(({ icon, title, desc }) => (
+          <div>
+            <div class="w-12 h-12 bg-brand-navy text-brand-gold flex items-center justify-center rounded-full mb-5">
+              <Icon name={icon} size={20} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 5. VISUAL BRAND */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-0 overflow-hidden rounded-[2px] shadow-premium">
+        <Img
+          src="/amazon-usa-brand-craftsmanship.webp"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          alt="Artisan hand-weaving natural fiber products in Bangladesh"
+          class="w-full h-72 lg:h-[480px] object-cover"
+        />
+        <div class="bg-brand-navy h-full flex flex-col justify-center px-8 sm:px-12 py-16">
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory mb-5 leading-tight">Made for Natural Living</h2>
+          <p class="font-sans text-brand-ivory/75 font-light leading-relaxed mb-8 max-w-md">
+            Every JUTORIA piece begins with a raw, natural material — sourced responsibly and hand-shaped by skilled artisans in Bangladesh.
+          </p>
+          <a href="/products" class="inline-flex items-center gap-2 text-brand-gold font-sans font-bold tracking-[0.2em] text-[11px] uppercase hover:text-brand-ivory transition-colors w-fit">
+            Explore Collection <Icon name="arrow-right" size={16} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 6. JOURNEY */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-16 text-center">Your JUTORIA Journey</h2>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-10 sm:gap-4">
+        {JOURNEY_STEPS.map(({ icon, label }, i) => (
+          <div class="flex sm:flex-col items-center gap-4 sm:gap-0 text-center">
+            <div class="w-14 h-14 bg-brand-navy/5 text-brand-navy flex items-center justify-center rounded-full sm:mb-4 flex-shrink-0">
+              <Icon name={icon} size={24} strokeWidth={1.5} />
+            </div>
+            <p class="font-sans text-sm font-bold text-brand-navy tracking-wide">{label}</p>
+            {i < JOURNEY_STEPS.length - 1 && <Icon name="arrow-right" size={18} class="hidden sm:block text-brand-navy/20 mt-4" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 7. STOREFRONT CTA */}
+  <section class="py-20 md:py-28 bg-brand-navy text-center">
+    <div class="container mx-auto max-w-2xl px-4">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory mb-5 leading-tight">Bring Natural Living Home.</h2>
+      <p class="font-sans text-brand-ivory/70 font-light leading-relaxed mb-10">Explore JUTORIA's collection on Amazon Business.</p>
+      {AMAZON_STOREFRONT_LIVE ? (
+        <a href={AMAZON_STOREFRONT_URL} target="_blank" rel="noopener noreferrer" class={goldBtn}>
+          Shop JUTORIA on Amazon Business <Icon name="arrow-right" size={16} />
+        </a>
+      ) : (
+        <div class="flex flex-col items-center gap-4">
+          <span class={comingSoonBadge}>Amazon Storefront Coming Soon</span>
+          <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+            Explore Collection
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+</PublicLayout>

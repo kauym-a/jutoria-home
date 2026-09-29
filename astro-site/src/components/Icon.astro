@@ -1,46 +1,20 @@
 ---
-// lucide-react-এর ঠিক একই SVG path ডেটা (node_modules/lucide-react/dist/esm/icons/*.mjs
-// থেকে হুবহু কপি করা) — শুধু React ছাড়াই, প্লেইন inline SVG হিসেবে। মূল সাইটের
-// stroke-based lucide আইকনগুলো (Menu/X/ChevronDown/Mail/Phone/Download/Send) হুবহু
-// একই দেখাবে, কিন্তু lucide-react-এর JS রানটাইম পাবলিক বান্ডলে আসবে না।
+// lucide আইকন, প্লেইন inline SVG হিসেবে — vanilla `lucide` প্যাকেজের আইকন ডেটা বিল্ড-টাইমে
+// পড়া হয় (মূল সাইটের lucide-react-এর একই ভার্সন 1.31.0, তাই আকৃতি হুবহু এক), কোনো JS
+// রানটাইম ক্লায়েন্টে যায় না। name = lucide-এর kebab-case নাম, যেমন 'arrow-right', 'globe-2'।
+import { icons } from 'lucide';
+
 interface Props {
-  name:
-    | 'menu' | 'x' | 'chevron-down' | 'mail' | 'phone' | 'download' | 'send'
-    | 'arrow-right' | 'arrow-left' | 'search' | 'construction';
+  name: string;
   size?: number;
   strokeWidth?: number;
   class?: string;
 }
 
 const { name, size = 24, strokeWidth = 2, class: className = '' } = Astro.props;
-
-const paths: Record<string, string[]> = {
-  menu: ['M4 5h16', 'M4 12h16', 'M4 19h16'],
-  x: ['M18 6 6 18', 'm6 6 12 12'],
-  'chevron-down': ['m6 9 6 6 6-6'],
-  mail: ['m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7'],
-  phone: [
-    'M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384',
-  ],
-  download: ['M12 15V3', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'm7 10 5 5 5-5'],
-  send: [
-    'M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z',
-    'm21.854 2.147-10.94 10.939',
-  ],
-  'arrow-right': ['M5 12h14', 'm12 5 7 7-7 7'],
-  'arrow-left': ['m12 19-7-7 7-7', 'M19 12H5'],
-  search: ['m21 21-4.34-4.34'],
-  construction: ['M17 14v7', 'M7 14v7', 'M17 3v3', 'M7 3v3', 'M10 14 2.3 6.3', 'm14 6 7.7 7.7', 'm8 6 8 8'],
-};
-
-const rects: Record<string, { x: string; y: string; width: string; height: string; rx: string }[]> = {
-  mail: [{ x: '2', y: '4', width: '20', height: '16', rx: '2' }],
-  construction: [{ x: '2', y: '6', width: '20', height: '8', rx: '1' }],
-};
-
-const circles: Record<string, { cx: string; cy: string; r: string }[]> = {
-  search: [{ cx: '11', cy: '11', r: '8' }],
-};
+const pascal = name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase());
+const node = (icons as Record<string, [string, Record<string, string>][]>)[pascal];
+if (!node) throw new Error(`Unknown lucide icon: "${name}"`);
 ---
 
 <svg
@@ -56,7 +30,5 @@ const circles: Record<string, { cx: string; cy: string; r: string }[]> = {
   class={className}
   aria-hidden="true"
 >
-  {(rects[name] || []).map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx} />)}
-  {(circles[name] || []).map((c) => <circle cx={c.cx} cy={c.cy} r={c.r} />)}
-  {paths[name].map((d) => <path d={d} />)}
+  {node.map(([Tag, attrs]) => <Tag {...attrs} />)}
 </svg>

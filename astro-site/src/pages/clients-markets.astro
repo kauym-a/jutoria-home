@@ -1,0 +1,218 @@
+---
+// মূল src/pages/public/ClientsMarkets.tsx থেকে পোর্ট করা। অ-যাচাইকৃত কোনো claim নেই;
+// মার্কেট তালিকা ও টেস্টিমোনিয়াল data/globalMarkets.ts-এ হুবহু।
+// পতাকাগুলো আগে flagcdn.com থেকে আসত (একটা আলাদা ক্রস-অরিজিন কানেকশন) — এখন
+// public/flags/-এ সেলফ-হোস্টেড।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+import { marketRegions, testimonials } from '../data/globalMarkets';
+
+const flagUrl = (code: string) => `/flags/${code.toLowerCase()}.png`;
+
+const COUNTRY_CODES: Record<string, string> = {
+  Germany: 'DE', Netherlands: 'NL', Denmark: 'DK', France: 'FR', Italy: 'IT', Poland: 'PL', Norway: 'NO',
+  'United Kingdom': 'GB', 'United States of America': 'US', Canada: 'CA', Turkey: 'TR', Japan: 'JP',
+  'Saudi Arabia': 'SA', 'United Arab Emirates': 'AE', Qatar: 'QA', Kuwait: 'KW', Oman: 'OM', Brazil: 'BR', Argentina: 'AR',
+};
+
+const WHO_WE_SERVE = [
+  { icon: 'store', title: 'Retailers', desc: 'Boutique stores, home décor retailers and lifestyle retailers.' },
+  { icon: 'pen-tool', title: 'Interior Designers', desc: 'Design professionals seeking distinctive natural-fiber products.' },
+  { icon: 'building-2', title: 'Hospitality', desc: 'Hotels, resorts, restaurants and hospitality projects.' },
+  { icon: 'package', title: 'Wholesale Buyers', desc: 'Importers, distributors and businesses sourcing natural home décor at scale.' },
+];
+const WHY_CHOOSE = [
+  { icon: 'leaf', title: 'Natural Materials', desc: 'Authentic jute, seagrass and other natural fibers.' },
+  { icon: 'hammer', title: 'Handcrafted Quality', desc: 'Traditional craftsmanship combined with consistent quality standards.' },
+  { icon: 'layers', title: 'Flexible Collections', desc: 'Products suitable for retail, hospitality and interior projects.' },
+  { icon: 'handshake', title: 'Wholesale Partnership', desc: 'Built for long-term B2B relationships and international sourcing.' },
+];
+---
+
+<PublicLayout
+  title="Global Clients & Markets | JUTORIA"
+  description="From Bangladesh to international markets, JUTORIA connects natural-fiber craftsmanship with retailers, designers, hospitality businesses and wholesale buyers worldwide."
+>
+  {/* HERO */}
+  <section class="relative bg-brand-navy overflow-hidden min-h-[52vh] flex items-end">
+    <div class="absolute inset-0">
+      <Img
+        src="/global-clients-hero.webp"
+        widths={[640, 800, 1200, 1800]}
+        sizes="100vw"
+        alt="Natural-fiber home décor styled in a warm dining interior"
+        class="w-full h-full object-cover"
+        width="1800"
+        height="749"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/70 to-brand-navy/20" />
+    </div>
+    <div class="relative z-10 container mx-auto max-w-4xl px-4 pt-28 md:pt-36 pb-14 md:pb-20">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-ivory leading-tight mb-6 max-w-2xl">Global Reach. Trusted Craftsmanship.</h1>
+      <p class="font-sans text-base md:text-lg text-brand-ivory/80 font-light leading-relaxed max-w-xl">
+        From Bangladesh to international markets, JUTORIA connects authentic natural-fiber craftsmanship with retailers, designers, hospitality businesses, and conscious consumers around the world.
+      </p>
+    </div>
+  </section>
+
+  {/* GLOBAL MARKET REACH + REGION CARDS */}
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto max-w-4xl px-4 text-center mb-14">
+      <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">Our Global Reach</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-5">Serving Markets Across Continents</h2>
+      <p class="font-sans text-brand-navy/65 font-light leading-relaxed max-w-2xl mx-auto">
+        Our natural-fiber collections are positioned for international markets where craftsmanship, sustainable materials, and thoughtfully designed home décor are valued.
+      </p>
+    </div>
+    <div class="container mx-auto max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+      {marketRegions.map((region) => (
+        <div class="bg-white border border-brand-navy/10 p-7 md:p-8 rounded-[2px] shadow-premium">
+          <h3 class="font-serif font-bold text-xl text-brand-navy mb-5">{region.name}</h3>
+          <div class="flex flex-wrap gap-2">
+            {region.countries.map((c) => (
+              <span class="inline-flex items-center gap-1.5 bg-brand-offwhite border border-brand-navy/10 text-brand-navy/80 text-xs font-sans px-3 py-1.5 rounded-full">
+                <img src={flagUrl(COUNTRY_CODES[c] ?? '')} alt={`${c} flag`} width="40" height="30" class="w-4 h-3 object-cover rounded-[1px]" loading="lazy" />
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* MARKET MAP */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">From Bangladesh to the World</h2>
+        <p class="font-sans text-brand-navy/65 font-light leading-relaxed max-w-2xl mx-auto">
+          Rooted in Bangladeshi craftsmanship, JUTORIA is built for homes, retailers, designers, and businesses across international markets.
+        </p>
+      </div>
+      <Img
+        src="/global-market-reach-map.webp"
+        widths={[640, 1000, 1400]}
+        sizes="(min-width: 1152px) 1120px, calc(100vw - 32px)"
+        alt="Stylized world map showing JUTORIA's international market regions"
+        class="w-full h-auto rounded-[2px] shadow-premium"
+        width="1774"
+        height="887"
+      />
+    </div>
+  </section>
+
+  {/* WHO WE SERVE */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">Who We Work With</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+        <div class="lg:col-span-2">
+          <Img
+            src="/global-b2b-audience.webp"
+            widths={[480, 800]}
+            sizes="(min-width: 1024px) 40vw, calc(100vw - 32px)"
+            alt="JUTORIA pieces in retail display, hospitality and design settings"
+            class="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
+          />
+        </div>
+        <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {WHO_WE_SERVE.map(({ icon, title, desc }) => (
+            <div class="bg-white border border-brand-navy/10 p-6 rounded-[2px] shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+              <div class="w-11 h-11 bg-brand-navy/5 text-brand-navy flex items-center justify-center rounded-full mb-4">
+                <Icon name={icon} size={20} strokeWidth={1.5} />
+              </div>
+              <h3 class="font-serif font-bold text-brand-navy mb-1.5">{title}</h3>
+              <p class="font-sans text-xs text-brand-navy/60 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* WHY CHOOSE */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">Crafted for Global Markets</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {WHY_CHOOSE.map(({ icon, title, desc }) => (
+          <div>
+            <div class="w-12 h-12 bg-brand-navy text-brand-gold flex items-center justify-center rounded-full mb-5">
+              <Icon name={icon} size={20} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* TESTIMONIALS */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">What Our International Partners Say</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {testimonials.map((t) => (
+          <div class="bg-white border border-brand-navy/10 p-8 md:p-10 rounded-[2px] shadow-premium flex flex-col">
+            <span class="font-serif text-5xl text-brand-gold/40 leading-none mb-2">"</span>
+            <p class="font-sans text-brand-navy/80 leading-relaxed mb-6 flex-grow">{t.quote}</p>
+            <div class="flex items-center gap-1 mb-4">
+              {Array.from({ length: 5 }).map(() => <Icon name="star" size={14} class="fill-brand-gold text-brand-gold" />)}
+            </div>
+            <div class="flex items-center gap-3 pt-4 border-t border-brand-navy/10">
+              <img src={flagUrl(t.countryCode)} alt={`${t.country} flag`} width="40" height="30" class="w-8 h-6 object-cover rounded-[2px] shadow-sm" loading="lazy" />
+              <div>
+                <p class="font-sans text-xs font-bold uppercase tracking-wide text-brand-navy">From {t.country}</p>
+                <p class="font-sans text-xs text-brand-navy/55">{t.role}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* BANGLADESH TO GLOBAL */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-0 overflow-hidden rounded-[2px] shadow-premium">
+        <Img
+          src="/bangladesh-craftsmanship-global.webp"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          alt="Artisan hand-weaving natural fiber baskets in Bangladesh"
+          class="w-full h-72 lg:h-[440px] object-cover"
+        />
+        <div class="bg-brand-navy h-full flex flex-col justify-center px-8 sm:px-12 py-16">
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory mb-5 leading-tight">Rooted in Bangladesh. <br /> Designed for the World.</h2>
+          <p class="font-sans text-brand-ivory/75 font-light leading-relaxed max-w-md">
+            JUTORIA brings the character of natural materials and skilled craftsmanship from Bangladesh to contemporary spaces around the world.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="py-20 md:py-28 bg-brand-navy text-center">
+    <div class="container mx-auto max-w-2xl px-4">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory mb-5 leading-tight">Looking for a Wholesale Partner?</h2>
+      <p class="font-sans text-brand-ivory/70 font-light leading-relaxed mb-10">
+        Tell us about your market, product requirements, and sourcing needs. Our team will be ready to discuss the right collection for your business.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/contact" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Request A Wholesale Quote <Icon name="arrow-right" size={16} />
+        </a>
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+          Explore Our Collection
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>
