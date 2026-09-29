@@ -1,0 +1,405 @@
+---
+// মূল src/layouts/PublicLayout.tsx থেকে পোর্ট করা। মূল ফাইলে মোবাইল ড্রয়ার/ডেস্কটপ
+// ড্রপডাউন/ফুটার অ্যাকর্ডিয়নের জন্য useState + onClick/onMouseEnter লাগত। এখানে সবকটাই
+// zero-JS টেকনিকে করা হয়েছে — ফলে এই পুরো লেআউট (হেডার+ফুটার, সাইটের প্রতিটা পেজে
+// থাকে) কোনো JS বান্ডল ছাড়াই কাজ করে:
+//   - ডেস্কটপ ড্রপডাউন: Tailwind group/group-hover (আগে onMouseEnter/onMouseLeave state)
+//   - মোবাইল ড্রয়ার খোলা/বন্ধ: hidden checkbox + peer-checked (আগে isMobileMenuOpen state)
+//   - মোবাইল নেভ গ্রুপ + ফুটার "Get In Touch" অ্যাকর্ডিয়ন: নেটিভ <details>/<summary>
+// অ্যাক্টিভ-লিংক হাইলাইট বিল্ড-টাইমেই ঠিক হয়ে যায় (Astro.url.pathname), ক্লায়েন্ট-সাইড
+// useLocation() লাগে না — প্রতিটা রুট নিজেই একটা আলাদা static HTML ফাইল।
+import BaseLayout from './BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+const CATALOG_AVAILABLE = false;
+const CATALOG_URL = '/jutoria-catalog.pdf';
+
+const navLinks: { name: string; path?: string; badge?: string; children?: { name: string; path: string }[] }[] = [
+  { name: 'Home', path: '/' },
+  {
+    name: 'Company',
+    children: [
+      { name: 'Company Profile', path: '/company-profile' },
+      { name: 'Our Story', path: '/our-story' },
+      { name: 'People / Artisans', path: '/people' },
+      { name: 'Global Clients', path: '/clients-markets' },
+      { name: 'Corporate Information', path: '/corporate-information' },
+    ],
+  },
+  {
+    name: 'Collection',
+    children: [
+      { name: 'All Products', path: '/products' },
+      { name: 'Categories', path: '/categories' },
+      { name: 'Materials', path: '/materials' },
+    ],
+  },
+  {
+    name: 'Wholesale',
+    children: [
+      { name: 'Wholesale Overview', path: '/wholesale' },
+      { name: 'Wholesale Inquiry', path: '/contact' },
+    ],
+  },
+  { name: 'Amazon Business', path: '/amazon-usa', badge: 'B2B' },
+  { name: 'Contact', path: '/contact' },
+];
+
+const footerCompanyLinks = [
+  { name: 'Company Profile', path: '/company-profile' },
+  { name: 'Our Story', path: '/our-story' },
+  { name: 'People / Artisans', path: '/people' },
+  { name: 'Global Clients', path: '/clients-markets' },
+  { name: 'Corporate Information', path: '/corporate-information' },
+];
+const footerShopLinks = [
+  { name: 'All Products', path: '/products' },
+  { name: 'Categories', path: '/categories' },
+  { name: 'Materials', path: '/materials' },
+  { name: 'Wholesale Overview', path: '/wholesale' },
+];
+
+const socialLinks = [
+  { name: 'Facebook', href: 'https://facebook.com/jutoriahome', platform: 'facebook' as const, label: 'JUTORIA on Facebook' },
+  { name: 'Instagram', href: 'https://instagram.com/jutoria.home', platform: 'instagram' as const, label: 'JUTORIA on Instagram' },
+  { name: 'Threads', href: 'https://threads.net/@jutoriahome', platform: 'threads' as const, label: 'JUTORIA on Threads' },
+  { name: 'TikTok', href: 'https://tiktok.com/@jutoriahome', platform: 'tiktok' as const, label: 'JUTORIA on TikTok' },
+  { name: 'YouTube', href: 'https://youtube.com/@jutoriahome', platform: 'youtube' as const, label: 'JUTORIA on YouTube' },
+  { name: 'Pinterest', href: 'https://www.pinterest.com/jutoriahome', platform: 'pinterest' as const, label: 'JUTORIA on Pinterest' },
+  { name: 'LinkedIn', href: 'https://linkedin.com/company/jutoriahome', platform: 'linkedin' as const, label: 'JUTORIA on LinkedIn' },
+  { name: 'X', href: 'https://x.com/jutoriahomecom', platform: 'x' as const, label: 'JUTORIA on X' },
+];
+
+const contactEmails = [
+  { label: 'Wholesale & B2B', address: 'wholesale@jutoriahome.com' },
+  { label: 'Support', address: 'support@jutoriahome.com' },
+  { label: 'Sales', address: 'sales@jutoriahome.com' },
+];
+const contactPhones = [
+  {
+    region: 'United Kingdom',
+    numbers: [
+      { display: '+44 7311 127176', tel: '+447311127176', wa: '447311127176' },
+      { display: '+44 7435 945500', tel: '+447435945500', wa: '447435945500' },
+    ],
+  },
+  {
+    region: 'Bangladesh',
+    numbers: [
+      { display: '+880 1833-093349', tel: '+8801833093349', wa: '8801833093349' },
+      { display: '+880 1324-438566', tel: '+8801324438566', wa: '8801324438566' },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <div class="flex flex-col min-h-screen bg-brand-ivory text-brand-navy">
+
+    <input type="checkbox" id="mobile-menu-toggle" class="peer/menu hidden" />
+
+    {/* ========== HEADER ========== */}
+    <header class="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-brand-navy/10">
+      <div class="container mx-auto px-4 lg:px-8 h-20 flex items-center justify-between max-w-7xl">
+        <a href="/" class="flex-shrink-0 flex items-center gap-2">
+          <img src="/logo.webp" alt="JUTORIA" class="h-10 md:h-12 w-auto object-contain" width="600" height="186" />
+          <span class="inline-flex items-center gap-1 font-sans text-[10px] font-bold tracking-[0.05em] uppercase text-brand-navy/70 border border-brand-navy/15 rounded-full pl-1 pr-2 py-1 whitespace-nowrap">
+            <img src="https://flagcdn.com/w40/gb.png" alt="UK flag" class="w-3.5 h-2.5 object-cover rounded-[1px]" />
+            UK
+          </span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7 font-sans text-[13px] font-semibold tracking-[0.1em] uppercase">
+          {navLinks.map((link) => {
+            if (!link.children) {
+              const active = currentPath === link.path;
+              return (
+                <a href={link.path} class={`transition-colors duration-300 ${active ? 'text-brand-gold' : 'text-brand-navy hover:text-brand-gold'}`}>
+                  {link.name}
+                  {link.badge && (
+                    <span class="ml-1.5 inline-flex items-center rounded-[2px] border border-brand-gold/50 px-1 text-[8px] font-bold leading-[1.45] tracking-[0.08em] text-brand-gold align-middle">
+                      {link.badge}
+                    </span>
+                  )}
+                </a>
+              );
+            }
+            const isGroupActive = link.children.some((c) => c.path === currentPath);
+            return (
+              <div class="group relative">
+                <button type="button" class={`flex items-center gap-1 transition-colors duration-300 ${isGroupActive ? 'text-brand-gold' : 'text-brand-navy group-hover:text-brand-gold'}`}>
+                  {link.name}
+                  <Icon name="chevron-down" size={13} class="transition-transform duration-300 group-hover:rotate-180" />
+                </button>
+                <div class="absolute left-0 top-full pt-3 opacity-0 -translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
+                  <div class="min-w-[220px] max-h-[70vh] overflow-y-auto bg-white border border-brand-navy/10 shadow-premium-hover rounded-[2px] py-2">
+                    {link.children.map((child) => {
+                      const childActive = currentPath === child.path;
+                      return (
+                        <a href={child.path} class={`block px-5 py-2.5 text-[12.5px] normal-case font-medium tracking-normal transition-colors duration-200 ${childActive ? 'text-brand-gold bg-brand-offwhite' : 'text-brand-navy/85 hover:text-brand-gold hover:bg-brand-offwhite'}`}>
+                          {child.name}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </nav>
+
+        <div class="flex items-center gap-4">
+          {CATALOG_AVAILABLE && (
+            <div class="group relative hidden md:block">
+              <a href={CATALOG_URL} target="_blank" rel="noopener noreferrer" download aria-label="Download Catalog" class="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
+                <Icon name="download" size={16} strokeWidth={2} class="shrink-0" />
+              </a>
+              <span role="tooltip" class="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-brand-navy px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.15em] text-brand-ivory opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                <span class="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-brand-navy" />
+                Download Catalog
+              </span>
+            </div>
+          )}
+
+          <a href="/wholesale" class="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-brand-navy text-brand-gold font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 rounded-[2px]">
+            Wholesale Inquiry
+          </a>
+
+          <label for="mobile-menu-toggle" class="lg:hidden flex items-center text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2 cursor-pointer" aria-label="Open menu">
+            <Icon name="menu" size={26} strokeWidth={1.5} />
+          </label>
+        </div>
+      </div>
+    </header>
+
+    {/* ========== MOBILE NAV OVERLAY + DRAWER ========== */}
+    <label for="mobile-menu-toggle" class="fixed inset-0 bg-brand-navy/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden peer-checked/menu:opacity-100 peer-checked/menu:pointer-events-auto" />
+
+    <div class="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white z-50 translate-x-full transition-transform duration-300 ease-out lg:hidden flex flex-col peer-checked/menu:translate-x-0">
+      <div class="h-20 flex items-center justify-between px-6 border-b border-brand-navy/10">
+        <img src="/logo.webp" alt="JUTORIA" loading="lazy" class="h-9 w-auto object-contain" />
+        <label for="mobile-menu-toggle" aria-label="Close menu" class="text-brand-navy hover:text-brand-gold transition-colors p-2 -mr-2 cursor-pointer">
+          <Icon name="x" size={26} strokeWidth={1.5} />
+        </label>
+      </div>
+
+      <nav class="flex flex-col gap-1 px-6 py-8 font-sans text-sm font-bold uppercase tracking-widest overflow-y-auto">
+        {navLinks.map((link) => {
+          if (!link.children) {
+            const active = currentPath === link.path;
+            return (
+              <a href={link.path} class={`py-3 transition-colors duration-300 ${active ? 'text-brand-gold' : 'text-brand-navy hover:text-brand-gold'}`}>
+                {link.name}
+                {link.badge && (
+                  <span class="ml-1.5 inline-flex items-center rounded-[2px] border border-brand-gold/50 px-1 text-[9px] font-bold leading-[1.45] tracking-[0.08em] text-brand-gold align-middle">
+                    {link.badge}
+                  </span>
+                )}
+              </a>
+            );
+          }
+          return (
+            <details class="group border-b border-brand-navy/5 [&::details-content]:block">
+              <summary class="w-full flex items-center justify-between py-3 text-brand-navy cursor-pointer list-none marker:hidden [&::-webkit-details-marker]:hidden">
+                {link.name}
+                <Icon name="chevron-down" size={16} class="transition-transform duration-300 group-open:rotate-180 group-open:text-brand-gold" />
+              </summary>
+              <div class="pb-3">
+                {link.children.map((child) => {
+                  const childActive = currentPath === child.path;
+                  return (
+                    <a href={child.path} class={`block py-2 pl-4 text-[12px] normal-case font-medium tracking-normal ${childActive ? 'text-brand-gold' : 'text-brand-navy/75 hover:text-brand-gold'}`}>
+                      {child.name}
+                    </a>
+                  );
+                })}
+              </div>
+            </details>
+          );
+        })}
+
+        <div class="flex flex-col gap-3 pt-6 mt-4 border-t border-brand-navy/10">
+          <a href="/wholesale" class="flex items-center justify-center w-full px-6 py-4 bg-brand-navy text-brand-gold font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 rounded-[2px]">
+            Wholesale Inquiry
+          </a>
+          {CATALOG_AVAILABLE && (
+            <a href={CATALOG_URL} target="_blank" rel="noopener noreferrer" download class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
+              <Icon name="download" size={15} strokeWidth={2} class="shrink-0" />
+              Download Catalog
+            </a>
+          )}
+        </div>
+      </nav>
+
+      <div class="mt-auto p-6 bg-brand-ivory border-t border-brand-navy/10 text-center pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <p class="font-sans text-xs opacity-60 font-semibold tracking-wider uppercase">&copy; 2026 JUTORIA.</p>
+      </div>
+    </div>
+
+    {/* ========== MAIN ========== */}
+    <main class="flex-grow flex flex-col">
+      <slot />
+    </main>
+
+    {/* ========== FOOTER ========== */}
+    <footer class="bg-white border-t border-brand-navy/10 text-brand-navy py-16 md:py-20">
+      <div class="container mx-auto px-4 md:px-8 max-w-7xl">
+        <div class="flex flex-col items-center text-center mb-12">
+          <a href="/">
+            <img src="/logo.webp" alt="JUTORIA" loading="lazy" class="h-14 md:h-20 w-auto mb-6 object-contain" />
+          </a>
+          <p class="font-sans text-sm opacity-80 max-w-md mx-auto font-medium">
+            Premium Eco-Friendly Handmade Home Décor. Crafted by artisans, designed for conscious living.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-8 md:gap-10 text-left">
+          <div class="xl:col-span-2">
+            <img src="/sircommerce_logo.webp" alt="Sir Commerce Group Ltd logo" class="h-20 w-auto object-contain mb-5 mix-blend-multiply" width="746" height="528" loading="lazy" />
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Sir Commerce Group Ltd</p>
+            <p class="font-sans text-sm text-brand-navy/80 leading-relaxed">Registered in England and Wales<br />Company No. 17029469</p>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">UK Registered Office</p>
+            <p class="font-sans text-sm text-brand-navy/80 leading-relaxed">69 Wingfield Road<br />Great Barr<br />Birmingham B42 2QB<br />United Kingdom</p>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">UK Warehouse</p>
+            <p class="font-sans text-sm text-brand-navy/80 leading-relaxed">69 Wingfield Road<br />Great Barr<br />Birmingham B42 2QB<br />United Kingdom</p>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Bangladesh Corporate Office</p>
+            <p class="font-sans text-sm text-brand-navy/80 leading-relaxed">Sir Commerce Group Ltd<br />Kachari Bazar<br />Gaibandha-5700<br />Bangladesh</p>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Manufacturing Partner</p>
+            <p class="font-sans text-sm text-brand-navy/80 leading-relaxed">Eco Ville BD — Bangladesh</p>
+          </div>
+        </div>
+
+        {/* Get In Touch — মোবাইলে <details>/<summary> অ্যাকর্ডিয়ন (আগে contactOpen state),
+            sm+ এ CSS দিয়ে সবসময় খোলা দেখানো হয় (open + pointer-events-none on summary)। */}
+        <div class="mt-12 pt-8 border-t border-brand-navy/10">
+          {/* মোবাইলে ডিফল্ট বন্ধ (আগের useState(false)-এর মতো), ট্যাপ করলে group-open
+              দিয়ে কন্টেন্ট দেখা যায়; sm+ এ sm:!block দিয়ে সবসময় জোর করে দেখানো হয়
+              (details-এর open attribute ছাড়াই), তাই ডেস্কটপে pointer-events-none সামারিও
+              ঠিকভাবে কাজ করে — কোনো JS state ছাড়াই দুই ভিউপোর্টে দুই রকম ডিফল্ট আচরণ। */}
+          <details class="group/contact sm:[&_summary]:pointer-events-none">
+            <summary
+              class="group mb-6 flex w-full cursor-pointer list-none items-center gap-3 rounded-[2px] border border-brand-navy/15 bg-brand-ivory px-4 py-3.5 text-left shadow-premium transition-colors hover:border-brand-gold/60 [&::-webkit-details-marker]:hidden
+                         sm:mb-8 sm:block sm:border-0 sm:bg-transparent sm:p-0 sm:text-center sm:shadow-none"
+            >
+              <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-white text-brand-navy sm:hidden">
+                <Icon name="send" size={15} strokeWidth={2} />
+              </span>
+              <span class="min-w-0 flex-1 sm:flex-none">
+                <span class="block font-sans text-[12px] font-bold uppercase tracking-[0.2em] text-brand-navy sm:text-[11px] sm:text-brand-navy/70">Get In Touch</span>
+                <span class="mt-0.5 block font-sans text-[11px] normal-case tracking-normal text-brand-navy/70 sm:hidden">Email, phone &amp; WhatsApp — tap to view</span>
+              </span>
+              <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-brand-navy/15 text-brand-navy/60 transition-colors group-hover:border-brand-gold/60 sm:hidden">
+                <Icon name="chevron-down" size={14} class="transition-transform duration-300 group-open/contact:rotate-180" />
+              </span>
+            </summary>
+
+            <div class="hidden group-open/contact:grid sm:!grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-6 md:mb-8">
+              {contactEmails.map(({ label, address }) => (
+                <div class="bg-white border border-brand-navy/10 rounded-[2px] p-5 shadow-premium">
+                  <div class="flex items-start gap-3">
+                    <span class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-brand-ivory text-brand-navy/70">
+                      <Icon name="mail" size={16} />
+                    </span>
+                    <div class="min-w-0">
+                      <p class="font-sans text-[10px] text-brand-navy/40 uppercase tracking-wider mb-1">{label}</p>
+                      <a href={`mailto:${address}`} class="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors break-all">{address}</a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div class="hidden group-open/contact:grid sm:!grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
+              {contactPhones.map(({ region, numbers }) => (
+                <div class="bg-white border border-brand-navy/10 rounded-[2px] p-5 shadow-premium">
+                  <div class="flex items-start gap-3">
+                    <span class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[2px] border border-brand-navy/10 bg-brand-ivory text-brand-navy/70">
+                      <Icon name="phone" size={16} />
+                    </span>
+                    <div class="min-w-0">
+                      <p class="font-sans text-[10px] text-brand-navy/40 uppercase tracking-wider mb-2">{region}</p>
+                      <div class="space-y-2">
+                        {numbers.map(({ display, tel, wa }) => (
+                          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <a href={`tel:${tel}`} class="font-sans text-sm text-brand-navy/80 hover:text-brand-gold transition-colors">{display}</a>
+                            <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                              <SocialIcon platform="whatsapp" /> WhatsApp
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </details>
+        </div>
+
+        <div class="mt-12 pt-8 border-t border-brand-navy/10 grid gap-8 md:grid-cols-2 xl:grid-cols-5">
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Company</p>
+            <ul class="font-sans text-sm text-brand-navy/80 space-y-2">
+              {footerCompanyLinks.map((link) => (
+                <li><a href={link.path} class="transition-colors hover:text-brand-gold">{link.name}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Shop</p>
+            <ul class="font-sans text-sm text-brand-navy/80 space-y-2">
+              {footerShopLinks.map((link) => (
+                <li><a href={link.path} class="transition-colors hover:text-brand-gold">{link.name}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Follow Jutoria</p>
+            <div class="flex flex-wrap gap-3">
+              {socialLinks.map(({ name, href, platform, label }) => (
+                <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={name} class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-navy/10 bg-brand-ivory text-brand-navy/80 transition-colors hover:border-brand-gold hover:text-brand-gold">
+                  <SocialIcon platform={platform} class="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Legal Links</p>
+            <ul class="font-sans text-sm text-brand-navy/80 space-y-2">
+              <li><a href="/privacy-policy" class="transition-colors hover:text-brand-gold">Privacy Policy</a></li>
+              <li><a href="/terms-conditions" class="transition-colors hover:text-brand-gold">Terms &amp; Conditions</a></li>
+              <li><a href="/refund-policy" class="transition-colors hover:text-brand-gold">Refund Policy</a></li>
+              <li><a href="/shipping-policy" class="transition-colors hover:text-brand-gold">Shipping Policy</a></li>
+              <li><a href="/contact" class="transition-colors hover:text-brand-gold">Contact</a></li>
+            </ul>
+          </div>
+          <div class="md:text-right xl:text-right">
+            <p class="font-sans text-[11px] font-bold tracking-[0.2em] uppercase text-brand-navy/70 mb-4">Copyright</p>
+            <p class="font-sans text-sm text-brand-navy/80">&copy; 2026 JUTORIA. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    {/* JutoriaAssistantWidget island যোগ হবে পরের ধাপে (client:idle) — মাইগ্রেশন প্ল্যানের
+        ধাপ ৪ অনুযায়ী, ডেটা-নির্ভর পেজগুলো পোর্ট হওয়ার পরে। */}
+  </div>
+</BaseLayout>

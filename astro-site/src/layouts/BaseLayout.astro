@@ -1,0 +1,91 @@
+---
+// আগের index.html-এর <head> থেকে হুবহু পোর্ট করা (favicons, preload ফন্ট প্যাটার্ন,
+// OG ট্যাগ, GTM-via-Partytown সেটআপ) — মূল কারণ/ব্যাখ্যাগুলো index.html-এই ছিল, এখানে
+// শুধু প্রতিটা পেজের জন্য title/description/ogImage আলাদা করে দেওয়ার জন্য props যোগ
+// করা হলো (আগে এই per-page override react-helmet-async দিয়ে হতো — এখন আর দরকার নেই,
+// প্রতিটা .astro পেজ নিজের frontmatter থেকেই আসল মান পাস করে)।
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogUrl?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = 'https://jutoriahome.com/laundry-basket-lifestyle.webp',
+  ogUrl = `https://jutoriahome.com${Astro.url.pathname}`,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="JUTORIA" />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="JUTORIA natural-fiber home décor in a living space" />
+
+    <!-- GTM-via-Partytown — index.html-এর আগের সেটআপ থেকে অপরিবর্তিত পোর্ট করা।
+         forward: ['dataLayer.push'] worker-এ লোড হওয়া gtag.js-এর dataLayer.push()
+         কলকে রিয়েল main-thread window.dataLayer অ্যারেতে প্রক্সি করে। -->
+    <script is:inline>
+      window.partytown = { forward: ['dataLayer.push'] };
+    </script>
+    <script is:inline async src="/~partytown/partytown.js"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-51YWD5QZ8X');
+      window.addEventListener('load', function () {
+        var s = document.createElement('script');
+        s.type = 'text/partytown';
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-51YWD5QZ8X';
+        document.head.appendChild(s);
+      });
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

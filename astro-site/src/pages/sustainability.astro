@@ -1,0 +1,51 @@
+---
+// মূল src/pages/public/Sustainability.tsx থেকে পোর্ট করা — এখানেই প্রথম প্রুফ-অফ-কনসেপ্ট
+// পেজ (মাইগ্রেশন প্ল্যানের ধাপ ২)। কোনো Firestore ডেটা লাগে না, তাই react-helmet-async
+// এর <Helmet> সরাসরি PublicLayout-এর title/description prop হয়ে গেছে — canonical URL
+// Astro নিজে থেকেই handle করে না, কিন্তু এই স্ট্যাটিক পেজে আলাদা canonical override দরকার
+// নেই (BaseLayout-এর og:url ইতিমধ্যে Astro.url.pathname থেকে ঠিক URL বানায়)।
+import PublicLayout from '../layouts/PublicLayout.astro';
+---
+
+<PublicLayout
+  title="Sustainability | JUTORIA - Responsible Natural-Fiber Home Goods"
+  description="JUTORIA's sustainability commitments: responsible sourcing, artisan empowerment, and careful stewardship of natural materials."
+>
+  <section class="bg-brand-navy text-brand-offwhite py-20">
+    <div class="container mx-auto px-4 max-w-4xl text-center">
+      <span class="block font-sans text-brand-gold font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">
+        Sustainability
+      </span>
+      <h1 class="text-4xl md:text-5xl font-serif font-bold mb-6">
+        Responsible Materials. Lasting Value.
+      </h1>
+      <p class="font-sans text-lg opacity-90 font-light leading-relaxed mb-8">
+        We prioritize natural, renewable fibers and low-impact production methods to minimize environmental footprint and support resilient livelihoods for our craft partners.
+      </p>
+      <div class="mt-8">
+        <a href="/wholesale" class="inline-flex items-center gap-3 bg-brand-gold text-brand-navy px-8 py-3 font-sans font-bold tracking-widest text-[13px] uppercase transition-all duration-300 hover:bg-brand-offwhite hover:text-brand-navy rounded-[2px]">
+          Wholesale Inquiries
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-serif font-bold text-brand-navy mb-3">Sourced with Care</h3>
+          <p class="font-sans text-base text-brand-navy/80 leading-relaxed">We work with naturally renewing fibers like jute, seagrass and bamboo, choosing suppliers who meet ethical harvesting standards.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-serif font-bold text-brand-navy mb-3">Craft &amp; Community</h3>
+          <p class="font-sans text-base text-brand-navy/80 leading-relaxed">Supporting artisan communities through fair partnerships and predictable orders helps sustain skills and create local economic opportunity.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-serif font-bold text-brand-navy mb-3">Longevity &amp; Repair</h3>
+          <p class="font-sans text-base text-brand-navy/80 leading-relaxed">Our products are designed for long-term use; durable materials and simple repair guidance reduce waste and extend product life.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</PublicLayout>
