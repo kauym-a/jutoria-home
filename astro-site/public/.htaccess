@@ -1,0 +1,77 @@
+# ============================================================
+# JUTORIA (Astro static build) — Hostinger/Apache কনফিগ
+#
+# আগের Vite SPA-র .htaccess-এ একটা catch-all ফলব্যাক ছিল (যেকোনো অজানা URL → /index.html,
+# HTTP 200) — ভুল লিংকেও হোমপেজ দেখাত, সার্চ ইঞ্জিন সেগুলোকে আসল পেজ ভাবত ("soft 404")।
+# এখন প্রতিটা পাবলিক পেজ নিজেই একটা আসল HTML ফাইল, তাই সেই ফলব্যাক আর নেই: অজানা URL-এ
+# সত্যিকারের 404 স্ট্যাটাস + 404.html। শুধু /admin/* (React Router দিয়ে চলা Admin Panel)
+# এখনো একটা SPA, তাই শুধু ওটার জন্য ফলব্যাক রাখা হয়েছে।
+# (মনে রাখুন: .htaccess-এ কমেন্ট শুধু `#` দিয়ে — `<!-- -->` Apache সিনট্যাক্স নয়।)
+# ============================================================
+
+Options -MultiViews
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Admin Panel SPA — /admin ও /admin/যেকোনো-পাথ → /admin/index.html (আসল ফাইল হলে সেটাই)।
+  RewriteRule ^admin/?$ /admin/index.html [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^admin/.+ /admin/index.html [L]
+
+  # ট্রেইলিং স্ল্যাশ ছাড়া রিকোয়েস্ট (/wholesale) — Apache-এর mod_dir নিজে থেকে আগে একটা
+  # external 301 (/wholesale → /wholesale/) পাঠাত, প্রতিটা পেজে একটা বাড়তি রাউন্ড-ট্রিপ।
+  # এই রুল সরাসরি ইন্টারনালি index.html-এ রিরাইট করে, URL বারে /wholesale-ই থাকে।
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*[^/])$ /$1/index.html [L]
+</IfModule>
+
+# ============================================================
+# COMPRESSION — gzip সবখানে, Brotli যেখানে হোস্টে চালু আছে (প্রতিটা <IfModule>-এ মোড়ানো,
+# কোনো মডিউল না থাকলেও ফাইলটা কাজ করবে)।
+# ============================================================
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml text/javascript
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml text/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/x-javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/rss+xml
+  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+</IfModule>
+
+# ============================================================
+# CACHING
+# /_astro/ — Astro ফাইলনেমে content hash দেয়; /_img/ — ফাইলনেম Firebase URL-এর hash থেকে,
+# আর Firebase ডাউনলোড URL immutable (নতুন ছবি মানে নতুন URL)। দুটোই কনটেন্ট বদলালে নতুন
+# নাম পায়, তাই ১ বছর immutable ক্যাশ নিরাপদ।
+# HTML কখনো ক্যাশ হয় না — নতুন ডিপ্লয়ে এরাই নতুন hashed অ্যাসেটের রেফারেন্স বহন করে।
+# বাকি সরাসরি public/ ফাইল (লোগো, ছবি, ফন্ট) হ্যাশ করা নয় — ৩০ দিন; ভিডিও ৬০ দিন।
+# ============================================================
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  <If "%{REQUEST_URI} =~ m#^/(_astro|_img)/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+
+  <If "%{REQUEST_URI} !~ m#^/(_astro|_img)/#">
+    <FilesMatch "\.(jpe?g|png|webp|gif|svg|ico|avif|woff2?|ttf|otf|eot)$">
+      Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+  </If>
+
+  <FilesMatch "\.(mp4|webm)$">
+    Header set Cache-Control "public, max-age=5184000"
+  </FilesMatch>
+</IfModule>

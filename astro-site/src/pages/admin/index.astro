@@ -1,0 +1,13 @@
+---
+// Admin Panel শেল। client:only="react" — সার্ভারে কিছু রেন্ডার হয় না (লগইন/Firebase Auth
+// পুরোপুরি ব্রাউজার-নির্ভর)। /admin/* সব রুট .htaccess দিয়ে এই ফাইলেই আসে।
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdminApp from '../../app/AdminApp';
+---
+
+<BaseLayout title="Admin | JUTORIA" description="JUTORIA Admin Panel">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+  </Fragment>
+  <AdminApp client:only="react" />
+</BaseLayout>

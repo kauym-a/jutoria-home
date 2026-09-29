@@ -1,0 +1,146 @@
+import { getFirestoreCtx } from './config';
+import { fetchCollectionViaRest } from './firestoreRest';
+import staticProducts from '../../data/products.json';
+
+// ============================================================
+// Firestore-এ প্রোডাক্ট রাখা হয় 'products' কালেকশনে, প্রতিটা ডকুমেন্টের ID = তার SKU।
+// এটাই এখন থেকে প্রোডাক্টের একমাত্র সোর্স অফ ট্রুথ — public পেজ ও admin প্যানেল দুটোই
+// এখান থেকেই পড়ে। src/data/products.json শুধু "seed" ডেটা হিসেবে থাকে (প্রথমবার
+// Firestore-এ কপি করার জন্য) এবং Firestore এখনো খালি থাকলে সাইট যেন ভাঙা না দেখায়
+// তার জন্য একটা fallback হিসেবে ব্যবহৃত হয়।
+// ============================================================
+
+const PRODUCTS_COLLECTION = 'products';
+
+export type ProductImage = {
+  filename?: string;
+  role?: string;
+  url: string;
+  confidence?: string;
+};
+
+export type Product = {
+  sku: string;
+  name: string;
+  category?: string;
+  description?: string;
+  materialSlugs?: string[]; // structured mapping to src/data/materials.ts slugs — not text matching
+  image_folder?: string;
+  images: ProductImage[];
+  primaryImageUrl?: string; // if unset, images[0] is used
+  amazonUrl?: string;
+  featured?: boolean;
+  active?: boolean; // false = hidden from public site, still editable in admin
+  relatedSkus?: string[];
+  excel_fields?: Record<string, string>;
+  // excel_fields একটা Firestore map field — Firestore write-then-read-এ map-এর ভেতরের
+  // key-দের insertion order গ্যারান্টি রাখে না (এটাই সেই বাগ যেখানে Admin Panel-এ
+  // Add Row দিয়ে যে ক্রমে spec যোগ করা হয়, সেভ করার পর সেই ক্রম আর থাকে না — Firestore
+  // নিজের ইচ্ছামতো একটা ক্রমে key-গুলো ফেরত দেয়)। Firestore *array* field অবশ্য
+  // insertion order ঠিক রাখে, তাই শুধু key-গুলোর সঠিক ক্রমটা এই আলাদা array-তে রাখা
+  // হচ্ছে — excel_fields ম্যাপটা (নির্দিষ্ট key দিয়ে লুকআপের জন্য, যেমন
+  // excel_fields['MOQ']) অপরিবর্তিতই থাকছে। যেসব প্রোডাক্ট এই ফিচার আসার আগে সেভ
+  // হয়েছে তাদের specOrder নেই — সেক্ষেত্রে কলাররা Object.keys(excel_fields)-এ
+  // ফলব্যাক করে (আগের behavior-ই, নতুন করে কিছু ভাঙে না)।
+  specOrder?: string[];
+  updatedAt?: unknown;
+};
+
+/** সব প্রোডাক্ট আনে (admin-এর জন্য — active/inactive সব)। */
+export async function fetchAllProducts(): Promise<Product[]> {
+  const { db, collection, getDocs } = await getFirestoreCtx();
+  const snap = await getDocs(collection(db, PRODUCTS_COLLECTION));
+  return snap.docs.map((d) => d.data() as Product);
+}
+
+/**
+ * শুধু active প্রোডাক্ট আনে (পাবলিক সাইটের জন্য) — plain REST fetch() দিয়ে, Firestore
+ * SDK ছাড়াই (দেখুন firestoreRest.ts-এর কমেন্ট — SDK-এর persistent Listen/channel
+ * connection Lighthouse-এর critical path-কে ভয়াবহভাবে পিছিয়ে দিচ্ছিল)। useProducts()
+ * hook-ই এর একমাত্র কলার, তাই এই একটা পরিবর্তনেই সব পাবলিক পেজ (Home, Products,
+ * ProductDetail, MaterialDetail) উপকৃত হয়।
+ */
+export async function fetchActiveProducts(): Promise<Product[]> {
+  const all = await fetchCollectionViaRest<Product>(PRODUCTS_COLLECTION);
+  return all.filter((p) => p.active !== false);
+}
+
+/** একটা নির্দিষ্ট SKU-র প্রোডাক্ট আনে। */
+export async function fetchProduct(sku: string): Promise<Product | null> {
+  const { db, doc, getDoc } = await getFirestoreCtx();
+  const ref = doc(db, PRODUCTS_COLLECTION, sku);
+  const snap = await getDoc(ref);
+  return snap.exists() ? (snap.data() as Product) : null;
+}
+
+/** নতুন প্রোডাক্ট তৈরি বা বিদ্যমান প্রোডাক্ট আপডেট করে (SKU document ID হিসেবে ব্যবহৃত হয়)। */
+export async function upsertProduct(product: Product): Promise<void> {
+  if (!product.sku) throw new Error('Product SKU is required');
+  const { db, doc, setDoc, serverTimestamp } = await getFirestoreCtx();
+  const ref = doc(db, PRODUCTS_COLLECTION, product.sku);
+  await setDoc(ref, { ...product, updatedAt: serverTimestamp() }, { merge: true });
+}
+
+/** একটা প্রোডাক্ট মুছে ফেলে। */
+export async function deleteProduct(sku: string): Promise<void> {
+  const { db, doc, deleteDoc } = await getFirestoreCtx();
+  await deleteDoc(doc(db, PRODUCTS_COLLECTION, sku));
+}
+
+/**
+ * এক-বারের জন্য: src/data/products.json-এর বিদ্যমান ৪টা প্রোডাক্ট Firestore-এ কপি করে।
+ * ইতিমধ্যে থাকা কোনো ডকুমেন্ট ওভাররাইট করে না (merge করে) — বারবার চাপলেও সমস্যা নেই।
+ * Admin Products পেজ থেকে বাটনে ক্লিক করে চালাতে হবে (ব্রাউজারে, Firebase লগইন অবস্থায়)।
+ */
+export async function seedProductsFromStaticData(): Promise<{ seeded: number }> {
+  let seeded = 0;
+  for (const raw of staticProducts as any[]) {
+    const existing = await fetchProduct(raw.sku);
+    if (existing) continue; // ইতিমধ্যে Firestore-এ থাকলে স্কিপ — ওভাররাইট করব না
+    const product: Product = {
+      sku: raw.sku,
+      name: raw.name,
+      category: raw.category || 'Placemats',
+      materialSlugs: raw.materialSlugs || guessMaterialSlugs(raw),
+      image_folder: raw.image_folder,
+      images: raw.images || [],
+      amazonUrl: raw.amazonUrl || '',
+      featured: raw.featured ?? false,
+      active: raw.active ?? true,
+      relatedSkus: raw.relatedSkus || [],
+      excel_fields: raw.excel_fields || {},
+    };
+    await upsertProduct(product);
+    seeded += 1;
+  }
+  return { seeded };
+}
+
+// পুরনো প্রোডাক্টে materialSlugs না থাকলে, ম্যাটেরিয়াল কম্পোজিশন টেক্সট থেকে একটা প্রাথমিক
+// অনুমান করা হয় (শুধু সিড করার সময়ের জন্য) — এরপর থেকে সব প্রোডাক্টেই structured
+// materialSlugs ব্যবহার করা উচিত, টেক্সট-ম্যাচিং নয়।
+function guessMaterialSlugs(raw: any): string[] {
+  const text = (raw?.excel_fields?.['Material Composition'] || '').toLowerCase();
+  const slugs: string[] = [];
+  if (text.includes('jute')) slugs.push('jute');
+  if (text.includes('sea-grass') || text.includes('seagrass') || text.includes('sea grass')) slugs.push('seagrass');
+  if (text.includes('cotton')) slugs.push('cane-rattan'); // fallback guess only — সঠিক ম্যাপিং admin থেকে ঠিক করে নিতে হবে
+  return slugs.length ? slugs : [];
+}
+
+/** স্ট্যাটিক fallback ডেটা (Firestore এখনো খালি থাকলে, বা অফলাইন হলে ব্যবহার হয়)। */
+export function getStaticFallbackProducts(): Product[] {
+  return (staticProducts as any[]).map((raw) => ({
+    sku: raw.sku,
+    name: raw.name,
+    category: raw.category || 'Placemats',
+    materialSlugs: raw.materialSlugs || guessMaterialSlugs(raw),
+    image_folder: raw.image_folder,
+    images: raw.images || [],
+    amazonUrl: raw.amazonUrl || '',
+    featured: raw.featured ?? false,
+    active: raw.active ?? true,
+    relatedSkus: raw.relatedSkus || [],
+    excel_fields: raw.excel_fields || {},
+  }));
+}

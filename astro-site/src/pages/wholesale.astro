@@ -1,0 +1,276 @@
+---
+// মূল src/pages/public/Wholesale.tsx থেকে পোর্ট করা। সেকশন অর্ডার conversion-flow অনুযায়ী:
+// Hero → Who We Serve → What We Offer → Featured → Materials → Why → Process → FAQ →
+// Inquiry Form (পেজের একদম শেষ, একমাত্র conversion point)। কোনো fabricated MOQ/lead-time/
+// shipping প্রতিশ্রুতি নেই। FAQ-র useState অ্যাকর্ডিয়ন এখন নেটিভ <details> (zero-JS)।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+
+const AUDIENCES = [
+  { icon: 'store', name: 'Retailers', desc: 'Home décor and lifestyle stores looking for a natural-fiber range to add to their shelves.' },
+  { icon: 'ship', name: 'Importers & Distributors', desc: 'Bulk buyers sourcing directly from Bangladesh for onward distribution.' },
+  { icon: 'pen-tool', name: 'Interior Designers', desc: 'Designers sourcing natural textures and forms for residential and commercial projects.' },
+  { icon: 'building-2', name: 'Hospitality', desc: 'Hotels and hospitality brands furnishing spaces with handcrafted natural pieces.' },
+  { icon: 'house', name: 'Lifestyle & Home Brands', desc: 'Brands building out a natural-living product line under their own label.' },
+];
+const OFFER_CARDS = [
+  { name: 'Jute', desc: 'Placemats, rugs, baskets and home décor woven from natural jute.', image: '/product-master/jute-cotton-natural/jute-cotton-natural-lifestyle.webp', link: '/materials/jute' },
+  { name: 'Seagrass', desc: 'Placemats, baskets and natural décor pieces woven from seagrass.', image: '/product-master/sea-grass-natura/sea-grass-natural-lifestyle.webp', link: '/materials/seagrass' },
+  { name: 'Natural Fiber Home Décor', desc: 'Storage, planters, table décor and floor décor across our natural-fiber range.', image: '/jute-basket-lifestyle.webp', link: '/categories' },
+];
+const FEATURED_PRODUCTS = [
+  { sku: 'JTR-JPM-NAT-RND-14-S6', name: 'Jute Placemats', variant: 'Natural / Round / 14"', image: '/product-master/jute-cotton-natural/jute-cotton-natural-single.webp', width: 1000, height: 1000, link: '/product/JTR-JPM-NAT-RND-14-S6', hasPhoto: true },
+  { sku: 'JTR-SPM-NAT-RND-14-S6', name: 'Seagrass Placemats', variant: 'Natural / Round / 14"', image: '/product-master/sea-grass-natura/sea-grass-natural.webp', width: 1000, height: 1000, link: '/product/JTR-SPM-NAT-RND-14-S6', hasPhoto: true },
+  { sku: 'JTR-JPB-A', name: 'Jute Planter Baskets', variant: 'Natural / Set of 3', image: '/jute-basket-product.webp', width: 1000, height: 1250, link: '/categories/planter-baskets', hasPhoto: false },
+  { sku: 'JTR-JFR-RND90', name: 'Jute Area Rugs', variant: 'Round / 90cm', image: null, width: null, height: null, link: '/categories/floor-mats-rugs', hasPhoto: false },
+];
+const WHY_PILLARS = [
+  { icon: 'leaf', title: 'Natural Material Focus', desc: 'A natural-fiber home décor collection, sourced and woven from jute, seagrass and other regional materials.' },
+  { icon: 'compass', title: 'Design-Led Collection', desc: 'Products positioned for contemporary interiors, not just traditional handicraft.' },
+  { icon: 'handshake', title: 'Wholesale-Focused Service', desc: 'A dedicated path for business buyers, separate from retail browsing.' },
+  { icon: 'clipboard-check', title: 'Flexible Product Selection', desc: 'Product selection and configuration can be discussed according to wholesale requirements, where available.' },
+];
+const PROCESS_STEPS = [
+  { num: '01', title: 'Discover', desc: 'Explore the products and materials in our collection.' },
+  { num: '02', title: 'Inquire', desc: 'Tell us what you are looking for and a little about your business.' },
+  { num: '03', title: 'Discuss', desc: 'Our team reviews your requirements and gets in touch.' },
+  { num: '04', title: 'Move Forward', desc: 'Discuss product selection, quantities and commercial requirements together.' },
+];
+const FAQS = [
+  { q: 'What types of products are available for wholesale?', a: 'Our current range spans placemats, planter baskets, laundry baskets, organizer baskets and floor mats/rugs — browse the full Collection to see what’s available.' },
+  { q: 'What materials are available?', a: 'Jute and seagrass are the materials currently used across our active product range. We work with other natural fibers as well — get in touch to discuss availability.' },
+  { q: 'Can product configurations or designs be discussed?', a: 'Yes, where supported — sizes, colors and configurations can be discussed as part of your wholesale inquiry, depending on the specific product.' },
+  { q: 'How do I request wholesale pricing?', a: 'Submit a wholesale inquiry below with your product interest and estimated quantity, and our team will follow up with next steps.' },
+  { q: 'How do I start a wholesale relationship with JUTORIA?', a: 'Start with the inquiry form on this page, or email us directly — we’ll review your requirements and reach out to discuss further.' },
+];
+---
+
+<PublicLayout
+  title="Wholesale | JUTORIA - Natural Fiber Home Décor for B2B Buyers"
+  description="JUTORIA supplies natural-fiber home décor — jute and seagrass placemats, baskets and floor décor — to retailers, importers, designers and hospitality businesses."
+>
+  {/* 1. HERO */}
+  <section class="relative bg-brand-navy overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 items-stretch">
+      <div class="relative z-10 px-4 sm:px-8 lg:px-16 py-20 md:py-28 flex flex-col justify-center">
+        <span class="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">JUTORIA Wholesale</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.05] tracking-[-0.02em] text-brand-ivory mb-6 max-w-xl">
+          Natural Products. <br /> Made for Modern Retail.
+        </h1>
+        <p class="font-sans text-base md:text-lg text-brand-ivory/75 font-light leading-relaxed mb-10 max-w-md">
+          Discover JUTORIA's natural-fiber home décor collection for retailers, designers, hospitality businesses and other wholesale buyers.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#wholesale-inquiry" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+            Request A Wholesale Quote <Icon name="arrow-right" size={16} />
+          </a>
+          <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+            Explore Products
+          </a>
+        </div>
+      </div>
+      <div class="relative min-h-[320px] lg:min-h-[640px]">
+        <Img
+          src="/wholesale-hero-natural-home-decor.webp"
+          widths={[640, 800, 1100, 1600]}
+          sizes="(max-width: 1023px) 100vw, 50vw"
+          alt="Natural-fiber woven placemats, baskets and décor styled in a warm, modern interior"
+          class="absolute inset-0 w-full h-full object-cover"
+          width="1774"
+          height="887"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/40 via-transparent to-transparent lg:hidden" />
+      </div>
+    </div>
+  </section>
+
+  {/* 2. WHO WE SERVE */}
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto max-w-7xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4 text-center max-w-2xl mx-auto">Built for Businesses That Value Natural Design</h2>
+      <div class="h-px w-16 bg-brand-gold mx-auto mb-14" />
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center mb-14">
+        <div class="lg:col-span-2">
+          <Img
+            src="/wholesale-businesses-collage.webp"
+            widths={[480, 640, 1000]}
+            sizes="(max-width: 1023px) 100vw, 40vw"
+            alt="JUTORIA natural-fiber pieces in retail display, hospitality and design settings"
+            class="w-full h-72 lg:h-full object-cover rounded-[2px] shadow-premium"
+            width="1000"
+            height="667"
+          />
+        </div>
+        <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {AUDIENCES.map(({ icon, name, desc }) => (
+            <div class="bg-white border border-brand-navy/10 p-6 rounded-[2px] shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+              <div class="w-11 h-11 bg-brand-navy/5 text-brand-navy flex items-center justify-center rounded-full mb-4">
+                <Icon name={icon} size={20} strokeWidth={1.5} />
+              </div>
+              <h3 class="font-serif font-bold text-brand-navy mb-1.5">{name}</h3>
+              <p class="font-sans text-xs text-brand-navy/70 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 3. WHAT WE OFFER */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase text-center">What We Offer</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center max-w-2xl mx-auto">A Collection Rooted in Natural Materials</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {OFFER_CARDS.map((card) => (
+          <a href={card.link} class="group relative min-h-[320px] flex flex-col justify-end p-8 border-2 border-brand-navy/10 hover:border-brand-gold transition-all duration-500 rounded-[2px] overflow-hidden shadow-premium hover:shadow-premium-hover">
+            <Img src={card.image} widths={[400, 640, 800]} sizes="(min-width: 768px) 30vw, calc(100vw - 32px)" alt="" class="absolute inset-0 h-full w-full object-cover object-center" />
+            <div class="absolute inset-0" style="background-image: linear-gradient(180deg, rgba(10,35,66,0.15) 0%, rgba(10,35,66,0.75) 100%)" />
+            <h3 class="relative text-xl font-serif font-bold text-brand-ivory mb-2 flex items-center gap-2">
+              {card.name}
+              <Icon name="arrow-right" size={16} class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-brand-gold" />
+            </h3>
+            <p class="relative font-sans text-sm text-brand-ivory/85 font-light leading-relaxed">{card.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 4. FEATURED */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase text-center">Featured Wholesale Collection</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center max-w-2xl mx-auto">Explore Our Wholesale Collection</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        {FEATURED_PRODUCTS.map((p) => (
+          <div class="bg-white border border-brand-navy/10 rounded-[2px] overflow-hidden shadow-premium hover:shadow-premium-hover transition-shadow duration-300 flex flex-col">
+            <div
+              class="aspect-[4/5] bg-brand-navy/5 flex items-center justify-center"
+              style={!p.image ? { background: 'linear-gradient(160deg, #1a2e29 0%, #0f1a17 100%)' } : undefined}
+            >
+              {p.image ? (
+                <Img src={p.image} widths={[320, 480, 640]} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 32px)" alt={p.name} width={p.width ?? undefined} height={p.height ?? undefined} class="w-full h-full object-contain p-4" />
+              ) : (
+                <span class="font-sans text-[11px] tracking-[0.2em] uppercase text-brand-ivory/50 px-6 text-center">Photography coming soon</span>
+              )}
+            </div>
+            <div class="p-5 flex flex-col flex-grow">
+              <h3 class="font-serif font-bold text-brand-navy mb-1">{p.name}</h3>
+              <p class="font-sans text-xs text-brand-navy/70 mb-4">{p.variant}</p>
+              <div class="mt-auto flex flex-col gap-2">
+                <a href={p.link} class="text-center text-[11px] font-sans font-bold tracking-[0.15em] uppercase border border-brand-navy/20 text-brand-navy px-4 py-2.5 hover:border-brand-navy transition-colors rounded-[2px]">
+                  {p.hasPhoto ? 'View Product' : 'View Category'}
+                </a>
+                <a href="/contact" class="text-center text-[11px] font-sans font-bold tracking-[0.15em] uppercase bg-brand-navy text-brand-ivory px-4 py-2.5 hover:bg-brand-gold hover:text-brand-navy transition-colors rounded-[2px]">
+                  Wholesale Inquiry
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 5. MATERIALS & CRAFTSMANSHIP */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div>
+          <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">Materials &amp; Craftsmanship</span>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-8 leading-tight">From Natural Fiber to Finished Form</h2>
+          <div class="space-y-8">
+            <div>
+              <h3 class="font-serif font-bold text-brand-navy mb-1.5">Natural Materials</h3>
+              <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">Natural-fiber products selected for contemporary home environments.</p>
+            </div>
+            <div>
+              <h3 class="font-serif font-bold text-brand-navy mb-1.5">Skilled Craftsmanship</h3>
+              <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">Handmade and hand-finished techniques, where applicable.</p>
+            </div>
+            <div>
+              <h3 class="font-serif font-bold text-brand-navy mb-1.5">Thoughtful Design</h3>
+              <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">Natural textures and forms designed for modern spaces.</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <Img src="/jutoria-artisans-weaving.webp" widths={[320, 480, 800]} sizes="(max-width: 1023px) 50vw, 25vw" alt="Artisan hand-weaving a natural fiber product" class="w-full h-64 md:h-80 object-cover rounded-[2px]" width="1000" height="558" />
+          <Img src="/jutoria-story-natural-materials.webp" widths={[320, 480, 800]} sizes="(max-width: 1023px) 50vw, 25vw" alt="Natural fiber raw materials" class="w-full h-64 md:h-80 object-cover rounded-[2px] mt-8" width="1000" height="746" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 6. WHY JUTORIA */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-7xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center max-w-2xl mx-auto">Why Buyers Choose JUTORIA</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {WHY_PILLARS.map(({ icon, title, desc }) => (
+          <div>
+            <div class="w-12 h-12 bg-brand-navy text-brand-gold flex items-center justify-center rounded-full mb-5">
+              <Icon name={icon} size={20} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 7. HOW WHOLESALE WORKS */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-16 text-center">How Wholesale Works</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 relative">
+        {PROCESS_STEPS.map((step, i) => (
+          <div class="relative text-center">
+            <span class="block font-serif text-5xl font-bold text-brand-gold/30 mb-4">{step.num}</span>
+            <h3 class="font-serif font-bold text-brand-navy text-lg mb-2">{step.title}</h3>
+            <p class="font-sans text-sm text-brand-navy/70 leading-relaxed max-w-[220px] mx-auto">{step.desc}</p>
+            {i < PROCESS_STEPS.length - 1 && <Icon name="arrow-right" size={18} class="hidden lg:block absolute top-6 -right-5 text-brand-navy/20" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 8. FAQ */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-3xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4 text-center">Wholesale Questions</h2>
+      <p class="font-sans text-brand-navy/70 text-center mb-12">Common questions from wholesale buyers.</p>
+      <div>
+        {FAQS.map((f) => (
+          <details class="group border-b border-brand-navy/10">
+            <summary class="w-full flex items-center justify-between gap-4 py-6 text-left cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <span class="font-serif text-lg md:text-xl font-bold text-brand-navy">{f.q}</span>
+              <Icon name="chevron-down" size={20} class="flex-shrink-0 text-brand-gold transition-transform duration-300 group-open:rotate-180" />
+            </summary>
+            <p class="font-sans text-brand-navy/70 leading-relaxed pb-6 max-w-3xl">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 9. INQUIRY — পেজের একমাত্র/চূড়ান্ত conversion point, এর পরে আর কোনো CTA নেই */}
+  <section id="wholesale-inquiry" class="py-16 md:py-24 bg-brand-navy scroll-mt-20">
+    <div class="container mx-auto max-w-4xl px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory mb-4">Let's Discuss Your Collection</h2>
+        <p class="font-sans text-brand-ivory/70 font-light leading-relaxed max-w-xl mx-auto">
+          Tell us about your business, the products you are interested in, and your expected quantity. We'll review your requirements and respond with the appropriate next steps.
+        </p>
+      </div>
+      <InquiryForm variant="wholesale" />
+    </div>
+  </section>
+</PublicLayout>

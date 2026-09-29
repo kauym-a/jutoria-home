@@ -1,0 +1,193 @@
+---
+// /contact ও /wholesale-এর ইনকোয়ারি ফর্ম — মূল useLeadForm.ts + Contact.tsx/Wholesale.tsx-এর
+// ফর্ম অংশ থেকে পোর্ট করা। React island-এর বদলে প্লেইন HTML ফর্ম + নিচের ছোট স্ক্রিপ্ট:
+//   - ?product=...&sku=... থাকলে productInterest/message prefill + "Inquiring about" ব্যানার
+//     (প্রোডাক্ট পেজের "Wholesale Inquiry" বাটন থেকে আসলে)
+//   - সাবমিটে Firestore-এর 'leads' কালেকশনে সেভ (source: contact/wholesale) — Admin-এ
+//     /admin/leads-এ দেখা যায়। Firebase SDK শুধু সাবমিটের মুহূর্তেই dynamic import হয়,
+//     তাই পেজ লোডে কোনো Firebase কোড ডাউনলোড হয় না।
+// `type` ফিল্ড ইচ্ছাকৃতভাবে prefill করা হয় না — Contact-এ "Inquiry Type", Wholesale-এ সম্পূর্ণ
+// ভিন্ন "Business Type" বোঝায় (মূল useLeadForm.ts-এর কমেন্ট দেখুন)।
+import Icon from './Icon.astro';
+
+interface Props {
+  variant: 'contact' | 'wholesale';
+}
+
+const { variant } = Astro.props;
+const isContact = variant === 'contact';
+const id = (field: string) => `${variant}-${field}`;
+
+const TYPES = isContact
+  ? ['Wholesale', 'Bulk Order', 'Retail Partnership', 'Hospitality / Interior Project', 'Custom Product', 'General Inquiry']
+  : ['Retailer', 'Importer', 'Distributor', 'Interior Designer', 'Hospitality', 'Lifestyle Brand', 'Other'];
+
+const labelCls = `block font-sans text-xs font-bold uppercase tracking-wide ${isContact ? 'text-brand-navy/60' : 'text-brand-navy/70'} mb-2`;
+const inputCls = 'w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm';
+---
+
+<div data-inquiry data-source={variant}>
+  <div data-success hidden class={isContact ? 'py-8 text-center' : 'bg-white p-8 md:p-12 rounded-[2px] text-center'}>
+    <Icon name="circle-check" size={40} strokeWidth={1.5} class="mx-auto text-brand-gold mb-4" />
+    {isContact ? (
+      <>
+        <h4 class="text-lg font-serif font-bold text-brand-navy mb-2">Thank you — your inquiry is in.</h4>
+        <p class="font-sans text-sm text-brand-navy/60">We'll review it and get back to you shortly.</p>
+      </>
+    ) : (
+      <>
+        <h3 class="text-xl font-serif font-bold text-brand-navy mb-2">Thank you — your inquiry is in.</h3>
+        <p class="font-sans text-sm text-brand-navy/70 max-w-md mx-auto">
+          Our team will review your requirements and get back to you with the appropriate next steps.
+        </p>
+      </>
+    )}
+  </div>
+
+  <form data-form class={isContact ? 'space-y-6' : 'bg-white p-8 md:p-10 rounded-[2px] space-y-6'}>
+    <div data-prefill hidden class="flex items-start gap-3 border border-brand-gold/40 bg-brand-gold/10 px-4 py-3 rounded-[2px]">
+      <Icon name="package" size={18} strokeWidth={1.5} class="text-brand-gold flex-shrink-0 mt-0.5" />
+      <p class="font-sans text-sm text-brand-navy" data-prefill-text></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for={id('name')} class={labelCls}>{isContact ? 'Full Name *' : 'Your Name *'}</label>
+        <input id={id('name')} name="name" type="text" required placeholder="Jane Doe" autocomplete="name" class={inputCls} />
+      </div>
+      <div>
+        <label for={id('company')} class={labelCls}>Company Name</label>
+        <input id={id('company')} name="company" type="text" placeholder="Company Ltd." autocomplete="organization" class={inputCls} />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for={id('email')} class={labelCls}>Business Email *</label>
+        <input id={id('email')} name="email" type="email" required placeholder="jane@company.com" autocomplete="email" class={inputCls} />
+      </div>
+      <div>
+        <label for={id('country')} class={labelCls}>{isContact ? 'Country / Region *' : 'Country *'}</label>
+        <input id={id('country')} name="country" type="text" required placeholder="United Kingdom" autocomplete="country-name" class={inputCls} />
+      </div>
+    </div>
+
+    {isContact ? (
+      <>
+        <div>
+          <label for={id('type')} class={labelCls}>Inquiry Type *</label>
+          <select id={id('type')} name="type" required class={`${inputCls} text-brand-navy`}>
+            <option value="" disabled selected>Select an option</option>
+            {TYPES.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for={id('productInterest')} class={labelCls}>Products / Collection of Interest</label>
+            <input id={id('productInterest')} name="productInterest" type="text" placeholder="e.g. Jute placemats, planter baskets" class={inputCls} />
+          </div>
+          <div>
+            <label for={id('quantity')} class={labelCls}>Estimated Order Quantity</label>
+            <input id={id('quantity')} name="quantity" type="text" placeholder="e.g. 500 units" class={inputCls} />
+          </div>
+        </div>
+        <div>
+          <label for={id('message')} class={labelCls}>Message *</label>
+          <textarea id={id('message')} name="message" rows="5" required placeholder="Tell us about your requirements, estimated quantity, etc." class={`${inputCls} resize-none`}></textarea>
+        </div>
+      </>
+    ) : (
+      <>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for={id('type')} class={labelCls}>Business Type *</label>
+            <select id={id('type')} name="type" required class={`${inputCls} text-brand-navy`}>
+              <option value="" disabled selected>Select an option</option>
+              {TYPES.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div>
+            <label for={id('quantity')} class={labelCls}>Estimated Quantity</label>
+            <input id={id('quantity')} name="quantity" type="text" placeholder="e.g. 500 units" class={inputCls} />
+          </div>
+        </div>
+        <div>
+          <label for={id('productInterest')} class={labelCls}>Product Interest</label>
+          <input id={id('productInterest')} name="productInterest" type="text" placeholder="e.g. Jute placemats, planter baskets" class={inputCls} />
+        </div>
+        <div>
+          <label for={id('message')} class={labelCls}>Message</label>
+          <textarea id={id('message')} name="message" rows="4" placeholder="Tell us more about what you're looking for..." class={`${inputCls} resize-none`}></textarea>
+        </div>
+      </>
+    )}
+
+    <p data-error hidden role="alert" class="font-sans text-sm text-red-700"></p>
+
+    <button
+      type="submit"
+      class={`${isContact ? 'w-full' : 'w-full sm:w-auto px-10'} inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px] disabled:opacity-60`}
+    >
+      <span data-submit-label>{isContact ? 'Submit Inquiry' : 'Submit Wholesale Inquiry'}</span>
+      <Icon name="arrow-right" size={16} />
+    </button>
+  </form>
+</div>
+
+<script>
+  import type { LeadSource } from '../app/services/firebase/leads';
+
+  document.querySelectorAll<HTMLElement>('[data-inquiry]').forEach((root) => {
+    const source = root.dataset.source as LeadSource;
+    const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+    const success = root.querySelector<HTMLElement>('[data-success]')!;
+    const errorEl = root.querySelector<HTMLElement>('[data-error]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const idleLabel = label.textContent ?? '';
+
+    // প্রোডাক্ট পেজ থেকে ?product=...&sku=... দিয়ে এলে prefill + স্পষ্ট ব্যানার — যাতে কাস্টমার
+    // বোঝেন সঠিক প্রোডাক্ট রেফারেন্স আগে থেকেই বসে গেছে (মূল useLeadForm.ts-এর আচরণ)।
+    const params = new URLSearchParams(window.location.search);
+    const product = params.get('product');
+    if (product) {
+      const sku = params.get('sku');
+      const ref = sku ? `${product} (SKU: ${sku})` : product;
+      (form.elements.namedItem('productInterest') as HTMLInputElement).value = ref;
+      (form.elements.namedItem('message') as HTMLTextAreaElement).value =
+        `I'm interested in ${ref}. Please share pricing, MOQ and lead time.`;
+      // URL-এর মান ইউজার-কন্ট্রোলড — textContent/createElement দিয়ে বসানো, innerHTML নয়।
+      const strong = (t: string) => Object.assign(document.createElement('strong'), { textContent: t });
+      const parts: (string | Node)[] = ['Inquiring about ', strong(product)];
+      if (sku) parts.push(' — SKU: ', strong(sku));
+      parts.push(". We've pre-filled the details below — feel free to edit them.");
+      root.querySelector<HTMLElement>('[data-prefill-text]')!.replaceChildren(...parts);
+      root.querySelector<HTMLElement>('[data-prefill]')!.hidden = false;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+      const values = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      if (!values.name?.trim() || !values.email?.trim()) {
+        errorEl.textContent = 'Name and email are required.';
+        errorEl.hidden = false;
+        return;
+      }
+      button.disabled = true;
+      label.textContent = 'Submitting…';
+      try {
+        const { submitLead } = await import('../app/services/firebase/leads');
+        await submitLead({ source, ...values } as Parameters<typeof submitLead>[0]);
+        form.hidden = true;
+        success.hidden = false;
+      } catch (err) {
+        console.error(err);
+        errorEl.textContent = 'Something went wrong submitting your inquiry. Please try again shortly, or email us directly.';
+        errorEl.hidden = false;
+        button.disabled = false;
+        label.textContent = idleLabel;
+      }
+    });
+  });
+</script>

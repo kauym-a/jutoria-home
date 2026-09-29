@@ -1,0 +1,138 @@
+---
+// মূল src/components/chat/JutoriaAssistant.tsx-এর JutoriaAssistantPanel — React-এর বদলে স্ট্যাটিক
+// মার্কআপ (স্বাগত মেসেজ + সাজেস্টেড প্রশ্ন + ইনপুট) আর নিচের ছোট স্ক্রিপ্ট। উত্তর-লজিক
+// (lib/chat/engine.ts, products.json সহ) প্রথম মেসেজ পাঠানোর মুহূর্তেই dynamic import হয়।
+// একই পেজে একাধিক প্যানেল থাকতে পারে (/jutoria-ai-তে standalone + ফ্লোটিং উইজেট) — স্ক্রিপ্ট
+// প্রতিটা [data-chat]-কে আলাদাভাবে চালায়।
+import Icon from './Icon.astro';
+import { buildWhatsAppLink } from '../lib/chat/engine';
+
+interface Props {
+  standalone?: boolean;
+}
+
+const { standalone = false } = Astro.props;
+const SUGGESTED_PROMPTS = ['What is your MOQ?', 'Tell me about jute', 'How does wholesale work?', 'How do I contact your team?'];
+---
+
+<div
+  data-chat
+  class={`flex flex-col bg-white ${standalone ? 'h-[70vh] max-w-2xl mx-auto border border-brand-navy/10 rounded-[4px] shadow-premium' : 'h-full'}`}
+>
+  <div data-messages class="flex-grow overflow-y-auto p-5 space-y-4">
+    <div class="flex justify-start">
+      <div class="max-w-[85%] px-4 py-3 rounded-[3px] text-sm font-sans leading-relaxed bg-brand-offwhite text-brand-navy border border-brand-navy/10">
+        <p>Hi, I'm the JUTORIA AI Assistant. Ask me about product pricing, MOQ, materials, wholesale process, or how to reach our team.</p>
+        <div class="flex flex-wrap items-center gap-3 mt-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div data-prompts class="px-5 pb-3 flex flex-wrap gap-2">
+    {SUGGESTED_PROMPTS.map((p) => (
+      <button type="button" data-prompt={p} class="text-xs font-sans px-3 py-1.5 border border-brand-navy/15 rounded-full text-brand-navy/70 hover:border-brand-gold hover:text-brand-gold transition-colors">
+        {p}
+      </button>
+    ))}
+  </div>
+
+  <form data-chat-form class="flex items-center gap-2 border-t border-brand-navy/10 p-3">
+    <input
+      name="q"
+      autocomplete="off"
+      aria-label="Ask the JUTORIA assistant"
+      placeholder="Ask about pricing, MOQ, materials..."
+      class="flex-grow px-3 py-2.5 text-sm font-sans bg-brand-offwhite border border-brand-navy/10 rounded-[2px] focus:outline-none focus:border-brand-gold"
+    />
+    <button type="submit" aria-label="Send" class="flex items-center justify-center w-10 h-10 bg-brand-navy text-brand-gold rounded-[2px] hover:bg-brand-gold hover:text-brand-navy transition-colors flex-shrink-0">
+      <Icon name="send" size={16} />
+    </button>
+    <a
+      href={buildWhatsAppLink('Hi JUTORIA, I have a question.')}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      title="Chat on WhatsApp"
+      class="flex items-center justify-center w-10 h-10 bg-[#25D366] text-white rounded-[2px] hover:bg-[#1DA851] transition-colors flex-shrink-0"
+    >
+      <Icon name="phone" size={16} />
+    </a>
+  </form>
+</div>
+
+<script>
+  import type { Answer } from '../lib/chat/engine';
+
+  const ARROW =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+  let engine: Promise<typeof import('../lib/chat/engine')> | undefined;
+  const loadEngine = () => (engine ??= import('../lib/chat/engine'));
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, className = '') {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    return node;
+  }
+
+  // ইউজারের টাইপ করা টেক্সট সবসময় textContent দিয়ে বসে (innerHTML নয়) — HTML/স্ক্রিপ্ট টাইপ
+  // করলেও সেটা শুধু টেক্সট হিসেবেই দেখায়। ARROW একটা হার্ডকোডেড কনস্ট্যান্ট SVG।
+  function bubble(role: 'user' | 'assistant', answer: Answer, whatsappHref?: string) {
+    const row = el('div', `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`);
+    const box = el(
+      'div',
+      `max-w-[85%] px-4 py-3 rounded-[3px] text-sm font-sans leading-relaxed ${
+        role === 'user' ? 'bg-brand-navy text-brand-ivory' : 'bg-brand-offwhite text-brand-navy border border-brand-navy/10'
+      }`,
+    );
+    const p = el('p');
+    p.textContent = answer.text;
+    const actions = el('div', 'flex flex-wrap items-center gap-3 mt-2');
+    if (answer.link) {
+      const a = el('a', 'inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-navy transition-colors');
+      a.href = answer.link.to;
+      a.textContent = `${answer.link.label} `;
+      a.insertAdjacentHTML('beforeend', ARROW);
+      actions.append(a);
+    }
+    if (whatsappHref) {
+      const a = el('a', 'inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#25D366] hover:text-brand-navy transition-colors');
+      a.href = whatsappHref;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = 'Continue on WhatsApp ';
+      a.insertAdjacentHTML('beforeend', ARROW);
+      actions.append(a);
+    }
+    box.append(p, actions);
+    row.append(box);
+    return row;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-chat]').forEach((panel) => {
+    const messages = panel.querySelector<HTMLElement>('[data-messages]')!;
+    const prompts = panel.querySelector<HTMLElement>('[data-prompts]')!;
+    const form = panel.querySelector<HTMLFormElement>('[data-chat-form]')!;
+    const input = form.querySelector<HTMLInputElement>('input[name="q"]')!;
+
+    async function send(text: string) {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      input.value = '';
+      prompts.hidden = true;
+      messages.append(bubble('user', { text: trimmed }));
+      const { respond, buildWhatsAppLink } = await loadEngine();
+      const answer = respond(trimmed);
+      messages.append(bubble('assistant', answer, answer.whatsapp ? buildWhatsAppLink(answer.whatsapp) : undefined));
+      messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      send(input.value);
+    });
+    prompts.querySelectorAll<HTMLButtonElement>('[data-prompt]').forEach((b) => b.addEventListener('click', () => send(b.dataset.prompt!)));
+    // ইনপুটে ফোকাস করা মানেই সম্ভবত প্রশ্ন আসছে — ইঞ্জিনটা আগেভাগে লোড শুরু।
+    input.addEventListener('focus', () => void loadEngine(), { once: true });
+  });
+</script>

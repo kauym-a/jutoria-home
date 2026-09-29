@@ -1,0 +1,284 @@
+---
+// মূল src/pages/public/CorporateInformation.tsx থেকে পোর্ট করা। ⚠️ যাচাই করা ফোন/ইমেইল —
+// CLAUDE.md অনুযায়ী Contact পেজ ও PublicLayout ফুটারের সাথে ম্যানুয়ালি সিঙ্কে রাখতে হবে।
+// প্রতিটা ফোনের tel: ও wa.me/ দুটো লিংকই থাকবে।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+
+const LEADERSHIP_TEAM = [
+  { name: 'S M Rashed Ahammad', title: 'Founder / Managing Director', desc: 'Company ownership and overall leadership', location: 'Bangladesh', phone: '+880 1745-249997', email: 'rashed@jutoriahome.com', linkedin: 'https://www.linkedin.com/company/jutoriahome', photo: '/team/founder-managing-director.webp' },
+  { name: 'Mohammed Shamsher Ali', title: 'UK Sales Director', desc: 'Leading UK sales operations and business development', location: 'United Kingdom', phone: '+44 7446 863995', email: 'shamsher@jutoriahome.com', linkedin: '', photo: '/team/uk-sales-director.webp' },
+  { name: 'S M Nasif Ali', title: 'UK & Bangladesh Marketing Director', desc: 'Overseeing marketing and operations across the UK and Bangladesh markets', location: 'United Kingdom & Bangladesh', phone: '+880 1324-438566', email: 'nasif@jutoriahome.com', linkedin: '', photo: '/team/uk-bangladesh-marketing-director.webp' },
+  { name: 'Wafi Rahman Ananna', title: 'UK Warehouse Director', desc: 'UK fulfillment / warehouse operations', location: 'United Kingdom', phone: '+44 7435 945500', email: 'wafi@jutoriahome.com', linkedin: '', photo: '/team/uk-warehouse-director.webp' },
+  { name: 'Mst Kazi Sanzida Ahammad', title: 'Product Designer & Supply Chain Director', desc: 'Product design leadership and supply chain strategy', location: 'Bangladesh', phone: '+880 1714-567000', email: 'sanjida@jutoriahome.com', linkedin: '', photo: '/team/product-designer-marketing-director.webp' },
+];
+
+const waLink = 'inline-flex items-center gap-1.5 font-sans text-sm text-brand-ivory/70 hover:text-brand-gold transition-colors';
+const HALF = '(min-width: 1024px) 45vw, calc(100vw - 48px)';
+---
+
+<PublicLayout
+  title="Corporate Information | JUTORIA"
+  description="Corporate information for JUTORIA, a premium natural home décor brand operated by Sir Commerce Group Ltd."
+>
+  {/* 01 — HERO */}
+  <section class="relative w-full min-h-[85vh] flex items-end bg-brand-navy overflow-hidden">
+    <Img
+      src="/jutoria-corporate-registration.webp"
+      widths={[640, 800, 1200, 1600]}
+      sizes="100vw"
+      alt="Corporate registration documentation for Sir Commerce Group Ltd"
+      class="absolute inset-0 h-full w-full object-cover"
+      style="object-position: center 40%"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent" />
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/50 to-transparent" />
+    <div class="relative z-10 container mx-auto max-w-6xl px-6 md:px-8 pt-28 md:pt-36 pb-20 md:pb-28">
+      <span class="block font-sans text-[11px] md:text-xs font-bold tracking-[0.28em] text-brand-gold uppercase mb-6">Corporate Information</span>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-serif font-bold text-brand-ivory leading-[1.06] max-w-4xl mb-7">
+        JUTORIA, Operated by<br />
+        Sir Commerce Group Ltd
+      </h1>
+      <p class="max-w-2xl font-sans text-base md:text-lg text-brand-ivory/85 font-light leading-relaxed mb-10">
+        JUTORIA is a premium natural home décor brand operated by Sir Commerce Group Ltd, a United Kingdom registered company serving an international market.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="/contact" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Contact Us <Icon name="arrow-right" size={15} />
+        </a>
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/8 rounded-[2px]">
+          Explore JUTORIA <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* 02 — COMPANY IDENTITY */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="flex items-center justify-center lg:justify-start p-8 bg-white border border-brand-navy/10 rounded-[2px] shadow-premium aspect-[4/3] lg:aspect-auto lg:h-[400px]">
+          <img src="/sircommerce_logo.webp" alt="Sir Commerce Group Ltd logo" class="w-full max-w-[280px] h-auto object-contain mix-blend-multiply" width="746" height="528" loading="lazy" />
+        </div>
+        <div>
+          <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Company</span>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">Sir Commerce Group Ltd</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-10">
+            Sir Commerce Group Ltd is the company behind JUTORIA. JUTORIA is developed as a premium natural home décor brand focused on natural materials, skilled craftsmanship and thoughtful design for modern living.
+          </p>
+          <div class="space-y-6">
+            <div class="border-b border-brand-navy/15 pb-4">
+              <span class="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Company Name</span>
+              <span class="font-sans text-base text-brand-navy">Sir Commerce Group Ltd</span>
+            </div>
+            <div class="border-b border-brand-navy/15 pb-4">
+              <span class="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Company Number</span>
+              <span class="font-sans text-base text-brand-navy">17029469</span>
+            </div>
+            <div class="border-b border-brand-navy/15 pb-4">
+              <span class="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Registered In</span>
+              <span class="font-sans text-base text-brand-navy">United Kingdom</span>
+            </div>
+            <div class="pb-4">
+              <span class="block font-sans text-[10px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-1">Brand</span>
+              <span class="font-serif font-bold text-lg text-brand-navy">JUTORIA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 03 — UK PRESENCE */}
+  <section class="py-20 md:py-28 bg-white border-y border-brand-navy/[0.08]">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="order-2 lg:order-1">
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">UK Business Presence</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-10">
+            Our UK presence provides a direct business contact point for customers, partners and wholesale inquiries.
+          </p>
+          <div class="bg-brand-ivory p-8 md:p-10 rounded-[2px] shadow-premium">
+            <span class="block font-sans text-[11px] font-bold tracking-[0.2em] text-[#8a6a29] uppercase mb-4">UK Warehouse / Business Address</span>
+            <address class="not-italic font-sans text-base md:text-lg text-brand-navy leading-relaxed mb-6">
+              69 Wingfield Road<br />Great Barr<br />Birmingham B42 2QB<br />United Kingdom
+            </address>
+            <span class="block font-sans text-[11px] font-bold tracking-[0.2em] text-brand-navy/40 uppercase mb-2">Phone</span>
+            <a href="tel:+447435945500" class="font-sans text-base text-brand-navy hover:text-brand-gold transition-colors">+44 7435 945500</a>
+            <a href="https://wa.me/447435945500" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-sans text-sm text-brand-navy/70 hover:text-brand-gold transition-colors ml-4">
+              <SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp
+            </a>
+          </div>
+        </div>
+        <div class="order-1 lg:order-2">
+          <div class="aspect-[4/3] rounded-[2px] shadow-premium-hover overflow-hidden">
+            <Img src="/jutoria-uk-operational-presence.webp" widths={[480, 800, 1200]} sizes={HALF} alt="JUTORIA UK business and operational presence" class="h-full w-full object-cover" style="object-position: center 30%" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 04 — GLOBAL CONTACT */}
+  <section class="py-20 md:py-28 bg-brand-navy">
+    <div class="container mx-auto max-w-4xl px-6 md:px-8 text-center">
+      <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">Global Contact</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory leading-tight mb-6">Global Contact</h2>
+      <p class="font-sans text-base md:text-lg text-brand-ivory/70 font-light leading-relaxed mb-16 max-w-2xl mx-auto">
+        For business, wholesale and general inquiries, JUTORIA can be contacted through the following business contact points.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 text-left">
+        <div class="bg-brand-navy border border-brand-ivory/15 p-8 rounded-[2px]">
+          <h3 class="font-serif text-xl font-bold text-brand-gold mb-6 border-b border-brand-ivory/15 pb-4">United Kingdom</h3>
+          <div class="mb-6">
+            <span class="block font-sans text-[11px] font-bold tracking-[0.15em] text-brand-ivory/50 uppercase mb-2">Sir Commerce Group Ltd</span>
+            <span class="block font-sans text-[10px] text-brand-ivory/40 uppercase mb-1">Phone:</span>
+            <a href="tel:+447311127176" class="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+44 7311 127176</a>
+            <a href="https://wa.me/447311127176" target="_blank" rel="noopener noreferrer" class={`${waLink} ml-4`}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+          </div>
+          <div>
+            <span class="block font-sans text-[11px] font-bold tracking-[0.15em] text-brand-ivory/50 uppercase mb-2">UK Warehouse Contact</span>
+            <span class="block font-sans text-[10px] text-brand-ivory/40 uppercase mb-1">Phone:</span>
+            <a href="tel:+447435945500" class="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+44 7435 945500</a>
+            <a href="https://wa.me/447435945500" target="_blank" rel="noopener noreferrer" class={`${waLink} ml-4`}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+          </div>
+        </div>
+        <div class="bg-brand-navy border border-brand-ivory/15 p-8 rounded-[2px]">
+          <h3 class="font-serif text-xl font-bold text-brand-gold mb-6 border-b border-brand-ivory/15 pb-4">Bangladesh</h3>
+          <div class="mb-6">
+            <span class="block font-sans text-[10px] text-brand-ivory/40 uppercase mb-1">Phone:</span>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mb-2">
+              <a href="tel:+8801833093349" class="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+880 1833-093349</a>
+              <a href="https://wa.me/8801833093349" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <a href="tel:+8801324438566" class="font-sans text-base text-brand-ivory hover:text-brand-gold transition-colors">+880 1324-438566</a>
+              <a href="https://wa.me/8801324438566" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 04.5 — LEADERSHIP TEAM */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="text-center mb-14 md:mb-16">
+        <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Leadership</span>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">Leadership Team</h2>
+        <p class="font-sans text-base md:text-lg text-brand-navy/65 font-light leading-relaxed max-w-xl mx-auto">
+          The team behind JUTORIA's operations across the United Kingdom and Bangladesh.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        {LEADERSHIP_TEAM.map((person) => (
+          <div class="bg-white border border-brand-navy/10 rounded-[2px] overflow-hidden text-center shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+            <Img
+              src={person.photo}
+              widths={[320, 480, 640]}
+              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+              alt={`${person.name}, ${person.title} at JUTORIA`}
+              class="w-full aspect-[4/5] object-cover object-top"
+            />
+            <div class="p-6">
+              <h3 class="font-serif font-bold text-brand-navy leading-snug mb-1">{person.name}</h3>
+              <p class="font-sans text-xs font-bold text-[#8a6a29] uppercase tracking-wide mb-2">{person.title}</p>
+              {person.linkedin && (
+                <a href={person.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${person.name} on LinkedIn`} class="mx-auto mb-3 flex w-fit items-center justify-center p-1 text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]">
+                  <SocialIcon platform="linkedin" class="h-4 w-4" />
+                </a>
+              )}
+              <p class="font-sans text-xs text-brand-navy/60 leading-relaxed mb-3">{person.desc}</p>
+              <span class="inline-block font-sans text-[10px] font-bold tracking-[0.15em] uppercase text-brand-navy/50 mb-4">{person.location}</span>
+              <div class="flex flex-col gap-1.5 pt-4 border-t border-brand-navy/10">
+                <a href={`tel:${person.phone.replace(/[^+\d]/g, '')}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                  <Icon name="phone" size={13} strokeWidth={1.75} class="shrink-0" /> {person.phone}
+                </a>
+                <a href={`mailto:${person.email}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                  <Icon name="mail" size={13} strokeWidth={1.75} class="shrink-0" /> {person.email}
+                </a>
+                <a href={`https://wa.me/${person.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                  <SocialIcon platform="whatsapp" class="h-[13px] w-[13px] shrink-0" /> WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 05 — REGISTRATION */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div>
+          <div class="aspect-[4/3] lg:aspect-[3/4] rounded-[2px] shadow-premium overflow-hidden">
+            <Img src="/jutoria-corporate-registration.webp" widths={[480, 800, 1200]} sizes={HALF} alt="Corporate registration documentation for Sir Commerce Group Ltd" class="h-full w-full object-cover object-center" />
+          </div>
+        </div>
+        <div>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">Corporate &amp; Registration</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
+            Corporate and registration information is maintained as part of the company's business documentation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 06 — BRAND PRESENCE */}
+  <section class="py-20 md:py-28 bg-white border-t border-brand-navy/[0.08]">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="order-2 lg:order-1">
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">JUTORIA Brand Presence</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
+            JUTORIA is being developed as an international consumer brand under Sir Commerce Group Ltd.
+          </p>
+        </div>
+        <div class="order-1 lg:order-2">
+          <div class="aspect-[4/3] rounded-[2px] shadow-premium-hover overflow-hidden">
+            <Img src="/jutoria-trademark-uk.webp" widths={[480, 800, 1200]} sizes={HALF} alt="JUTORIA UK trademark documentation" class="h-full w-full object-cover" style="object-position: center 20%" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 07 — INTERNATIONAL */}
+  <section class="relative overflow-hidden bg-brand-navy">
+    <Img src="/jutoria-bangladesh-craftsmanship.webp" widths={[640, 1024, 1600]} sizes="100vw" alt="Bangladeshi artisans creating natural-fiber handicrafts" class="absolute inset-0 h-full w-full object-cover" style="object-position: center 30%" />
+    <div class="absolute inset-0 bg-brand-navy/85" />
+    <div class="relative z-10 py-24 md:py-32 container mx-auto max-w-4xl px-6 md:px-8 text-center">
+      <h2 class="text-3xl md:text-5xl font-serif font-bold text-brand-ivory leading-tight mb-6">Built for International Markets</h2>
+      <p class="font-sans text-base md:text-lg text-brand-ivory/80 font-light leading-relaxed max-w-2xl mx-auto">
+        JUTORIA is being developed with an international customer and wholesale audience in mind, connecting natural-material craftsmanship with contemporary home décor.
+      </p>
+    </div>
+  </section>
+
+  {/* 08 — CTA */}
+  <section class="py-20 md:py-28 bg-brand-navy border-t border-brand-ivory/10">
+    <div class="container mx-auto max-w-3xl px-6 md:px-8 text-center">
+      <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">WORK WITH JUTORIA</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory leading-tight mb-6">Let’s Connect</h2>
+      <p class="font-sans text-base text-brand-ivory/65 font-light leading-relaxed max-w-lg mx-auto mb-12">
+        For wholesale inquiries, business partnerships and general questions, contact the JUTORIA team.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/wholesale" class="inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Wholesale Inquiry <Icon name="arrow-right" size={14} />
+        </a>
+        <a href="/contact" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/[0.08] rounded-[2px]">
+          Contact Us <Icon name="arrow-right" size={14} />
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

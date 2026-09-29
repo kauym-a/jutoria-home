@@ -1,0 +1,117 @@
+import { getFirestoreCtx } from './config';
+import { fetchCollectionViaRest } from './firestoreRest';
+import { materials } from '../../data/materials';
+
+// ============================================================
+// Firestore-এ ক্যাটাগরি রাখা হয় 'categories' কালেকশনে, প্রতিটা ডকুমেন্টের ID = তার slug।
+// এটাই এখন থেকে হোমপেজের "Our Materials" গ্রিড, /materials ও /materials/:slug পেজের
+// একমাত্র সোর্স অফ ট্রুথ। src/data/materials.ts শুধু "seed" ডেটা হিসেবে থাকে (প্রথমবার
+// Firestore-এ কপি করার জন্য) এবং Firestore এখনো খালি থাকলে সাইট যেন ভাঙা না দেখায়
+// তার জন্য fallback হিসেবে ব্যবহৃত হয়।
+//
+// NOTE: কোডবেসে আলাদা একটা src/data/categories.ts (product types — Placemats,
+// Planter Baskets…) আছে যা /categories পেজ চালায় — সেটা সম্পূর্ণ ভিন্ন জিনিস,
+// এই কালেকশনের সাথে সম্পর্ক নেই।
+// ============================================================
+
+const CATEGORIES_COLLECTION = 'categories';
+
+export type Category = {
+  slug: string; // Firestore document ID
+  name: string;
+  desc: string; // short — কার্ডে দেখায়
+  longDesc: string; // বিস্তারিত — /materials/:slug পেজে দেখায়
+  image: string; // /materials/:slug-এর 55vh hero ব্যাকগ্রাউন্ড — বড় থাকা দরকার
+  // Home.tsx-এর "Our Materials" গ্রিড ও /materials লিস্টিং-এর ছোট কার্ডের (~280px) জন্য
+  // আলাদা, ছোট ভার্সন — image (hero) ব্যবহার করলে PageSpeed-এ "Improve image
+  // delivery"-তে বড় penalty হতো (প্রতিটা ~1600px/৩০০KB ছবি একটা ~280px কার্ডে)। না
+  // থাকলে (পুরনো/না-অপ্টিমাইজড ক্যাটাগরি) কলাররা image-এই ফলব্যাক করে।
+  cardImage?: string;
+  order: number; // পজিশন (ছোট আগে)
+  active: boolean; // false = সাইট থেকে লুকানো, admin-এ এখনো এডিটযোগ্য
+  updatedAt?: unknown;
+};
+
+const byOrder = (a: Category, b: Category) => (a.order ?? 0) - (b.order ?? 0);
+
+/** সব ক্যাটাগরি আনে (admin-এর জন্য — active/inactive সব), order অনুসারে সাজানো। */
+export async function fetchAllCategories(): Promise<Category[]> {
+  const { db, collection, getDocs } = await getFirestoreCtx();
+  const snap = await getDocs(collection(db, CATEGORIES_COLLECTION));
+  return snap.docs.map((d) => d.data() as Category).sort(byOrder);
+}
+
+/**
+ * শুধু active ক্যাটাগরি আনে (পাবলিক সাইটের জন্য) — plain REST fetch() দিয়ে, Firestore
+ * SDK ছাড়াই (দেখুন firestoreRest.ts-এর কমেন্ট ও products.ts-এর fetchActiveProducts()
+ * — একই কারণ)। useCategories() hook-ই এর একমাত্র কলার।
+ */
+export async function fetchActiveCategories(): Promise<Category[]> {
+  const all = await fetchCollectionViaRest<Category>(CATEGORIES_COLLECTION);
+  return all.filter((c) => c.active !== false).sort(byOrder);
+}
+
+/** একটা নির্দিষ্ট slug-এর ক্যাটাগরি আনে। */
+export async function fetchCategory(slug: string): Promise<Category | null> {
+  const { db, doc, getDoc } = await getFirestoreCtx();
+  const snap = await getDoc(doc(db, CATEGORIES_COLLECTION, slug));
+  return snap.exists() ? (snap.data() as Category) : null;
+}
+
+/** নতুন ক্যাটাগরি তৈরি বা বিদ্যমান ক্যাটাগরি আপডেট করে (slug document ID হিসেবে ব্যবহৃত হয়)। */
+export async function upsertCategory(category: Category): Promise<void> {
+  if (!category.slug) throw new Error('Category slug is required');
+  const { db, doc, setDoc, serverTimestamp } = await getFirestoreCtx();
+  const ref = doc(db, CATEGORIES_COLLECTION, category.slug);
+  await setDoc(ref, { ...category, updatedAt: serverTimestamp() }, { merge: true });
+}
+
+/** একটা ক্যাটাগরি মুছে ফেলে। */
+export async function deleteCategory(slug: string): Promise<void> {
+  const { db, doc, deleteDoc } = await getFirestoreCtx();
+  await deleteDoc(doc(db, CATEGORIES_COLLECTION, slug));
+}
+
+/**
+ * এক-বারের জন্য: src/data/materials.ts-এর বিদ্যমান ৭টা আইটেম Firestore-এ কপি করে।
+ * ইতিমধ্যে থাকা কোনো ডকুমেন্ট ওভাররাইট করে না — বারবার চাপলেও সমস্যা নেই।
+ * Admin Categories পেজ থেকে বাটনে ক্লিক করে চালাতে হবে (ব্রাউজারে, Firebase লগইন অবস্থায়)।
+ */
+export async function seedCategoriesFromStaticData(): Promise<{ seeded: number }> {
+  let seeded = 0;
+  for (const m of materials) {
+    const existing = await fetchCategory(m.slug);
+    if (existing) continue; // ইতিমধ্যে Firestore-এ থাকলে স্কিপ
+    await upsertCategory({
+      slug: m.slug,
+      name: m.name,
+      desc: m.desc,
+      longDesc: m.longDesc,
+      image: m.image,
+      order: Number(m.id) || seeded + 1,
+      active: true,
+    });
+    seeded += 1;
+  }
+  return { seeded };
+}
+
+/** স্ট্যাটিক fallback ডেটা (Firestore এখনো খালি থাকলে, বা অফলাইন হলে ব্যবহার হয়)। */
+export function getStaticFallbackCategories(): Category[] {
+  return materials
+    .map((m, i) => ({
+      slug: m.slug,
+      name: m.name,
+      desc: m.desc,
+      longDesc: m.longDesc,
+      image: m.image,
+      order: Number(m.id) || i + 1,
+      active: true,
+    }))
+    .sort(byOrder);
+}
+
+/** order থেকে "01", "02"… প্যাডেড ডিসপ্লে নম্বর। */
+export function displayNumber(order: number): string {
+  return String(order ?? 0).padStart(2, '0');
+}

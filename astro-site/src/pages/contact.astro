@@ -1,0 +1,226 @@
+---
+// মূল src/pages/public/Contact.tsx থেকে পোর্ট করা। ⚠️ যাচাই করা ফোন/ইমেইল — CLAUDE.md
+// অনুযায়ী CorporateInformation ও PublicLayout ফুটারের সাথে ম্যানুয়ালি সিঙ্কে রাখতে হবে।
+// ফর্ম: components/InquiryForm.astro (Firestore 'leads', source: 'contact')।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import { materials } from '../data/materials';
+
+const HELP_PATHS = [
+  { icon: 'package', title: 'Wholesale & Bulk Orders', desc: 'For retailers, distributors and businesses seeking natural-fiber home décor at wholesale quantities.' },
+  { icon: 'building-2', title: 'Hospitality & Interior Projects', desc: 'For hotels, restaurants, resorts, designers and commercial interiors.' },
+  { icon: 'wrench', title: 'Custom & Private Development', desc: 'For businesses seeking custom sizes, materials, designs or product development.' },
+  { icon: 'circle-question-mark', title: 'General Product Inquiries', desc: 'For questions about collections, materials, products and availability.' },
+];
+const WHY_PARTNER = [
+  { icon: 'leaf', title: 'Natural Materials', desc: 'Responsibly sourced natural fibers and authentic handcrafted products.' },
+  { icon: 'hammer', title: 'Skilled Craftsmanship', desc: 'Traditional Bangladeshi craftsmanship combined with contemporary design.' },
+  { icon: 'compass', title: 'Flexible Sourcing', desc: 'Product development and sourcing capabilities for different business requirements.' },
+  { icon: 'globe', title: 'International Focus', desc: 'Designed to serve global retailers, hospitality businesses and design professionals.' },
+];
+const phoneLink = 'font-sans text-sm font-medium text-brand-navy hover:text-brand-gold transition-colors';
+const waLink = 'inline-flex items-center gap-1 font-sans text-xs text-brand-navy/60 hover:text-brand-gold transition-colors';
+---
+
+<PublicLayout
+  title="Contact Us | JUTORIA - Request a Quote"
+  description="Contact JUTORIA for wholesale inquiries, custom orders, or retail support. Get in touch with our UK and Bangladesh business contact points."
+>
+  {/* 1. HERO */}
+  <section class="bg-brand-navy py-20 md:py-28 px-4">
+    <div class="container mx-auto text-center max-w-3xl">
+      <span class="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">Get In Touch</span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-ivory leading-tight mb-6">
+        Let's Build Something <br class="hidden sm:block" /> Natural Together.
+      </h1>
+      <p class="font-sans text-base md:text-lg text-brand-ivory/75 font-light leading-relaxed max-w-xl mx-auto mb-10">
+        Whether you are sourcing for retail, hospitality, interior projects, or wholesale distribution, our team is ready to discuss your requirements.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#inquiry-form" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Start an Inquiry <Icon name="arrow-right" size={16} />
+        </a>
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+          Explore Our Collections
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* 2. CONTACT INFO + FORM */}
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-brand-navy mb-8">Contact Information</h2>
+
+          <div class="flex items-start gap-4 mb-10">
+            <div class="w-12 h-12 bg-white border border-brand-navy/10 flex items-center justify-center text-brand-navy flex-shrink-0 rounded-[2px]">
+              <Icon name="mail" size={22} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 class="font-serif font-bold text-lg text-brand-navy mb-1">Email Us</h4>
+              <p class="font-sans text-sm text-brand-navy/60 mb-1.5">For B2B, wholesale and general inquiries</p>
+              <div class="space-y-2.5">
+                {[['Wholesale & B2B', 'wholesale@jutoriahome.com'], ['Support', 'support@jutoriahome.com'], ['Sales', 'sales@jutoriahome.com']].map(([label, address]) => (
+                  <div>
+                    <p class="font-sans text-[11px] text-brand-navy/45 uppercase tracking-wide">{label}</p>
+                    <a href={`mailto:${address}`} class="font-sans font-medium text-brand-navy hover:text-brand-gold transition-colors">{address}</a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white border border-brand-navy/10 p-5 rounded-[2px]">
+              <div class="flex items-center gap-2 mb-3 text-brand-navy">
+                <Icon name="phone" size={16} strokeWidth={1.5} />
+                <h4 class="font-serif font-bold text-sm">United Kingdom</h4>
+              </div>
+              <p class="font-sans text-xs text-brand-navy/50 uppercase tracking-wide mb-1">Sir Commerce Group Ltd</p>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3">
+                <a href="tel:+447311127176" class={phoneLink}>+44 7311 127176</a>
+                <a href="https://wa.me/447311127176" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+              </div>
+              <p class="font-sans text-xs text-brand-navy/50 uppercase tracking-wide mb-1">UK Warehouse Contact</p>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <a href="tel:+447435945500" class={phoneLink}>+44 7435 945500</a>
+                <a href="https://wa.me/447435945500" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+              </div>
+            </div>
+            <div class="bg-white border border-brand-navy/10 p-5 rounded-[2px]">
+              <div class="flex items-center gap-2 mb-3 text-brand-navy">
+                <Icon name="phone" size={16} strokeWidth={1.5} />
+                <h4 class="font-serif font-bold text-sm">Bangladesh</h4>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                <a href="tel:+8801833093349" class={phoneLink}>+880 1833-093349</a>
+                <a href="https://wa.me/8801833093349" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <a href="tel:+8801324438566" class={phoneLink}>+880 1324-438566</a>
+                <a href="https://wa.me/8801324438566" target="_blank" rel="noopener noreferrer" class={waLink}><SocialIcon platform="whatsapp" class="h-3.5 w-3.5" /> WhatsApp</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <h4 class="font-serif font-bold text-brand-navy mb-1">Business / Wholesale</h4>
+              <p class="font-sans text-sm text-brand-navy/60">Wholesale inquiries, bulk orders, retail partnerships, hospitality projects</p>
+            </div>
+            <div>
+              <h4 class="font-serif font-bold text-brand-navy mb-1">Custom &amp; Product Development</h4>
+              <p class="font-sans text-sm text-brand-navy/60">Custom designs, material inquiries, product development</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="inquiry-form" class="bg-white p-8 md:p-10 border border-brand-navy/10 shadow-premium rounded-[2px] scroll-mt-24">
+          <h3 class="text-2xl font-serif font-bold text-brand-navy mb-6">Send an Inquiry</h3>
+          <InquiryForm variant="contact" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 3. HOW CAN WE HELP */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">How Can We Help?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {HELP_PATHS.map(({ icon, title, desc }) => (
+          <div>
+            <div class="w-12 h-12 bg-brand-navy/5 text-brand-navy flex items-center justify-center rounded-full mb-5">
+              <Icon name={icon} size={20} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/60 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 4. MATERIALS */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">Rooted in Natural Materials</h2>
+        <p class="font-sans text-brand-navy/65 font-light leading-relaxed">
+          Explore the natural materials behind our collections and discover the craftsmanship, character and possibilities of each fiber.
+        </p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3">
+        {materials.map((m) => (
+          <a href={`/materials/${m.slug}`} class="inline-flex items-center gap-2 bg-white border border-brand-navy/15 text-brand-navy px-5 py-2.5 rounded-full text-sm font-sans font-medium hover:border-brand-gold hover:text-brand-gold transition-colors">
+            {m.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 5. WHY PARTNER */}
+  <section class="py-16 md:py-24 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-14 text-center">Built for Global Partnerships</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {WHY_PARTNER.map(({ icon, title, desc }) => (
+          <div>
+            <div class="w-12 h-12 bg-brand-navy text-brand-gold flex items-center justify-center rounded-full mb-5">
+              <Icon name={icon} size={20} strokeWidth={1.5} />
+            </div>
+            <h3 class="font-serif font-bold text-brand-navy mb-2">{title}</h3>
+            <p class="font-sans text-sm text-brand-navy/65 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 6. COMPANY INFORMATION */}
+  <section class="py-16 md:py-24 bg-brand-offwhite border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="text-center mb-14">
+        <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">JUTORIA</span>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy">Company Information</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div class="bg-white border border-brand-navy/10 p-7 rounded-[2px]">
+          <h3 class="font-serif font-bold text-brand-navy text-lg mb-3">Registered Company</h3>
+          <p class="font-sans text-sm text-brand-navy/70 leading-relaxed">Sir Commerce Group Ltd <br />Registered in England and Wales <br />Company No. 17029469</p>
+        </div>
+        <div class="bg-white border border-brand-navy/10 p-7 rounded-[2px]">
+          <h3 class="font-serif font-bold text-brand-navy text-lg mb-3">UK Registered Office</h3>
+          <p class="font-sans text-sm text-brand-navy/70 leading-relaxed">69 Wingfield Road <br />Great Barr <br />Birmingham B42 2QB <br />United Kingdom</p>
+        </div>
+        <div class="bg-white border border-brand-navy/10 p-7 rounded-[2px]">
+          <h3 class="font-serif font-bold text-brand-navy text-lg mb-3">Bangladesh Corporate Office</h3>
+          <p class="font-sans text-sm text-brand-navy/70 leading-relaxed">Sir Commerce Group Ltd <br />Kachari Bazar <br />Gaibandha-5700 <br />Bangladesh</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 7. FINAL CTA */}
+  <section class="py-20 md:py-28 bg-brand-navy text-center">
+    <div class="container mx-auto max-w-2xl px-4">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory mb-5 leading-tight">Let's Start a Conversation</h2>
+      <p class="font-sans text-brand-ivory/70 font-light leading-relaxed mb-10">
+        Tell us what you are looking for, and our team will help you explore the right materials, products and sourcing possibilities.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#inquiry-form" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Send An Inquiry <Icon name="arrow-right" size={16} />
+        </a>
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+          Explore Collection
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

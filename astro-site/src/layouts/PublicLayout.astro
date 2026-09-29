@@ -11,6 +11,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import SocialIcon from '../components/SocialIcon.astro';
+import ChatPanel from '../components/ChatPanel.astro';
 
 interface Props {
   title: string;
@@ -402,7 +403,32 @@ const contactPhones = [
       </div>
     </footer>
 
-    {/* JutoriaAssistantWidget island যোগ হবে পরের ধাপে (client:idle) — মাইগ্রেশন প্ল্যানের
-        ধাপ ৪ অনুযায়ী, ডেটা-নির্ভর পেজগুলো পোর্ট হওয়ার পরে। */}
+    {/* ========== JUTORIA AI ASSISTANT (ফ্লোটিং উইজেট) ==========
+        মূল JutoriaAssistantWidget-এর isOpen state এখন লুকানো checkbox (মোবাইল মেনুর মতোই)।
+        প্যানেলের উত্তর-লজিক প্রথম মেসেজেই লোড হয় (ChatPanel.astro দেখুন) — তাই প্রতিটা পেজে
+        এই উইজেটের খরচ শুধু কয়েকটা স্ট্যাটিক HTML এলিমেন্ট। বন্ধ অবস্থায় প্যানেল `invisible`,
+        যাতে কিবোর্ডের Tab লুকানো ইনপুটে না ঢোকে। */}
+    <div class="group/chat">
+      <input type="checkbox" id="chat-toggle" class="peer sr-only" aria-label="Open JUTORIA AI Assistant" />
+      <label
+        for="chat-toggle"
+        class="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-brand-navy text-brand-gold shadow-premium-hover flex items-center justify-center hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 cursor-pointer peer-focus-visible:ring-2 peer-focus-visible:ring-brand-gold peer-focus-visible:ring-offset-2"
+      >
+        <span class="group-has-[:checked]/chat:hidden"><Icon name="message-circle" size={22} /></span>
+        <span class="hidden group-has-[:checked]/chat:block"><Icon name="x" size={22} /></span>
+      </label>
+
+      <div class="fixed bottom-24 right-6 z-[60] w-[92vw] max-w-sm h-[65vh] max-h-[520px] bg-white border border-brand-navy/10 rounded-[4px] shadow-premium-hover overflow-hidden transition-all duration-300 origin-bottom-right flex flex-col opacity-0 scale-95 pointer-events-none invisible group-has-[:checked]/chat:opacity-100 group-has-[:checked]/chat:scale-100 group-has-[:checked]/chat:pointer-events-auto group-has-[:checked]/chat:visible">
+        <div class="flex items-center justify-between px-4 py-3 bg-brand-navy text-brand-ivory flex-shrink-0">
+          <span class="font-serif font-bold text-sm">JUTORIA AI Assistant</span>
+          <label for="chat-toggle" aria-label="Close" class="text-brand-ivory/70 hover:text-brand-gold cursor-pointer">
+            <Icon name="x" size={18} />
+          </label>
+        </div>
+        <div class="flex-grow overflow-hidden">
+          <ChatPanel />
+        </div>
+      </div>
+    </div>
   </div>
 </BaseLayout>

@@ -1,0 +1,279 @@
+---
+// মূল src/pages/public/PeopleArtisans.tsx থেকে পোর্ট করা। Hero → Skilled Hands → Crafted
+// by Hand → Natural Materials → Workshop Team → Detail → Portraits → Modern Living → CTA।
+// কোনো বানানো নাম/বায়ো নেই। CSS background-image ছবিগুলো অপ্টিমাইজ করা <img>-এ বদলানো।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+
+const STEPS = [
+  { img: '/jutoria-artisans-raw-materials.webp', alt: 'Bangladeshi artisans preparing natural fibers for handmade craft', step: '01', label: 'Raw Materials' },
+  { img: '/jutoria-artisans-material-preparation.webp', alt: 'Rural Bangladeshi women preparing natural fibers by hand', step: '02', label: 'Preparation' },
+  { img: '/jutoria-artisans-finished-craft.webp', alt: 'Bangladeshi women artisans with a finished handmade natural-fiber product', step: '03', label: 'Finished Craft' },
+];
+const PORTRAITS = [
+  { img: '/jutoria-artisan-portrait-01.webp', alt: 'Bangladeshi rural woman artisan in her natural-fiber craft workspace' },
+  { img: '/jutoria-artisan-portrait-02.webp', alt: 'Bangladeshi rural woman artisan working with natural fibers' },
+  { img: '/jutoria-artisan-portrait-03.webp', alt: 'Bangladeshi rural woman artisan holding handmade natural-fiber craft' },
+];
+const HALF = '(min-width: 1024px) 45vw, calc(100vw - 48px)';
+const THIRD = '(min-width: 768px) 30vw, calc(100vw - 48px)';
+const ctaOutline = 'inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/[0.08] rounded-[2px]';
+---
+
+<PublicLayout
+  title="People & Artisans | JUTORIA"
+  description="Meet the skilled Bangladeshi women artisans and workshop teams whose hands transform natural materials into handcrafted home décor for modern living."
+>
+  {/* 01 — HERO */}
+  <section class="relative w-full min-h-[90vh] flex items-end bg-brand-navy overflow-hidden">
+    <Img
+      src="/jutoria-artisans-hero.webp"
+      widths={[640, 800, 1200, 1600]}
+      sizes="100vw"
+      alt="Bangladeshi women artisans weaving natural fibers in a rural craft workshop"
+      class="absolute inset-0 h-full w-full object-cover"
+      style="object-position: center 25%"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/50 to-transparent" />
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/35 to-transparent" />
+    <div class="relative z-10 container mx-auto max-w-6xl px-6 md:px-8 pt-28 md:pt-36 pb-20 md:pb-28">
+      <span class="block font-sans text-[11px] md:text-xs font-bold tracking-[0.28em] text-brand-gold uppercase mb-6">Our People</span>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-serif font-bold text-brand-ivory leading-[1.06] max-w-3xl mb-7">
+        People Behind<br />the Craft
+      </h1>
+      <p class="max-w-xl font-sans text-base md:text-lg text-brand-ivory/85 font-light leading-relaxed mb-10">
+        Meet the skilled women artisans and workshop teams whose hands transform natural materials into thoughtfully crafted pieces for modern living.
+      </p>
+      <a href="/products" class="inline-flex items-center gap-3 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+        Explore Products <Icon name="arrow-right" size={15} />
+      </a>
+    </div>
+  </section>
+
+  {/* 02 — SKILLED HANDS */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div>
+          <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Skilled Hands</span>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">Skilled Hands.<br />Meaningful Work.</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-5">
+            Every JUTORIA piece begins with people. Skilled artisans work with natural fibers using techniques shaped by experience, patience and careful attention to detail.
+          </p>
+          <p class="font-sans text-base text-brand-navy/55 font-light leading-relaxed">
+            The character that defines each finished piece — its texture, its weight, its form — comes from this process of careful, considered handwork.
+          </p>
+        </div>
+        <div class="relative">
+          <div class="aspect-[4/3] rounded-[2px] shadow-premium-hover overflow-hidden">
+            <Img src="/jutoria-artisans-skilled-hands.webp" widths={[480, 800, 1200]} sizes={HALF} alt="Bangladeshi woman artisan working by hand with natural fiber" class="h-full w-full object-cover" style="object-position: center 20%" />
+          </div>
+          <div class="absolute -bottom-4 -left-4 w-20 h-px bg-brand-gold/50 hidden lg:block" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 03 — CRAFTED BY HAND */}
+  <section class="py-20 md:py-28 bg-white border-y border-brand-navy/[0.08]">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="mb-10 md:mb-14">
+        <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Craftsmanship</span>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight max-w-xl">Crafted by Hand</h2>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start mb-10 md:mb-14">
+        <div class="lg:col-span-3">
+          <div class="aspect-video rounded-[2px] shadow-premium overflow-hidden">
+            <Img src="/jutoria-artisans-weaving.webp" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 60vw, calc(100vw - 48px)" alt="Bangladeshi women artisans weaving natural fiber by hand" class="h-full w-full object-cover" style="object-position: center 30%" />
+          </div>
+        </div>
+        <div class="lg:col-span-2 lg:pt-14">
+          <div class="aspect-[4/3] rounded-[2px] shadow-premium overflow-hidden">
+            <Img src="/jutoria-artisans-hands.webp" widths={[480, 800]} sizes="(min-width: 1024px) 38vw, calc(100vw - 48px)" alt="Close-up of artisan hands weaving natural fiber" class="h-full w-full object-cover" style="object-position: center 25%" />
+          </div>
+        </div>
+      </div>
+      <div class="max-w-2xl">
+        <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
+          From preparing natural fibers to shaping and finishing each piece, skilled hands remain at the heart of the JUTORIA process.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* 04 — NATURAL MATERIALS */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="mb-12 md:mb-16">
+        <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Natural Materials</span>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight max-w-2xl mb-6">Working With Natural Materials</h2>
+        <p class="font-sans text-base md:text-lg text-brand-navy/65 font-light leading-relaxed max-w-xl">
+          JUTORIA works with natural materials such as jute, seagrass, water hyacinth, bamboo, cane and rattan, and kans grass.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {STEPS.map(({ img, alt, step, label }) => (
+          <div class="group">
+            <div class="aspect-[4/3] rounded-[2px] shadow-premium overflow-hidden mb-5">
+              <Img src={img} widths={[400, 640, 800]} sizes={THIRD} alt={alt} class="h-full w-full object-cover" style="object-position: center 20%" />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-sans text-[11px] font-bold text-brand-gold tracking-[0.22em]">{step}</span>
+              <div class="flex-1 h-px bg-brand-navy/15" />
+              <span class="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-navy/55">{label}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="hidden md:flex items-center justify-center gap-3 mt-12">
+        {STEPS.map((s, i) => (
+          <div class="flex items-center gap-3">
+            <span class="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-brand-navy/50 border border-brand-navy/15 rounded-[2px] px-4 py-2 bg-white">{s.label}</span>
+            {i < 2 && <Icon name="arrow-right" size={13} class="text-brand-gold/50 flex-shrink-0" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 05 — COLLABORATION */}
+  <section class="relative overflow-hidden bg-brand-navy">
+    <Img
+      src="/jutoria-artisans-workshop-team.webp"
+      widths={[640, 1024, 1600]}
+      sizes="100vw"
+      alt="Bangladeshi women artisans working together in a natural-fiber workshop"
+      class="w-full object-cover object-center"
+      style="max-height: 640px; object-position: center 20%"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/88 via-brand-navy/45 to-transparent hidden lg:block" />
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/55 to-transparent lg:hidden" />
+    <div class="absolute inset-0 hidden lg:flex items-center">
+      <div class="container mx-auto max-w-6xl px-8">
+        <div class="max-w-lg">
+          <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">Collaboration</span>
+          <h2 class="text-4xl xl:text-5xl font-serif font-bold text-brand-ivory leading-tight mb-6">People, Skills<br />&amp; Collaboration</h2>
+          <p class="font-sans text-base md:text-lg text-brand-ivory/80 font-light leading-relaxed">
+            Behind every finished piece is a collaborative process involving skilled hands, careful preparation and attentive finishing.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="lg:hidden bg-brand-navy px-6 py-14">
+      <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">Collaboration</span>
+      <h2 class="text-3xl font-serif font-bold text-brand-ivory leading-tight mb-6">People, Skills<br />&amp; Collaboration</h2>
+      <p class="font-sans text-base text-brand-ivory/75 font-light leading-relaxed">
+        Behind every finished piece is a collaborative process involving skilled hands, careful preparation and attentive finishing.
+      </p>
+    </div>
+  </section>
+
+  {/* 06 — DETAIL */}
+  <section class="py-20 md:py-28 bg-white border-y border-brand-navy/[0.08]">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="order-2 lg:order-1">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="aspect-square rounded-[2px] shadow-premium overflow-hidden">
+              <Img src="/jutoria-artisans-craft-detail.webp" widths={[320, 640]} sizes="(min-width: 1024px) 22vw, 45vw" alt="Close-up detail of handmade natural-fiber weaving" class="h-full w-full object-cover object-center" />
+            </div>
+            <div class="aspect-square rounded-[2px] shadow-premium overflow-hidden mt-8">
+              <Img src="/jutoria-artisans-finished-detail.webp" widths={[320, 640]} sizes="(min-width: 1024px) 22vw, 45vw" alt="Artisan hands examining a finished natural-fiber craft" class="h-full w-full object-cover" style="object-position: center 20%" />
+            </div>
+          </div>
+        </div>
+        <div class="order-1 lg:order-2">
+          <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">Detail &amp; Craft</span>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">Attention in<br />Every Detail</h2>
+          <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed mb-5">
+            Natural materials reveal their character through texture, shape and variation. Careful handcrafting gives each piece its own distinctive character.
+          </p>
+          <p class="font-sans text-base text-brand-navy/55 font-light leading-relaxed">
+            What makes a JUTORIA piece recognizable is not decoration but material honesty — the weave, the weight, the subtle irregularities that only handwork creates.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 07 — PORTRAITS */}
+  <section class="py-20 md:py-28 bg-brand-ivory">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="text-center mb-14 md:mb-18">
+        <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">The Artisans</span>
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy leading-tight mb-6">The Hands Behind JUTORIA</h2>
+        <p class="font-sans text-base md:text-lg text-brand-navy/65 font-light leading-relaxed max-w-xl mx-auto">
+          JUTORIA celebrates the skilled people behind the craft and the care they bring to every piece.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {PORTRAITS.map(({ img, alt }) => (
+          <div class="group">
+            <div class="aspect-[4/5] rounded-[2px] shadow-premium-hover overflow-hidden">
+              <Img src={img} widths={[400, 640, 800]} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)" alt={alt} class="h-full w-full object-cover" style="object-position: center 15%" />
+            </div>
+            <div class="mt-5 flex items-center gap-3">
+              <div class="w-6 h-px bg-brand-gold/60 transition-all duration-500 group-hover:w-14" />
+              <span class="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-brand-navy/35">Artisan</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 08 — MODERN SPACES */}
+  <section class="py-20 md:py-28 bg-white border-t border-brand-navy/[0.08]">
+    <div class="container mx-auto max-w-6xl px-6 md:px-8">
+      <div class="text-center mb-12 md:mb-14">
+        <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-[#8a6a29] uppercase mb-5">From Hands to Home</span>
+        <h2 class="text-3xl md:text-5xl font-serif font-bold text-brand-navy leading-tight max-w-2xl mx-auto">From Skilled Hands<br />to Modern Spaces</h2>
+      </div>
+      <div class="relative overflow-hidden rounded-[2px] shadow-premium-hover mb-12 md:mb-14">
+        <Img
+          src="/jutoria-artisans-modern-living.webp"
+          widths={[640, 1024, 1400]}
+          sizes="(min-width: 1152px) 1088px, calc(100vw - 48px)"
+          alt="Natural-fiber home décor connecting artisan craftsmanship with modern living"
+          class="w-full object-cover object-center"
+          style="max-height: 500px; object-position: center 30%"
+        />
+        <div class="absolute inset-0 bg-brand-navy/[0.07]" />
+      </div>
+      <div class="max-w-2xl mx-auto text-center mb-12">
+        <p class="font-sans text-base md:text-lg text-brand-navy/70 font-light leading-relaxed">
+          Traditional handcraft meets contemporary living through thoughtfully designed natural home décor.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-3 md:gap-2">
+        {['Bangladeshi Craftsmanship', 'Natural Materials', 'JUTORIA Products', 'Modern Home'].map((s, i) => (
+          <div class="flex items-center gap-3 md:gap-2">
+            <span class="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-[0.16em] text-brand-navy/60 border border-brand-navy/[0.18] rounded-[2px] px-4 py-2 bg-brand-ivory whitespace-nowrap">{s}</span>
+            {i < 3 && <Icon name="arrow-right" size={13} class="text-brand-gold/55 flex-shrink-0" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 09 — CTA */}
+  <section class="py-20 md:py-28 bg-brand-navy">
+    <div class="container mx-auto max-w-3xl px-6 md:px-8 text-center">
+      <span class="block font-sans text-[11px] font-bold tracking-[0.28em] text-brand-gold uppercase mb-5">Discover JUTORIA</span>
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-ivory leading-tight mb-4">Discover the Craft<br />Behind JUTORIA</h2>
+      <p class="font-sans text-base text-brand-ivory/65 font-light leading-relaxed max-w-lg mx-auto mb-12">
+        Explore the collection shaped by natural materials and skilled hands, or learn more about the JUTORIA story.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-ivory rounded-[2px]">
+          Explore Products <Icon name="arrow-right" size={14} />
+        </a>
+        <a href="/our-story" class={ctaOutline}>Our Story <Icon name="arrow-right" size={14} /></a>
+        <a href="/wholesale" class={ctaOutline}>Wholesale Inquiry <Icon name="arrow-right" size={14} /></a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>
