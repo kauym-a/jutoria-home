@@ -1,13 +1,36 @@
 name: Deploy to Hostinger
 
+# সাইট এখন Astro static build (astro-site/)। প্রোডাক্ট/ক্যাটাগরি ডেটা বিল্ড-টাইমে Firestore থেকে
+# আসে, তাই Admin Panel-এ কিছু বদলালে পাবলিক সাইটে দেখাতে একটা রিবিল্ড লাগে। চারভাবে বিল্ড হয়:
+#   - push to master           — কোড পরিবর্তন
+#   - repository_dispatch      — Admin-এ প্রোডাক্ট/ক্যাটাগরি সেভ হলেই Firebase Cloud Function
+#                                (functions/index.js) এটা ট্রিগার করে → ~১-২ মিনিটে লাইভ
+#   - schedule (প্রতি ঘণ্টায়)   — সেফটি নেট: Cloud Function না থাকলে/ব্যর্থ হলেও সর্বোচ্চ ১ ঘণ্টায়
+#                                পরিবর্তন লাইভ হয়; সাইট না বদলালে কিছুই আপলোড/পার্জ হয় না
+#   - workflow_dispatch        — GitHub → Actions → "Run workflow" বাটন দিয়ে হাতে
 on:
   push:
     branches:
       - master
+  repository_dispatch:
+    types: [content-updated]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+# একসাথে দুটো ডিপ্লয় চললে FTP আপলোড একে অপরের ফাইল ওভাররাইট করতে পারত। cancel-in-progress
+# false — চলমান আপলোড মাঝপথে থামালে সাইট অর্ধেক-আপডেটেড অবস্থায় থাকত; পরপর অনেকগুলো Admin সেভ
+# হলে GitHub শুধু সর্বশেষ অপেক্ষমাণ রানটা রাখে, মাঝেরগুলো বাদ যায় (স্বয়ংক্রিয় debounce)।
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro-site
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,44 +38,82 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+          cache-dependency-path: astro-site/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
+      # Firebase Storage-এর ছবির রিসাইজ-ক্যাশ (src/lib/images.ts দেখুন) — এটা ছাড়া প্রতিটা বিল্ডে
+      # সব ছবি আবার ডাউনলোড+রিসাইজ হতো (~৪-৫ মিনিট), ক্যাশ থাকলে শুধু নতুন ছবি (~২০ সেকেন্ড)।
+      # npm ci node_modules মুছে ফেলে, তাই রিস্টোর অবশ্যই npm ci-এর পরে। key প্রতি রানে আলাদা যাতে
+      # সবসময় সর্বশেষ অবস্থা সেভ হয়; restore-keys সবচেয়ে সাম্প্রতিকটা ফেরত আনে।
+      - name: Restore image cache
+        uses: actions/cache@v4
+        with:
+          path: astro-site/node_modules/.astro
+          key: astro-image-cache-${{ github.run_id }}
+          restore-keys: astro-image-cache-
+
+      - name: Build site
         run: npm run build
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      # শিডিউলড রানে সাইট আগের ডিপ্লয়ের সাথে হুবহু এক হলে আপলোড + Cloudflare পার্জ বাদ।
+      - name: Fingerprint build
+        id: fingerprint
+        run: |
+          echo "hash=$(cd dist && find . -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      # সবচেয়ে সাম্প্রতিক ডিপ্লয়ের fingerprint (exact key কখনো মেলে না; restore-keys প্রিফিক্স
+      # দিয়ে সর্বশেষ সেভ হওয়া এন্ট্রিটা আসে)।
+      - name: Restore last deployed fingerprint
+        uses: actions/cache/restore@v4
+        with:
+          path: astro-site/.last-deploy-hash
+          key: deploy-hash-lookup-${{ github.run_id }}
+          restore-keys: deploy-hash-
+
+      - name: Decide whether to deploy
+        id: decide
+        run: |
+          last="$(cat .last-deploy-hash 2>/dev/null || true)"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$last" = "${{ steps.fingerprint.outputs.hash }}" ]; then
+            echo "Site unchanged since last deploy — skipping upload."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Deploy to Hostinger via FTP
+        if: steps.decide.outputs.deploy == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
-          local-dir: ./dist/
+          local-dir: ./astro-site/dist/
           server-dir: /domains/jutoriahome.com/public_html/
 
-      # Cloudflare-এ HTML পেজের জন্য একটা Cache Rule আছে (Edge TTL 2h, Free প্ল্যানের
-      # সর্বনিম্ন — origin-এর no-cache হেডার সত্ত্বেও edge-এ ক্যাশ হয়, TTFB/LCP স্থিতিশীল
-      # রাখার জন্য)। এর মানে প্রতিটা নতুন ডিপ্লয়ের পর পুরনো cached HTML সর্বোচ্চ ২ ঘণ্টা
-      # ধরে কিছু Cloudflare এজে থেকে যেতে পারে — আর যেহেতু vite build প্রতিটা ডিপ্লয়ে
-      # নতুন hash-নামের JS/CSS বানায় (পুরনোগুলো FTP আপলোডে ওভাররাইট/মুছে যায়), সেই পুরনো
-      # cached HTML যদি ইতিমধ্যে মুছে ফেলা asset রেফার করে তাহলে কিছু ভিজিটর broken page
-      # দেখতে পারতেন যতক্ষণ না cache নিজে থেকে expire হয়। তাই প্রতিটা সফল ডিপ্লয়ের ঠিক
-      # পরেই পুরো zone-এর cache purge করে দেওয়া হচ্ছে — নতুন HTML পরের রিকোয়েস্টেই আবার
-      # ফ্রেশভাবে re-cache হবে।
+      # Cloudflare-এ HTML-এর জন্য Edge TTL 2h Cache Rule আছে — নতুন ডিপ্লয়ের পর পুরনো HTML যেন
+      # এজে না থাকে (যেটা মুছে ফেলা hashed অ্যাসেট রেফার করতে পারে), তাই পুরো zone পার্জ।
       - name: Purge Cloudflare cache
+        if: steps.decide.outputs.deploy == 'true'
         run: |
           curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}' \
             --fail-with-body
+
+      - name: Remember deployed fingerprint
+        if: steps.decide.outputs.deploy == 'true'
+        run: echo "${{ steps.fingerprint.outputs.hash }}" > .last-deploy-hash
+
+      - name: Save deployed fingerprint
+        if: steps.decide.outputs.deploy == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: astro-site/.last-deploy-hash
+          key: deploy-hash-${{ github.run_id }}
