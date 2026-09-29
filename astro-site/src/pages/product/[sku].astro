@@ -4,9 +4,10 @@
 // scripts/prerender.mjs-এর STATIC_ROUTES লুপ + Puppeteer visit-এর প্রতিস্থাপন, কিন্তু
 // কোনো ব্রাউজার/Puppeteer ছাড়াই, সরাসরি ডেটা থেকে HTML।
 import PublicLayout from '../../layouts/PublicLayout.astro';
-import ProductGallery from '../../islands/ProductGallery';
+import ProductGallery from '../../components/ProductGallery.astro';
 import { fetchActiveProducts, type Product } from '../../lib/products';
 import { absoluteUrl, breadcrumbJsonLd, productJsonLd } from '../../lib/seo';
+import { optimizeImage } from '../../lib/images';
 
 export async function getStaticPaths() {
   const products = await fetchActiveProducts();
@@ -19,6 +20,17 @@ export async function getStaticPaths() {
 const { product } = Astro.props as { product: Product };
 
 const images = product.images || [];
+// গ্যালারির প্রতিটা ছবি: মূল ভিউয়ের জন্য রেস্পন্সিভ srcset + থাম্বনেইলের জন্য ছোট একটা।
+// OG/JSON-LD-তে মূল Firebase URL-ই থাকছে (সোশ্যাল ক্রলারদের জন্য absolute ফুল-সাইজ ছবি)।
+const galleryImages = await Promise.all(
+  images.map(async (img) => {
+    const [main, thumb] = await Promise.all([
+      optimizeImage(img.url, [480, 640, 800, 1200]),
+      optimizeImage(img.url, [240]),
+    ]);
+    return { filename: img.filename, role: img.role, url: main?.src ?? img.url, srcset: main?.srcset, thumb: thumb?.src };
+  }),
+);
 const specFields = product.excel_fields || {};
 const specKeyOrder = product.specOrder?.filter((k) => k in specFields) || Object.keys(specFields);
 const specExtraKeys = Object.keys(specFields).filter((k) => !specKeyOrder.includes(k));
@@ -52,7 +64,7 @@ const breadcrumbLd = breadcrumbJsonLd([
   <div class="container mx-auto max-w-7xl px-4 py-12 md:py-16">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_0.9fr] lg:items-start">
       <div class="w-full">
-        <ProductGallery client:load images={images} productName={product.name} />
+        <ProductGallery images={galleryImages} productName={product.name} />
       </div>
 
       <div class="w-full lg:pt-2">

@@ -1,0 +1,46 @@
+---
+// মূল src/pages/public/legal/LegalPageLayout.tsx থেকে পোর্ট করা — চারটা লিগ্যাল পেজের
+// কমন হিরো + prose স্টাইলিং + নিচের CTA। noindex আগের মতোই থাকছে।
+import PublicLayout from './PublicLayout.astro';
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  lastUpdated: string;
+  description: string;
+}
+
+const { title, eyebrow, lastUpdated, description } = Astro.props;
+---
+
+<PublicLayout title={`${title} | JUTORIA`} description={description}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <section class="bg-brand-navy py-20 md:py-24 px-4">
+    <div class="container mx-auto max-w-3xl text-center">
+      <span class="mb-4 block font-sans text-[11px] font-bold tracking-[0.24em] text-brand-gold uppercase">{eyebrow}</span>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-brand-ivory leading-tight mb-4">{title}</h1>
+      <p class="font-sans text-sm text-brand-ivory/55">{`Last updated: ${lastUpdated}`}</p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white">
+    <div class="container mx-auto max-w-3xl px-4">
+      <div class="prose-legal font-sans text-brand-navy/80 leading-relaxed space-y-8 [&_h2]:font-serif [&_h2]:font-bold [&_h2]:text-brand-navy [&_h2]:text-xl [&_h2]:mt-2 [&_h2]:mb-3 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_ul]:mb-4 [&_a]:text-brand-navy [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-brand-gold">
+        <slot />
+      </div>
+
+      <div class="mt-16 pt-8 border-t border-brand-navy/10 flex flex-wrap gap-4">
+        <a href="/contact" class="inline-flex items-center gap-2 bg-brand-navy text-brand-ivory px-6 py-3 font-sans font-bold tracking-[0.15em] text-[11px] uppercase hover:bg-brand-gold hover:text-brand-navy transition-colors rounded-[2px]">
+          Contact Us
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+        </a>
+        <a href="/" class="inline-flex items-center gap-2 border border-brand-navy/20 text-brand-navy px-6 py-3 font-sans font-bold tracking-[0.15em] text-[11px] uppercase hover:border-brand-navy transition-colors rounded-[2px]">
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

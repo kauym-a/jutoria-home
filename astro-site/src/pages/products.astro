@@ -1,14 +1,20 @@
 ---
-// মূল src/pages/public/Products.tsx থেকে পোর্ট করা। হিরো + হেডার স্ট্যাটিক (Astro
-// frontmatter-এ বিল্ড-টাইমে fetchActiveProducts() কল হয়, ব্রাউজারে কোনো fetch নেই) —
-// শুধু ফিল্টার/সার্চ+গ্রিড অংশ ProductsFilterGrid island (client:visible)।
+// মূল src/pages/public/Products.tsx থেকে পোর্ট করা। প্রোডাক্ট ডেটা বিল্ড-টাইমে আসে
+// (ব্রাউজারে কোনো fetch নেই), পুরো গ্রিড স্ট্যাটিক HTML (ProductCard.astro)। ম্যাটেরিয়াল
+// ফিল্টার + সার্চ আগে একটা React island ছিল — কিন্তু সেটার জন্য React রানটাইম (~৬৫KB gzip)
+// + ~৭০টা কার্ড হাইড্রেট করতে হতো (Lighthouse-এ TBT ~২১০ms)। এখন নিচের ছোট vanilla
+// <script> শুধু প্রতিটা কার্ডের data-* অ্যাট্রিবিউট দেখে hidden টগল করে — একই আচরণ,
+// React ছাড়াই।
 import PublicLayout from '../layouts/PublicLayout.astro';
-import ProductsFilterGrid from '../islands/ProductsFilterGrid';
+import ProductCard from '../components/ProductCard.astro';
 import { fetchActiveProducts } from '../lib/products';
+import { optimizeImage } from '../lib/images';
 import { materials } from '../data/materials';
-import { absoluteUrl } from '../lib/seo';
 
 const products = await fetchActiveProducts();
+
+const hero = (await optimizeImage('/laundry-basket-lifestyle.webp', [480, 640, 800, 1200]))!;
+const HERO_SIZES = '(min-width: 1024px) 45vw, calc(100vw - 32px)';
 ---
 
 <PublicLayout
@@ -16,7 +22,7 @@ const products = await fetchActiveProducts();
   description="Browse the complete JUTORIA product catalog — filter by material or search by name and SKU. Available for international wholesale and retail."
 >
   <Fragment slot="head">
-    <link rel="preload" as="image" href="/laundry-basket-lifestyle.webp" fetchpriority="high" type="image/webp" />
+    <link rel="preload" as="image" href={hero.src} imagesrcset={hero.srcset} imagesizes={HERO_SIZES} fetchpriority="high" type="image/webp" />
   </Fragment>
 
   <section class="border-b border-brand-navy/10 bg-[#f7f4ee]">
@@ -35,7 +41,15 @@ const products = await fetchActiveProducts();
         </div>
 
         <div class="relative overflow-hidden border border-brand-navy/10 bg-brand-ivory min-h-[260px] md:min-h-[320px] lg:min-h-[360px]">
-          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/laundry-basket-lifestyle.webp')" />
+          <img
+            src={hero.src}
+            srcset={hero.srcset}
+            sizes={HERO_SIZES}
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover object-center"
+          />
           <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/40 via-brand-navy/10 to-brand-ivory/10" />
           <div class="relative flex h-full min-h-[260px] md:min-h-[320px] lg:min-h-[360px] items-end justify-start p-6 md:p-8">
             <div class="max-w-[220px] border border-white/30 bg-white/10 px-4 py-3 backdrop-blur-[1px] text-brand-offwhite shadow-[0_12px_32px_rgba(15,23,42,0.18)]">
@@ -49,5 +63,124 @@ const products = await fetchActiveProducts();
     </div>
   </section>
 
-  <ProductsFilterGrid client:visible products={products} materials={materials} />
+  <section class="border-b border-brand-navy/10 bg-white sticky top-20 z-30">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+      <div class="flex items-center gap-2 text-brand-navy font-sans font-medium flex-shrink-0">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-gold" aria-hidden="true">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+        </svg>
+        <select id="material-filter" aria-label="Filter by material" class="bg-transparent border-none focus:outline-none font-sans text-sm font-semibold text-brand-navy cursor-pointer">
+          <option value="all">All Materials</option>
+          {materials.map((m) => <option value={m.slug}>{m.name}</option>)}
+        </select>
+      </div>
+
+      <div class="relative w-full sm:w-72">
+        <input
+          id="product-search"
+          type="text"
+          placeholder="Search by name or SKU..."
+          aria-label="Search products"
+          class="w-full pl-10 pr-9 py-2 border border-brand-navy/20 rounded-none bg-brand-offwhite focus:outline-none focus:border-brand-gold transition-colors font-sans text-sm"
+        />
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-brand-navy/40" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+        </svg>
+        <button id="clear-search" type="button" hidden aria-label="Clear search" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-navy/40 hover:text-brand-navy">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-brand-offwhite">
+    <div class="container mx-auto px-4">
+      <p id="products-status" hidden class="font-sans text-sm text-brand-navy/60 mb-8">
+        <span id="products-status-text"></span>
+        <button type="button" data-clear-filters class="ml-3 text-brand-gold font-semibold hover:underline">Clear</button>
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        {products.map((p) => (
+          <div
+            data-product
+            data-name={p.name.toLowerCase()}
+            data-sku={p.sku.toLowerCase()}
+            data-category={(p.category || '').toLowerCase()}
+            data-materials={(p.materialSlugs || []).join(' ')}
+          >
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
+
+      <div id="products-empty" hidden class="text-center py-20">
+        <p class="font-sans text-brand-navy/60 mb-4">No products match your filters.</p>
+        <button type="button" data-clear-filters class="font-sans text-sm font-semibold text-brand-navy underline underline-offset-2 hover:text-brand-gold">
+          Clear filters
+        </button>
+      </div>
+    </div>
+  </section>
 </PublicLayout>
+
+<script>
+  const select = document.getElementById('material-filter') as HTMLSelectElement;
+  const input = document.getElementById('product-search') as HTMLInputElement;
+  const clearSearch = document.getElementById('clear-search') as HTMLButtonElement;
+  const status = document.getElementById('products-status') as HTMLElement;
+  const statusText = document.getElementById('products-status-text') as HTMLElement;
+  const empty = document.getElementById('products-empty') as HTMLElement;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-product]'));
+
+  const bold = (text: string) => {
+    const span = document.createElement('span');
+    span.className = 'font-semibold text-brand-navy';
+    span.textContent = text;
+    return span;
+  };
+
+  function apply() {
+    const material = select.value;
+    const rawQuery = input.value.trim();
+    const query = rawQuery.toLowerCase();
+    let shown = 0;
+
+    for (const card of cards) {
+      const { name = '', sku = '', category = '', materials = '' } = card.dataset;
+      const matchesMaterial = material === 'all' || materials.split(' ').includes(material);
+      const matchesSearch = !query || name.includes(query) || sku.includes(query) || category.includes(query);
+      card.hidden = !(matchesMaterial && matchesSearch);
+      if (!card.hidden) shown++;
+    }
+
+    const active = material !== 'all' || query !== '';
+    status.hidden = !active;
+    empty.hidden = shown > 0;
+    clearSearch.hidden = input.value === '';
+
+    if (active) {
+      // সার্চ টেক্সট ইউজার ইনপুট — textContent দিয়ে বসানো (innerHTML নয়), যাতে কেউ
+      // HTML/স্ক্রিপ্ট টাইপ করলেও সেটা শুধু টেক্সট হিসেবেই দেখায়।
+      const parts: (string | Node)[] = [`Showing ${shown} of ${cards.length} products`];
+      if (material !== 'all') parts.push(' in ', bold(select.selectedOptions[0]?.text ?? material));
+      if (rawQuery) parts.push(' matching "', bold(rawQuery), '"');
+      statusText.replaceChildren(...parts);
+    }
+  }
+
+  function clearAll() {
+    select.value = 'all';
+    input.value = '';
+    apply();
+  }
+
+  select.addEventListener('change', apply);
+  input.addEventListener('input', apply);
+  clearSearch.addEventListener('click', () => { input.value = ''; apply(); input.focus(); });
+  document.querySelectorAll('[data-clear-filters]').forEach((b) => b.addEventListener('click', clearAll));
+  // ব্রাউজার ব্যাক-বাটনে ফিরলে ফর্মের আগের মান রিস্টোর করতে পারে — তখন গ্রিডও মিলিয়ে নেওয়া।
+  if (select.value !== 'all' || input.value) apply();
+</script>

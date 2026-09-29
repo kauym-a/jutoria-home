@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+/* ফন্ট সেলফ-হোস্ট করা (fontsource) — আগে Google Fonts থেকে আসত, যেটার জন্য দুটো আলাদা
+   ক্রস-অরিজিন কানেকশন (fonts.googleapis.com CSS → fonts.gstatic.com woff2) লাগত, আর
+   ~৮৫KB ফন্ট VeryHigh প্রায়োরিটিতে LCP ছবির সাথে ব্যান্ডউইথ নিয়ে প্রতিযোগিতা করত।
+   এখন একই ভেরিয়েবল ফন্ট নিজের ডোমেইন থেকে, unicode-range সাবসেটে (ব্রাউজার শুধু latin
+   ফাইলটাই নামায়), font-display: swap সহ। */
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/playfair-display/wght.css";
+
+/* font-display: swap-এ ওয়েব ফন্ট আসার আগে সিস্টেম ফন্টে টেক্সট দেখায়, তারপর বদলায় — দুই
+   ফন্টের অক্ষরের চওড়া/উচ্চতা আলাদা হলে হেডিং রি-র‍্যাপ হয়ে নিচের সব কনটেন্ট সরে যায়
+   (Lighthouse-এ /categories-এ CLS 0.056)। এই fallback face-গুলো লোকাল সিস্টেম ফন্টকে
+   আসল ফন্টের মাপে স্কেল করে (মান @capsizecss/metrics থেকে হিসাব করা), ফলে swap-এর সময়
+   লেআউট প্রায় একই থাকে। */
+@font-face {
+  font-family: "Playfair Display Fallback";
+  src: local("Times New Roman");
+  size-adjust: 111.26%;
+  ascent-override: 97.25%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
 /* ব্র্যান্ড টোকেন — মূল Vite প্রজেক্টের tailwind.config.js থেকে হুবহু পোর্ট করা
    (Tailwind v4-এর CSS-first @theme সিনট্যাক্সে), কোনো মান পরিবর্তন করা হয়নি। */
 @theme {
@@ -14,8 +44,8 @@
   --color-brand-gold: #C89B3C;
   --color-brand-ivory: #FAF9F6;
 
-  --font-sans: Inter, sans-serif;
-  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter Variable", "Inter Fallback", sans-serif;
+  --font-serif: "Playfair Display Variable", "Playfair Display Fallback", serif;
 
   --shadow-premium: 0 4px 20px -2px rgba(10, 35, 66, 0.05);
   --shadow-premium-hover: 0 8px 30px -4px rgba(10, 35, 66, 0.1);

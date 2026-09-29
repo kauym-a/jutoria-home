@@ -3,10 +3,16 @@
 // বিল্ড-টাইমে fetchActiveCategories()।
 import PublicLayout from '../layouts/PublicLayout.astro';
 import { fetchActiveCategories, displayNumber } from '../lib/categories';
+import { optimizeImage } from '../lib/images';
 
 const HIDDEN_MATERIAL_SLUGS = new Set(['hogla-leaf']);
 const allMaterials = await fetchActiveCategories();
-const materials = allMaterials.filter((m) => !HIDDEN_MATERIAL_SLUGS.has(m.slug));
+const materials = await Promise.all(
+  allMaterials
+    .filter((m) => !HIDDEN_MATERIAL_SLUGS.has(m.slug))
+    .map(async (m) => ({ ...m, card: await optimizeImage(m.cardImage || m.image, [400, 640, 800]) })),
+);
+const CARD_SIZES = '(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw';
 ---
 
 <PublicLayout
@@ -30,15 +36,18 @@ const materials = allMaterials.filter((m) => !HIDDEN_MATERIAL_SLUGS.has(m.slug))
   <section class="py-16 md:py-24 bg-brand-offwhite">
     <div class="container mx-auto max-w-7xl px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        {materials.map((material) => (
+        {materials.map((material, i) => (
           <a
             href={`/materials/${material.slug}`}
             class="group relative p-8 md:p-10 border-2 border-brand-navy/10 hover:border-brand-gold transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[320px] shadow-premium hover:shadow-premium-hover"
           >
             <img
-              src={material.cardImage || material.image}
+              src={material.card?.src}
+              srcset={material.card?.srcset}
+              sizes={material.card?.srcset ? CARD_SIZES : undefined}
               alt={material.name}
-              loading="lazy"
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchpriority={i === 0 ? "high" : undefined}
               decoding="async"
               class="absolute inset-0 h-full w-full object-cover"
             />

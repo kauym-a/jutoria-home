@@ -1,0 +1,32 @@
+---
+// মূল src/pages/public/NotFound.tsx থেকে পোর্ট করা। Astro এটাকে dist/404.html হিসেবে
+// বানায় — আগে SPA-তে যেকোনো অজানা URL-এ .htaccess index.html ফেরত দিত (HTTP 200) আর
+// React Router ক্লায়েন্ট-সাইডে এই পেজ দেখাত; এখন সার্ভার সত্যিকারের 404 স্ট্যাটাস দেবে
+// (.htaccess-এ ErrorDocument দিয়ে — কাটওভারের সময় সেট করতে হবে)।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<PublicLayout title="Page Not Found | JUTORIA" description="The page you're looking for may have moved or the link may be outdated.">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <section class="min-h-[70vh] flex items-center bg-brand-offwhite">
+    <div class="container mx-auto max-w-2xl px-4 py-24 text-center">
+      <span class="block font-serif text-7xl md:text-8xl font-bold text-brand-navy/15 mb-6">404</span>
+      <h1 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">This page doesn't exist.</h1>
+      <p class="font-sans text-brand-navy/65 font-light leading-relaxed max-w-md mx-auto mb-10">
+        The page you're looking for may have moved or the link may be outdated. Try one of these instead:
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/" class="inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+          Back to Home <Icon name="arrow-right" size={16} />
+        </a>
+        <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/25 text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory rounded-[2px]">
+          <Icon name="search" size={16} /> Browse Products
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

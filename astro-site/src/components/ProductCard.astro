@@ -2,6 +2,7 @@
 // মূল src/components/product/ProductCard.tsx থেকে পোর্ট করা — কোনো state/interactivity
 // নেই (শুধু hover, CSS-এই হয়), তাই প্লেইন .astro কম্পোনেন্ট, কোনো island লাগে না।
 import type { Product } from '../lib/products';
+import { optimizeImage } from '../lib/images';
 
 interface Props {
   product: Product;
@@ -10,7 +11,8 @@ interface Props {
 
 const { product, priority = false } = Astro.props;
 const primary = product.images?.find((i) => i.role === 'primary') || product.images?.[0];
-const imageUrl = primary?.url || '/placemat-product.webp';
+const image = (await optimizeImage(primary?.url, [320, 480, 640])) ?? { src: '/placemat-product.webp' };
+const CARD_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw';
 const productPath = `/product/${encodeURIComponent(product.sku)}`;
 
 const rawMoq = product.excel_fields?.['MOQ'];
@@ -25,7 +27,9 @@ const moq = typeof rawMoq === 'string' && rawMoq.trim()
       <img
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        src={imageUrl}
+        src={image.src}
+        srcset={image.srcset}
+        sizes={image.srcset ? CARD_SIZES : undefined}
         alt={product.name}
         fetchpriority={priority ? 'high' : undefined}
         class="h-full w-full object-contain object-center p-3 transition-transform duration-700 group-hover:scale-[1.02]"

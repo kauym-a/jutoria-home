@@ -6,7 +6,8 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { fetchActiveProducts } from '../../lib/products';
 import { getProductCategories, type ProductCategory } from '../../lib/productCategories';
-import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
+import { breadcrumbJsonLd } from '../../lib/seo';
+import { optimizeImage } from '../../lib/images';
 
 export async function getStaticPaths() {
   const products = await fetchActiveProducts();
@@ -27,6 +28,8 @@ const { category, next, relatedProducts } = Astro.props as {
   relatedProducts: Awaited<ReturnType<typeof fetchActiveProducts>>;
 };
 
+const hero = await optimizeImage(category.image, [640, 800, 1024, 1600]);
+
 const breadcrumbLd = breadcrumbJsonLd([
   { name: 'Home', path: '/' },
   { name: 'Categories', path: '/categories' },
@@ -43,8 +46,8 @@ const breadcrumbLd = breadcrumbJsonLd([
     class="relative w-full min-h-[55vh] flex items-end bg-brand-navy overflow-hidden"
     style={!category.image ? { background: 'linear-gradient(160deg, #1a2e29 0%, #0f1a17 100%)' } : undefined}
   >
-    {category.image && (
-      <div class="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${category.image}")` }} />
+    {hero && (
+      <img src={hero.src} srcset={hero.srcset} sizes="100vw" alt="" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover object-center" />
     )}
     <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-brand-navy/10" />
     <div class="relative z-10 container mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-14 md:pb-20">

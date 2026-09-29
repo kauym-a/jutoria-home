@@ -1,0 +1,37 @@
+---
+// মূল src/pages/public/PlaceholderPage.tsx থেকে পোর্ট করা — "কনটেন্ট শীঘ্রই আসছে" পেজ
+// (Gallery রুটগুলো), যাতে কোনো লিংক ৪০৪ না দেখায়। আসল কনটেন্ট না আসা পর্যন্ত noindex।
+import PublicLayout from './PublicLayout.astro';
+import Icon from '../components/Icon.astro';
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  description: string;
+}
+
+const { title, eyebrow, description } = Astro.props;
+---
+
+<PublicLayout title={`${title} | JUTORIA`} description={description}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <section class="relative min-h-[60vh] flex items-center bg-brand-ivory">
+    <div class="container mx-auto max-w-3xl px-4 py-24 text-center">
+      <span class="block font-sans text-[#8a6a29] font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-6">{eyebrow}</span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-navy leading-tight mb-8">{title}</h1>
+      <p class="font-sans text-lg text-brand-navy/70 font-light leading-relaxed max-w-xl mx-auto mb-10">{description}</p>
+      <div class="inline-flex items-center gap-3 border border-brand-navy/15 bg-white px-6 py-4 rounded-[2px] text-brand-navy/60 font-sans text-sm mb-10">
+        <Icon name="construction" size={18} class="text-brand-gold" />
+        This section is being finalized — content coming soon.
+      </div>
+      <div>
+        <a href="/contact" class="inline-flex items-center justify-center gap-2 bg-brand-navy text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+          Contact Us Meanwhile <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

@@ -4,7 +4,8 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { fetchActiveProducts } from '../../lib/products';
 import { fetchActiveCategories, displayNumber, type Category } from '../../lib/categories';
-import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
+import { breadcrumbJsonLd } from '../../lib/seo';
+import { optimizeImage } from '../../lib/images';
 
 // ⚠️ Astro getStaticPaths() নিজের ফাংশন বডি আলাদাভাবে extract করে (outer-scope
 // module-level const রেফারেন্স করলে বিল্ডে "is not defined" এরর দেয়) — তাই এই সেট
@@ -30,6 +31,11 @@ const { material, next, relatedProducts } = Astro.props as {
   relatedProducts: Awaited<ReturnType<typeof fetchActiveProducts>>;
 };
 
+// হিরো আগে CSS background-image ছিল — Lighthouse-এ LCP হিসেবে ধরা পড়েছিল কিন্তু
+// fetchpriority দেওয়া যায় না, আর ফুল-সাইজ Firebase ছবি (~২৯০KB) নামতে ~২.৮s লাগত।
+// এখন অপ্টিমাইজ করা <img fetchpriority="high">।
+const hero = await optimizeImage(material.image, [640, 800, 1024, 1600]);
+
 const breadcrumbLd = breadcrumbJsonLd([
   { name: 'Home', path: '/' },
   { name: 'Materials', path: '/materials' },
@@ -43,7 +49,9 @@ const breadcrumbLd = breadcrumbJsonLd([
   </Fragment>
 
   <section class="relative w-full min-h-[55vh] flex items-end bg-brand-navy overflow-hidden">
-    <div class="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${material.image}")` }} />
+    {hero && (
+      <img src={hero.src} srcset={hero.srcset} sizes="100vw" alt="" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover object-center" />
+    )}
     <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-brand-navy/10" />
     <div class="relative z-10 container mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-14 md:pb-20">
       <a href="/materials" class="inline-flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-gold mb-6 hover:text-brand-ivory transition-colors">

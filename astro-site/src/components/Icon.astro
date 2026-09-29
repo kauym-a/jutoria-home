@@ -4,7 +4,9 @@
 // stroke-based lucide আইকনগুলো (Menu/X/ChevronDown/Mail/Phone/Download/Send) হুবহু
 // একই দেখাবে, কিন্তু lucide-react-এর JS রানটাইম পাবলিক বান্ডলে আসবে না।
 interface Props {
-  name: 'menu' | 'x' | 'chevron-down' | 'mail' | 'phone' | 'download' | 'send';
+  name:
+    | 'menu' | 'x' | 'chevron-down' | 'mail' | 'phone' | 'download' | 'send'
+    | 'arrow-right' | 'arrow-left' | 'search' | 'construction';
   size?: number;
   strokeWidth?: number;
   class?: string;
@@ -25,10 +27,19 @@ const paths: Record<string, string[]> = {
     'M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z',
     'm21.854 2.147-10.94 10.939',
   ],
+  'arrow-right': ['M5 12h14', 'm12 5 7 7-7 7'],
+  'arrow-left': ['m12 19-7-7 7-7', 'M19 12H5'],
+  search: ['m21 21-4.34-4.34'],
+  construction: ['M17 14v7', 'M7 14v7', 'M17 3v3', 'M7 3v3', 'M10 14 2.3 6.3', 'm14 6 7.7 7.7', 'm8 6 8 8'],
 };
 
 const rects: Record<string, { x: string; y: string; width: string; height: string; rx: string }[]> = {
   mail: [{ x: '2', y: '4', width: '20', height: '16', rx: '2' }],
+  construction: [{ x: '2', y: '6', width: '20', height: '8', rx: '1' }],
+};
+
+const circles: Record<string, { cx: string; cy: string; r: string }[]> = {
+  search: [{ cx: '11', cy: '11', r: '8' }],
 };
 ---
 
@@ -46,5 +57,6 @@ const rects: Record<string, { x: string; y: string; width: string; height: strin
   aria-hidden="true"
 >
   {(rects[name] || []).map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx} />)}
+  {(circles[name] || []).map((c) => <circle cx={c.cx} cy={c.cy} r={c.r} />)}
   {paths[name].map((d) => <path d={d} />)}
 </svg>

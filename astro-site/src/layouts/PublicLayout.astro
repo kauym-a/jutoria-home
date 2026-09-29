@@ -115,7 +115,9 @@ const contactPhones = [
         <a href="/" class="flex-shrink-0 flex items-center gap-2">
           <img src="/logo.webp" alt="JUTORIA" class="h-10 md:h-12 w-auto object-contain" width="600" height="186" />
           <span class="inline-flex items-center gap-1 font-sans text-[10px] font-bold tracking-[0.05em] uppercase text-brand-navy/70 border border-brand-navy/15 rounded-full pl-1 pr-2 py-1 whitespace-nowrap">
-            <img src="https://flagcdn.com/w40/gb.png" alt="UK flag" class="w-3.5 h-2.5 object-cover rounded-[1px]" />
+            {/* flagcdn.com থেকে না এনে সেলফ-হোস্ট — একটা ২৮৮-বাইটের ছবির জন্য আলাদা
+                ক্রস-অরিজিন কানেকশন (DNS+TCP+TLS) লাগত। */}
+            <img src="/flags/gb.png" alt="UK flag" width="40" height="20" class="w-3.5 h-2.5 object-cover rounded-[1px]" />
             UK
           </span>
         </a>

@@ -1,0 +1,17 @@
+---
+// মূল App.tsx-এর চারটা /gallery/* রুট (সবগুলোই PlaceholderPage) — একটা ডাইনামিক রুটে।
+import PlaceholderPage from '../../layouts/PlaceholderPage.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { section: 'products' }, props: { title: 'Product Gallery', description: 'A full visual catalog of JUTORIA products, styled and photographed.' } },
+    { params: { section: 'lifestyle' }, props: { title: 'Lifestyle', description: 'JUTORIA pieces styled in real living spaces.' } },
+    { params: { section: 'craftsmanship' }, props: { title: 'Craftsmanship', description: 'Behind-the-scenes photos of the hand-weaving and sewing process.' } },
+    { params: { section: 'materials' }, props: { title: 'Materials Gallery', description: 'Close-up photography of jute, seagrass, bamboo and every natural fiber we work with.' } },
+  ];
+}
+
+const { title, description } = Astro.props;
+---
+
+<PlaceholderPage eyebrow="Our Gallery" title={title} description={description} />

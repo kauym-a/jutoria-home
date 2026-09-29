@@ -1,0 +1,79 @@
+---
+// মূল src/components/product/ProductGallery.tsx-এর zero-JS পোর্ট। আগে useState দিয়ে
+// selectedIndex রাখা হতো — শুধু এই একটা থাম্বনেইল-ক্লিকের জন্য প্রতিটা প্রোডাক্ট পেজে
+// React রানটাইম (~৬৫KB gzip) লোড হতো, যেটা LCP ছবির সাথে ব্যান্ডউইথ নিয়ে প্রতিযোগিতা
+// করত। এখন PublicLayout-এর মোবাইল মেনুর মতোই CSS দিয়ে: প্রতিটা ছবির জন্য একটা লুকানো
+// radio, থাম্বনেইলগুলো সেই radio-র <label>, আর :checked অনুযায়ী মূল ছবি দেখানো/থাম্বনেইল
+// লুকানো হয় (নিচের <style>)।
+//
+// ইনডেক্স দিয়ে identify করা হয়, url দিয়ে নয় — মূল কম্পোনেন্টের একই কারণে (দুইটা ছবির url
+// ভুলবশত হুবহু এক হলে একটা আরেকটাকে সাইলেন্টলি বাদ দিয়ে দিত)। অ-নির্বাচিত মূল ছবিগুলো
+// display:none + loading="lazy", তাই সিলেক্ট না করা পর্যন্ত ডাউনলোডই হয় না।
+export type GalleryImage = { url: string; srcset?: string; thumb?: string; role?: string; filename?: string };
+
+interface Props {
+  images: GalleryImage[];
+  productName?: string;
+}
+
+const { images, productName } = Astro.props;
+const primaryIndex = Math.max(0, images.findIndex((i) => i.role === 'primary'));
+const MAIN_SIZES = '(min-width: 1024px) 55vw, calc(100vw - 64px)';
+
+const buildAlt = (img: GalleryImage, index: number) => {
+  if (productName) {
+    const roleLabel = img.role && img.role !== 'primary' ? ` — ${img.role}` : '';
+    return `${productName}${roleLabel || ` — view ${index + 1}`}`;
+  }
+  return img.filename || `Product image ${index + 1}`;
+};
+
+const css = images
+  .map(
+    (_, i) =>
+      `#pg-${i}:checked~.pg-main .pg-m-${i}{display:flex}` +
+      `#pg-${i}:checked~.pg-thumbs .pg-t-${i}{display:none}` +
+      `#pg-${i}:focus-visible~.pg-main{outline:2px solid #C89B3C;outline-offset:2px}`,
+  )
+  .join('');
+---
+
+{images.length === 0 ? (
+  <div class="bg-brand-offwhite p-8 text-center">No images available</div>
+) : (
+  <div class="relative">
+    <style is:inline set:html={`.pg-m{display:none}${css}`} />
+    {images.map((_, i) => (
+      <input type="radio" name="product-gallery" id={`pg-${i}`} class="sr-only" checked={i === primaryIndex} />
+    ))}
+
+    <div class="pg-main flex min-h-[420px] items-center justify-center overflow-hidden rounded-lg border border-brand-navy/10 bg-brand-offwhite p-4 sm:min-h-[480px] lg:min-h-[560px]">
+      {images.map((img, i) => (
+        <div class={`pg-m pg-m-${i} w-full items-center justify-center`}>
+          <img
+            src={img.url}
+            srcset={img.srcset}
+            sizes={img.srcset ? MAIN_SIZES : undefined}
+            alt={buildAlt(img, i)}
+            loading={i === primaryIndex ? 'eager' : 'lazy'}
+            fetchpriority={i === primaryIndex ? 'high' : undefined}
+            decoding="async"
+            class="max-h-[560px] w-full object-contain object-center"
+          />
+        </div>
+      ))}
+    </div>
+
+    <div class="pg-thumbs mt-4 grid grid-cols-3 gap-3">
+      {images.map((img, i) => (
+        <label
+          for={`pg-${i}`}
+          class={`pg-t-${i} block cursor-pointer overflow-hidden rounded-md border border-brand-navy/10 bg-brand-offwhite p-1 transition-all duration-200 hover:border-brand-gold/60`}
+          aria-label={`View ${img.filename || `image ${i + 1}`}`}
+        >
+          <img loading="lazy" decoding="async" src={img.thumb || img.url} alt={buildAlt(img, i)} class="h-24 w-full object-contain object-center" />
+        </label>
+      ))}
+    </div>
+  </div>
+)}
