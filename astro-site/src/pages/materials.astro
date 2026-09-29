@@ -1,0 +1,63 @@
+---
+// মূল src/pages/public/Materials.tsx থেকে পোর্ট করা — useCategories() হুকের বদলে
+// বিল্ড-টাইমে fetchActiveCategories()।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import { fetchActiveCategories, displayNumber } from '../lib/categories';
+
+const HIDDEN_MATERIAL_SLUGS = new Set(['hogla-leaf']);
+const allMaterials = await fetchActiveCategories();
+const materials = allMaterials.filter((m) => !HIDDEN_MATERIAL_SLUGS.has(m.slug));
+---
+
+<PublicLayout
+  title="Our Materials | JUTORIA - Natural Fibers of Bangladesh"
+  description="Jute, seagrass, bamboo, cane & rattan, water hyacinth and kans grass — the natural fibers behind every JUTORIA piece."
+>
+  <section class="border-b border-brand-navy/10 bg-[#f7f4ee]">
+    <div class="container mx-auto max-w-7xl px-4 py-16 md:py-20 lg:py-24">
+      <span class="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
+        Materials
+      </span>
+      <h1 class="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6 max-w-3xl">
+        {`${materials.length} Natural Fibers. One Craft Tradition.`}
+      </h1>
+      <p class="max-w-2xl font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
+        Every JUTORIA piece begins with a raw, natural material — sourced responsibly across Bangladesh and shaped entirely by hand.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto max-w-7xl px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {materials.map((material) => (
+          <a
+            href={`/materials/${material.slug}`}
+            class="group relative p-8 md:p-10 border-2 border-brand-navy/10 hover:border-brand-gold transition-all duration-500 rounded-[2px] overflow-hidden flex flex-col justify-end min-h-[320px] shadow-premium hover:shadow-premium-hover"
+          >
+            <img
+              src={material.cardImage || material.image}
+              alt={material.name}
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+            <div class="absolute inset-0" style="background-image: linear-gradient(180deg, rgba(17, 18, 16, 0.22) 0%, rgba(17, 18, 16, 0.62) 100%)" />
+            <span class="absolute top-6 right-8 font-serif text-6xl font-bold text-brand-ivory/25 group-hover:text-brand-gold/60 transition-colors duration-500">
+              {displayNumber(material.order)}
+            </span>
+            <div class="relative z-10">
+              <h3 class="text-2xl font-serif font-bold mb-3 text-brand-ivory flex items-center gap-3">
+                {material.name}
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-brand-gold" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+              </h3>
+              <p class="font-sans font-light leading-relaxed text-brand-ivory/85 text-sm">
+                {material.desc}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</PublicLayout>

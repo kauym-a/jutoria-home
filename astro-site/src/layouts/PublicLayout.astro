@@ -104,6 +104,7 @@ const contactPhones = [
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage}>
+  <Fragment slot="head"><slot name="head" /></Fragment>
   <div class="flex flex-col min-h-screen bg-brand-ivory text-brand-navy">
 
     <input type="checkbox" id="mobile-menu-toggle" class="peer/menu hidden" />

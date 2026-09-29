@@ -1,0 +1,106 @@
+---
+// মূল src/pages/public/CategoryDetail.tsx থেকে পোর্ট করা। "not found" হলে আগে client-side
+// <Navigate> রিডাইরেক্ট হতো — getStaticPaths()-এ শুধু আসল category-র জন্যই পেজ জেনারেট
+// হয়, তাই ভুল slug স্বাভাবিকভাবেই real 404 দেয়, কোনো client redirect লাগে না।
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { fetchActiveProducts } from '../../lib/products';
+import { getProductCategories, type ProductCategory } from '../../lib/productCategories';
+import { absoluteUrl, breadcrumbJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const products = await fetchActiveProducts();
+  const categories = getProductCategories(products);
+  return categories.map((category, i) => {
+    const next = categories[(i + 1) % categories.length];
+    const relatedProducts = products.filter((p) => p.category === category.name);
+    return {
+      params: { slug: category.slug },
+      props: { category, next, relatedProducts },
+    };
+  });
+}
+
+const { category, next, relatedProducts } = Astro.props as {
+  category: ProductCategory;
+  next: ProductCategory;
+  relatedProducts: Awaited<ReturnType<typeof fetchActiveProducts>>;
+};
+
+const breadcrumbLd = breadcrumbJsonLd([
+  { name: 'Home', path: '/' },
+  { name: 'Categories', path: '/categories' },
+  { name: category.name, path: `/categories/${category.slug}` },
+]);
+---
+
+<PublicLayout title={`${category.name} | JUTORIA Categories`} description={category.desc}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <section
+    class="relative w-full min-h-[55vh] flex items-end bg-brand-navy overflow-hidden"
+    style={!category.image ? { background: 'linear-gradient(160deg, #1a2e29 0%, #0f1a17 100%)' } : undefined}
+  >
+    {category.image && (
+      <div class="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${category.image}")` }} />
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-brand-navy/10" />
+    <div class="relative z-10 container mx-auto max-w-5xl px-4 pt-24 md:pt-28 pb-14 md:pb-20">
+      <a href="/categories" class="inline-flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-gold mb-6 hover:text-brand-ivory transition-colors">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
+        All Categories
+      </a>
+      <span class="block font-serif text-7xl md:text-8xl font-bold text-brand-ivory/20 mb-2">{category.id}</span>
+      <h1 class="text-4xl md:text-6xl font-serif font-bold text-brand-ivory leading-tight max-w-2xl">{category.name}</h1>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 bg-brand-offwhite">
+    <div class="container mx-auto max-w-3xl px-4">
+      <p class="font-sans text-lg md:text-xl text-brand-navy/80 font-light leading-relaxed mb-8">{category.longDesc}</p>
+      <div class="flex flex-col sm:flex-row gap-4 mt-12">
+        <a href="/products" class="inline-flex items-center justify-center gap-3 bg-brand-navy text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:bg-brand-gold hover:text-brand-navy rounded-[2px]">
+          See All Products
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+        </a>
+        <a href="/wholesale" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-navy/25 text-brand-navy px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory rounded-[2px]">
+          Wholesale Inquiry
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-6xl px-4">
+      <span class="block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase mb-4">{category.name}</span>
+      <h2 class="text-2xl md:text-3xl font-serif font-bold text-brand-navy mb-10">Products in this category</h2>
+
+      {relatedProducts.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {relatedProducts.map((p) => <ProductCard product={p} />)}
+        </div>
+      ) : (
+        <div class="border border-brand-navy/15 bg-brand-offwhite px-6 py-8 rounded-[2px] text-brand-navy/70 font-sans text-sm max-w-xl">
+          We're currently photographing new {category.name.toLowerCase()} pieces for the JUTORIA collection —
+          check back soon, or{' '}
+          <a href="/wholesale" class="text-brand-navy font-bold underline underline-offset-2 hover:text-brand-gold">
+            reach out for wholesale inquiries
+          </a>{' '}
+          about custom orders in this category.
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="py-14 bg-white border-t border-brand-navy/10">
+    <div class="container mx-auto max-w-3xl px-4 flex items-center justify-between">
+      <span class="font-sans text-xs uppercase tracking-[0.2em] text-brand-navy/50">Next Category</span>
+      <a href={`/categories/${next.slug}`} class="font-serif text-xl md:text-2xl font-bold text-brand-navy hover:text-brand-gold transition-colors flex items-center gap-3">
+        {`${next.name} `}
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </a>
+    </div>
+  </section>
+</PublicLayout>

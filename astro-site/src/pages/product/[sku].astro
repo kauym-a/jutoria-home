@@ -1,0 +1,111 @@
+---
+// মূল src/pages/public/ProductDetail.tsx থেকে পোর্ট করা। getStaticPaths() বিল্ড-টাইমে
+// সব active প্রোডাক্ট এনে প্রতিটার জন্য একটা আলাদা static পেজ জেনারেট করে — এটাই
+// scripts/prerender.mjs-এর STATIC_ROUTES লুপ + Puppeteer visit-এর প্রতিস্থাপন, কিন্তু
+// কোনো ব্রাউজার/Puppeteer ছাড়াই, সরাসরি ডেটা থেকে HTML।
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import ProductGallery from '../../islands/ProductGallery';
+import { fetchActiveProducts, type Product } from '../../lib/products';
+import { absoluteUrl, breadcrumbJsonLd, productJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const products = await fetchActiveProducts();
+  return products.map((product) => ({
+    params: { sku: product.sku },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props as { product: Product };
+
+const images = product.images || [];
+const specFields = product.excel_fields || {};
+const specKeyOrder = product.specOrder?.filter((k) => k in specFields) || Object.keys(specFields);
+const specExtraKeys = Object.keys(specFields).filter((k) => !specKeyOrder.includes(k));
+const orderedSpecs = [...specKeyOrder, ...specExtraKeys].map((k) => [k, specFields[k]] as const);
+const canonicalPath = `/product/${encodeURIComponent(product.sku)}`;
+const pageTitle = `${product.name} | JUTORIA - Premium Eco-Friendly Home Décor`;
+const pageDescription =
+  product.description ||
+  `${product.name} (SKU: ${product.sku}) — premium eco-friendly, handmade home décor from JUTORIA, available for international wholesale.`;
+const socialImage = (images.find((i) => i.role === 'primary') || images[0])?.url;
+
+const productLd = productJsonLd(product, canonicalPath);
+const breadcrumbLd = breadcrumbJsonLd([
+  { name: 'Home', path: '/' },
+  { name: 'Products', path: '/products' },
+  { name: product.name, path: canonicalPath },
+]);
+---
+
+<PublicLayout title={pageTitle} description={pageDescription} ogImage={socialImage ? absoluteUrl(socialImage) : undefined}>
+  <Fragment slot="head">
+    <meta property="og:type" content="product" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    {socialImage && <meta name="twitter:image" content={absoluteUrl(socialImage)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(productLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+  </Fragment>
+
+  <div class="container mx-auto max-w-7xl px-4 py-12 md:py-16">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_0.9fr] lg:items-start">
+      <div class="w-full">
+        <ProductGallery client:load images={images} productName={product.name} />
+      </div>
+
+      <div class="w-full lg:pt-2">
+        <p class="mb-2 text-xs font-sans font-bold uppercase tracking-[0.2em] text-brand-gold">
+          {product.excel_fields?.['Material Composition'] || 'Premium Product'}
+        </p>
+        <h1 class="mb-3 text-2xl font-serif font-bold text-brand-navy md:text-3xl lg:text-4xl">
+          {product.name}
+        </h1>
+        <p class="mb-6 text-sm text-brand-navy/60">{`SKU: ${product.sku}`}</p>
+
+        {product.description && (
+          <p class="mb-6 text-base text-brand-navy/75 leading-relaxed">
+            {product.description}
+          </p>
+        )}
+
+        <div class="mb-6 flex flex-wrap gap-3">
+          {product.amazonUrl && (
+            <a
+              href={product.amazonUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-brand-navy text-brand-ivory px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors rounded-[2px]"
+            >
+              Shop on Amazon Business
+            </a>
+          )}
+          <a
+            href={`/contact?product=${encodeURIComponent(product.name)}&sku=${encodeURIComponent(product.sku)}`}
+            class="inline-flex items-center gap-2 border border-brand-navy/25 text-brand-navy px-6 py-3 text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy hover:text-brand-ivory transition-colors rounded-[2px]"
+          >
+            Wholesale Inquiry
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </a>
+        </div>
+
+        <div class="rounded-[2px] border border-brand-navy/10 bg-brand-offwhite p-5 shadow-sm">
+          <h2 class="mb-4 text-xl font-serif font-bold text-brand-navy">Product Specifications</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <tbody>
+                {orderedSpecs.map(([k, v]) => (
+                  <tr class="border-b border-brand-navy/10 last:border-b-0">
+                    <th class="py-2 pr-4 align-top text-sm font-semibold text-brand-navy/80 w-40">{k}</th>
+                    <td class="py-2 text-sm text-brand-navy/70">{v}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</PublicLayout>

@@ -1,0 +1,53 @@
+---
+// মূল src/pages/public/Products.tsx থেকে পোর্ট করা। হিরো + হেডার স্ট্যাটিক (Astro
+// frontmatter-এ বিল্ড-টাইমে fetchActiveProducts() কল হয়, ব্রাউজারে কোনো fetch নেই) —
+// শুধু ফিল্টার/সার্চ+গ্রিড অংশ ProductsFilterGrid island (client:visible)।
+import PublicLayout from '../layouts/PublicLayout.astro';
+import ProductsFilterGrid from '../islands/ProductsFilterGrid';
+import { fetchActiveProducts } from '../lib/products';
+import { materials } from '../data/materials';
+import { absoluteUrl } from '../lib/seo';
+
+const products = await fetchActiveProducts();
+---
+
+<PublicLayout
+  title="Products | JUTORIA - Premium Eco-Friendly Home Décor"
+  description="Browse the complete JUTORIA product catalog — filter by material or search by name and SKU. Available for international wholesale and retail."
+>
+  <Fragment slot="head">
+    <link rel="preload" as="image" href="/laundry-basket-lifestyle.webp" fetchpriority="high" type="image/webp" />
+  </Fragment>
+
+  <section class="border-b border-brand-navy/10 bg-[#f7f4ee]">
+    <div class="container mx-auto max-w-7xl px-4 py-16 md:py-20 lg:py-24">
+      <div class="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+        <div class="max-w-xl">
+          <span class="mb-5 block font-sans text-[11px] font-bold tracking-[0.24em] text-[#8a6a29] uppercase">
+            Our Collection
+          </span>
+          <h1 class="text-4xl md:text-5xl lg:text-[4rem] font-serif font-bold leading-[0.95] tracking-[-0.03em] text-brand-navy mb-6">
+            Every Product.<br />One Catalog.
+          </h1>
+          <p class="max-w-lg font-sans text-base md:text-lg text-brand-navy/75 font-light leading-relaxed">
+            Browse the full JUTORIA range — filter by material or search by name and SKU to find exactly what you're sourcing for.
+          </p>
+        </div>
+
+        <div class="relative overflow-hidden border border-brand-navy/10 bg-brand-ivory min-h-[260px] md:min-h-[320px] lg:min-h-[360px]">
+          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/laundry-basket-lifestyle.webp')" />
+          <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/40 via-brand-navy/10 to-brand-ivory/10" />
+          <div class="relative flex h-full min-h-[260px] md:min-h-[320px] lg:min-h-[360px] items-end justify-start p-6 md:p-8">
+            <div class="max-w-[220px] border border-white/30 bg-white/10 px-4 py-3 backdrop-blur-[1px] text-brand-offwhite shadow-[0_12px_32px_rgba(15,23,42,0.18)]">
+              <p class="font-sans text-[10px] font-bold tracking-[0.22em] uppercase text-brand-offwhite/85">
+                Thoughtfully made
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ProductsFilterGrid client:visible products={products} materials={materials} />
+</PublicLayout>

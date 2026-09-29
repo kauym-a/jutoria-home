@@ -1,0 +1,60 @@
+---
+// মূল src/components/product/ProductCard.tsx থেকে পোর্ট করা — কোনো state/interactivity
+// নেই (শুধু hover, CSS-এই হয়), তাই প্লেইন .astro কম্পোনেন্ট, কোনো island লাগে না।
+import type { Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+  priority?: boolean;
+}
+
+const { product, priority = false } = Astro.props;
+const primary = product.images?.find((i) => i.role === 'primary') || product.images?.[0];
+const imageUrl = primary?.url || '/placemat-product.webp';
+const productPath = `/product/${encodeURIComponent(product.sku)}`;
+
+const rawMoq = product.excel_fields?.['MOQ'];
+const moq = typeof rawMoq === 'string' && rawMoq.trim()
+  ? rawMoq.trim().replace(/\bsets?\b/i, 'Sets').replace(/\bpcs\b/i, 'pcs')
+  : '300 Sets';
+---
+
+<div class="group h-full cursor-pointer">
+  <a href={productPath} class="block relative mb-4 overflow-hidden border border-brand-navy/10 bg-white">
+    <div class="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-white">
+      <img
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        src={imageUrl}
+        alt={product.name}
+        fetchpriority={priority ? 'high' : undefined}
+        class="h-full w-full object-contain object-center p-3 transition-transform duration-700 group-hover:scale-[1.02]"
+      />
+    </div>
+    <div class="absolute inset-0 bg-brand-navy/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+      <span class="bg-brand-gold text-brand-navy px-6 py-3 font-sans font-bold tracking-wider text-xs uppercase transform translate-y-4 transition-all duration-300 group-hover:translate-y-0">
+        View Details
+      </span>
+    </div>
+  </a>
+  <div class="text-center">
+    <span class="text-xs font-sans font-bold tracking-widest text-[#8a6a29] uppercase block mb-2">
+      {product.excel_fields?.['Material Composition'] || ''}
+    </span>
+    <h3 class="text-lg font-serif font-bold text-brand-navy mb-2">
+      <a href={productPath}>{product.name}</a>
+    </h3>
+    <span class="mx-auto mb-3 flex w-fit items-center gap-1.5 rounded-full bg-brand-navy/[0.06] px-3 py-1 font-sans text-xs font-bold tracking-wide text-brand-navy">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-brand-gold" aria-hidden="true">
+        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+        <path d="M12 22V12" />
+        <polyline points="3.29 7 12 12 20.71 7" />
+        <path d="m7.5 4.27 9 5.15" />
+      </svg>
+      {`MOQ: ${moq}`}
+    </span>
+    <span class="text-sm font-sans text-brand-navy/60 border border-brand-navy/20 px-3 py-1 rounded-full inline-block">
+      {`SKU: ${product.sku}`}
+    </span>
+  </div>
+</div>
