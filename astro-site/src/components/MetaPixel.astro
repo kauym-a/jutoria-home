@@ -1,0 +1,73 @@
+---
+// ============================================================
+// Meta (Facebook/Instagram) Pixel — সম্মতি-নির্ভর (consent-gated) লোডার।
+//
+// কেন সম্মতি: JUTORIA-র ভিজিটর মূলত UK/EU-র B2B ক্রেতা; PECR/UK GDPR অনুযায়ী
+// মার্কেটিং/ট্র্যাকিং কুকি (Pixel-এর _fbp ইত্যাদি) বসানোর আগে সম্মতি নিতে হয়। তাই Pixel
+// স্ক্রিপ্ট ডিফল্টে লোড হয় না — ছোট একটা নোটিশ দেখায়; "Accept" চাপলে তবেই fbevents.js
+// লোড হয় আর সিদ্ধান্তটা localStorage-এ মনে থাকে (পরের পেজগুলোতে আর নোটিশ আসে না)।
+//
+// META_PIXEL_ID খালি থাকলে এই কম্পোনেন্ট কিছুই রেন্ডার করে না — কোনো নোটিশ, কোনো JS নেই।
+// পারফরম্যান্স: fbevents.js শুধু সম্মতির পরে আর window load-এর পরে আসে, তাই
+// FCP/LCP-তে কোনো প্রভাব পড়ে না (PublicLayout-এর React-মুক্ত নীতির সাথে সঙ্গতিপূর্ণ)।
+// ============================================================
+import { META_PIXEL_ID } from '../lib/siteConfig';
+---
+
+{META_PIXEL_ID && (
+  <>
+    <div
+      id="jt-consent"
+      hidden
+      role="dialog"
+      aria-live="polite"
+      aria-label="Cookie consent"
+      class="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-xl rounded-[2px] border border-brand-navy/15 bg-brand-offwhite p-4 font-sans text-sm text-brand-navy shadow-lg sm:inset-x-auto sm:left-4 sm:bottom-4"
+    >
+      <p class="mb-3 leading-relaxed">
+        We use cookies to measure visits and improve our marketing. You can accept or decline — the site works either way.
+        <a href="/privacy-policy" class="underline underline-offset-2">Privacy policy</a>
+      </p>
+      <div class="flex gap-2">
+        <button type="button" data-consent="granted" class="px-4 py-2 bg-brand-navy text-brand-gold text-xs font-bold uppercase tracking-widest rounded-[2px]">Accept</button>
+        <button type="button" data-consent="denied" class="px-4 py-2 border border-brand-navy/30 text-brand-navy text-xs font-bold uppercase tracking-widest rounded-[2px]">Decline</button>
+      </div>
+    </div>
+    <script is:inline define:vars={{ pixelId: META_PIXEL_ID }}>
+      (function () {
+        var KEY = 'jt-consent';
+        // Safari private mode ইত্যাদিতে localStorage exception দিতে পারে — তখন প্রতিবার নোটিশ দেখাবে, সাইট ভাঙবে না।
+        function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+        function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+
+        function loadPixel() {
+          if (window.fbq) return;
+          /* Meta-র অফিসিয়াল base code (minified) */
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq('init', pixelId);
+          window.fbq('track', 'PageView');
+        }
+
+        function start() {
+          var choice = read();
+          if (choice === 'granted') { loadPixel(); return; }
+          if (choice === 'denied') return;
+          var box = document.getElementById('jt-consent');
+          if (!box) return;
+          box.hidden = false;
+          box.addEventListener('click', function (ev) {
+            var btn = ev.target.closest('[data-consent]');
+            if (!btn) return;
+            var value = btn.getAttribute('data-consent');
+            save(value);
+            box.hidden = true;
+            if (value === 'granted') loadPixel();
+          });
+        }
+
+        if (document.readyState === 'complete') start();
+        else window.addEventListener('load', start);
+      })();
+    </script>
+  </>
+)}

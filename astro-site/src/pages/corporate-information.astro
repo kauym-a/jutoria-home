@@ -6,9 +6,11 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import Icon from '../components/Icon.astro';
 import Img from '../components/Img.astro';
 import SocialIcon from '../components/SocialIcon.astro';
+// LinkedIn কোম্পানি পেজ এখনো নেই — siteConfig-এ URL বসালে প্রতিষ্ঠাতার কার্ডে আইকন নিজে থেকেই ফিরে আসবে।
+import { LINKEDIN_COMPANY_URL } from '../lib/siteConfig';
 
 const LEADERSHIP_TEAM = [
-  { name: 'S M Rashed Ahammad', title: 'Founder / Managing Director', desc: 'Company ownership and overall leadership', location: 'Bangladesh', phone: '+880 1745-249997', email: 'rashed@jutoriahome.com', linkedin: 'https://www.linkedin.com/company/jutoriahome', photo: '/team/founder-managing-director.webp' },
+  { name: 'S M Rashed Ahammad', title: 'Founder / Managing Director', desc: 'Company ownership and overall leadership', location: 'Bangladesh', phone: '+880 1745-249997', email: 'rashed@jutoriahome.com', linkedin: LINKEDIN_COMPANY_URL, photo: '/team/founder-managing-director.webp' },
   { name: 'Mohammed Shamsher Ali', title: 'UK Sales Director', desc: 'Leading UK sales operations and business development', location: 'United Kingdom', phone: '+44 7446 863995', email: 'shamsher@jutoriahome.com', linkedin: '', photo: '/team/uk-sales-director.webp' },
   { name: 'S M Nasif Ali', title: 'UK & Bangladesh Marketing Director', desc: 'Overseeing marketing and operations across the UK and Bangladesh markets', location: 'United Kingdom & Bangladesh', phone: '+880 1324-438566', email: 'nasif@jutoriahome.com', linkedin: '', photo: '/team/uk-bangladesh-marketing-director.webp' },
   { name: 'Wafi Rahman Ananna', title: 'UK Warehouse Director', desc: 'UK fulfillment / warehouse operations', location: 'United Kingdom', phone: '+44 7435 945500', email: 'wafi@jutoriahome.com', linkedin: '', photo: '/team/uk-warehouse-director.webp' },

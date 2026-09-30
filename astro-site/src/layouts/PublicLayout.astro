@@ -12,6 +12,8 @@ import BaseLayout from './BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import SocialIcon from '../components/SocialIcon.astro';
 import ChatPanel from '../components/ChatPanel.astro';
+import MetaPixel from '../components/MetaPixel.astro';
+import { ACTIVE_SOCIAL_PROFILES, CATALOG_URL } from '../lib/siteConfig';
 
 interface Props {
   title: string;
@@ -22,8 +24,9 @@ interface Props {
 const { title, description, ogImage } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
-const CATALOG_AVAILABLE = false;
-const CATALOG_URL = '/jutoria-catalog.pdf';
+// ক্যাটালগ এখন বিল্ড-টাইমে লাইভ প্রোডাক্ট থেকে তৈরি একটা পেজ (pages/catalogue.astro) —
+// আলাদা PDF ফাইল আপলোড/আপডেট করতে হয় না; ভিজিটর সেখান থেকেই "Save as PDF" করতে পারে।
+const CATALOG_AVAILABLE = true;
 
 const navLinks: { name: string; path?: string; badge?: string; children?: { name: string; path: string }[] }[] = [
   { name: 'Home', path: '/' },
@@ -70,16 +73,9 @@ const footerShopLinks = [
   { name: 'Wholesale Overview', path: '/wholesale' },
 ];
 
-const socialLinks = [
-  { name: 'Facebook', href: 'https://facebook.com/jutoriahome', platform: 'facebook' as const, label: 'JUTORIA on Facebook' },
-  { name: 'Instagram', href: 'https://instagram.com/jutoria.home', platform: 'instagram' as const, label: 'JUTORIA on Instagram' },
-  { name: 'Threads', href: 'https://threads.net/@jutoriahome', platform: 'threads' as const, label: 'JUTORIA on Threads' },
-  { name: 'TikTok', href: 'https://tiktok.com/@jutoriahome', platform: 'tiktok' as const, label: 'JUTORIA on TikTok' },
-  { name: 'YouTube', href: 'https://youtube.com/@jutoriahome', platform: 'youtube' as const, label: 'JUTORIA on YouTube' },
-  { name: 'Pinterest', href: 'https://www.pinterest.com/jutoriahome', platform: 'pinterest' as const, label: 'JUTORIA on Pinterest' },
-  { name: 'LinkedIn', href: 'https://linkedin.com/company/jutoriahome', platform: 'linkedin' as const, label: 'JUTORIA on LinkedIn' },
-  { name: 'X', href: 'https://x.com/jutoriahomecom', platform: 'x' as const, label: 'JUTORIA on X' },
-];
+// সোশ্যাল প্রোফাইলের একক উৎস lib/siteConfig.ts — যেসব প্ল্যাটফর্মের অ্যাকাউন্ট এখনো নেই
+// (href খালি), সেগুলো ফুটারে দেখায় না।
+const socialLinks = ACTIVE_SOCIAL_PROFILES.map((p) => ({ ...p, label: `JUTORIA on ${p.name}` }));
 
 const contactEmails = [
   { label: 'Wholesale & B2B', address: 'wholesale@jutoriahome.com' },
@@ -165,12 +161,12 @@ const contactPhones = [
         <div class="flex items-center gap-4">
           {CATALOG_AVAILABLE && (
             <div class="group relative hidden md:block">
-              <a href={CATALOG_URL} target="_blank" rel="noopener noreferrer" download aria-label="Download Catalog" class="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
+              <a href={CATALOG_URL} aria-label="Product Catalogue" class="inline-flex shrink-0 items-center justify-center p-2.5 bg-transparent border border-brand-navy/30 text-brand-navy hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
                 <Icon name="download" size={16} strokeWidth={2} class="shrink-0" />
               </a>
               <span role="tooltip" class="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-brand-navy px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.15em] text-brand-ivory opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                 <span class="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-brand-navy" />
-                Download Catalog
+                Product Catalogue
               </span>
             </div>
           )}
@@ -237,9 +233,9 @@ const contactPhones = [
             Wholesale Inquiry
           </a>
           {CATALOG_AVAILABLE && (
-            <a href={CATALOG_URL} target="_blank" rel="noopener noreferrer" download class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
+            <a href={CATALOG_URL} class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-transparent border border-brand-navy/30 text-brand-navy font-sans text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:bg-brand-navy/5 transition-colors duration-300 rounded-[2px]">
               <Icon name="download" size={15} strokeWidth={2} class="shrink-0" />
-              Download Catalog
+              Product Catalogue
             </a>
           )}
         </div>
@@ -431,4 +427,5 @@ const contactPhones = [
       </div>
     </div>
   </div>
+  <MetaPixel />
 </BaseLayout>

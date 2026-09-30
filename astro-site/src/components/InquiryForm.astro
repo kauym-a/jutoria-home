@@ -181,6 +181,9 @@ const inputCls = 'w-full px-4 py-3 border border-brand-navy/15 bg-brand-offwhite
         await submitLead({ source, ...values } as Parameters<typeof submitLead>[0]);
         form.hidden = true;
         success.hidden = false;
+        // Meta Pixel লোড থাকলে (ভিজিটর কুকিতে সম্মতি দিলে তবেই থাকে — MetaPixel.astro)
+        // সফল ইনকোয়ারিকে "Lead" হিসেবে রিপোর্ট করা হয়, যাতে বিজ্ঞাপনের ফলাফল মাপা যায়।
+        (window as any).fbq?.('track', 'Lead', { content_category: source });
       } catch (err) {
         console.error(err);
         errorEl.textContent = 'Something went wrong submitting your inquiry. Please try again shortly, or email us directly.';

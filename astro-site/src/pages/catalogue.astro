@@ -1,0 +1,192 @@
+---
+// ============================================================
+// হোলসেল প্রোডাক্ট ক্যাটালগ — বিল্ড-টাইমে লাইভ (active) প্রোডাক্ট থেকে তৈরি, তাই Admin
+// Panel-এ প্রোডাক্ট যোগ/বদল করলে পরের বিল্ডেই ক্যাটালগও আপডেট হয় — আলাদা PDF ফাইল
+// বানিয়ে আপলোড করতে হয় না। ভিজিটর "Download PDF" চাপলে ব্রাউজারের Print → Save as PDF
+// খোলে; @media print স্টাইল A4 পেজে পরিষ্কার লেআউট দেয় (টুলবার/বাটন লুকানো)।
+//
+// ⚠️ দাম কখনো দেখানো হয় না: excel_fields-এ EXW/FOB/CFR দামও থাকে, তাই এখানে শুধু একটা
+// নির্দিষ্ট whitelist-এর ফিল্ড দেখানো হয় + দাম-সংক্রান্ত নামের যেকোনো কী আলাদাভাবে বাদ।
+// (সরবরাহকারীর নিজস্ব PDF — reference/product-catalog/ — এ দাম ও তাদের কারখানার ঠিকানা
+// আছে, তাই সেগুলো পাবলিক করা হয়নি।)
+//
+// PublicLayout-এর বদলে BaseLayout: হেডার/ফুটার/চ্যাট উইজেট ছাড়া পরিষ্কার পেজ, যা PDF-এ
+// সুন্দর আসে। noindex — প্রোডাক্ট পেজগুলোর সাথে ডুপ্লিকেট কনটেন্ট যাতে SEO-তে না গণ্য হয়।
+// ============================================================
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Img from '../components/Img.astro';
+import { fetchActiveProducts, type Product } from '../lib/products';
+
+const products = (await fetchActiveProducts()).sort(
+  (a, b) => (a.category || '').localeCompare(b.category || '') || a.name.localeCompare(b.name),
+);
+
+// ক্রেতার কাজে লাগে এমন নিরাপদ স্পেসিফিকেশন — ক্রমানুসারে।
+const SPEC_WHITELIST: { label: string; keys: string[] }[] = [
+  { label: 'Material', keys: ['Material Composition', 'Primary Material %'] },
+  { label: 'Size', keys: ['Size', 'Size (LxW/Diameter)'] },
+  { label: 'Colour', keys: ['Color'] },
+  { label: 'Weave', keys: ['Weave Type', 'Weaving Type'] },
+  { label: 'Pieces', keys: ['Pieces per Set'] },
+];
+const PRICE_PATTERN = /price|cost|exw|fob|cfr|usd|\$/i;
+
+function clean(v: unknown): string {
+  return typeof v === 'string' ? v.replace(/\s*\r?\n\s*/g, ', ').replace(/,\s*$/, '').trim() : '';
+}
+
+function specsFor(p: Product) {
+  const fields = p.excel_fields || {};
+  return SPEC_WHITELIST.map(({ label, keys }) => {
+    const key = keys.find((k) => clean(fields[k]));
+    const value = key ? clean(fields[key]) : '';
+    // দ্বিতীয় স্তরের সুরক্ষা: whitelist-এর ঘরেও ভুল করে দাম লেখা থাকলে দেখাবে না।
+    return value && !PRICE_PATTERN.test(value) ? { label, value } : null;
+  }).filter(Boolean) as { label: string; value: string }[];
+}
+
+function moqFor(p: Product): string {
+  const raw = clean(p.excel_fields?.['MOQ']);
+  return raw ? raw.replace(/\bsets?\b/i, 'Sets').replace(/\bpcs\b/i, 'pcs') : 'On request';
+}
+
+function primaryImage(p: Product): string | undefined {
+  return (p.images?.find((i) => i.role === 'primary') || p.images?.[0])?.url;
+}
+
+// ক্যাটাগরি অনুযায়ী গ্রুপ — প্রতিটা গ্রুপ PDF-এ নতুন সেকশন হিসেবে আসে।
+const groups = new Map<string, Product[]>();
+for (const p of products) {
+  const key = p.category || 'Other';
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key)!.push(p);
+}
+
+const issued = new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title="Wholesale Product Catalogue | JUTORIA"
+  description="JUTORIA wholesale catalogue — handmade jute, seagrass, bamboo and natural-fibre home décor with SKUs and MOQs. Pricing on request."
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, follow" />
+    <style is:global>
+      @page { size: A4; margin: 12mm; }
+      @media print {
+        .no-print { display: none !important; }
+        body { background: #fff !important; }
+        .catalogue-item { break-inside: avoid; }
+        /* ক্যাটাগরির শিরোনাম যেন পাতার একদম নিচে একা না পড়ে; প্রতিটা ক্যাটাগরিকে নতুন পাতায়
+           জোর করে পাঠানো হয় না — ছোট ক্যাটাগরিতে অর্ধেক পাতা ফাঁকা থাকত। */
+        .catalogue-section h2 { break-after: avoid; }
+        a { text-decoration: none !important; color: inherit !important; }
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
+  </Fragment>
+
+  <div class="min-h-screen bg-brand-offwhite text-brand-navy">
+    <!-- টুলবার — প্রিন্ট/PDF-এ লুকানো -->
+    <div class="no-print sticky top-0 z-10 border-b border-brand-navy/10 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
+        <a href="/wholesale" class="font-sans text-xs font-bold uppercase tracking-widest text-brand-navy/70 hover:text-brand-navy">&larr; Back to site</a>
+        <button
+          type="button"
+          id="catalogue-print"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-navy text-brand-gold font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-navy transition-colors duration-300 rounded-[2px]"
+        >
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <main class="mx-auto max-w-5xl bg-white px-6 py-10 sm:px-10">
+      <!-- কভার -->
+      <header class="mb-10 border-b border-brand-navy/15 pb-8 text-center">
+        <img src="/logo.webp" alt="JUTORIA" width="600" height="186" class="mx-auto mb-5 h-auto w-44" />
+        <p class="mb-2 font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#8a6a29]">Wholesale Product Catalogue</p>
+        <h1 class="mb-3 font-serif text-3xl font-bold sm:text-4xl">Crafted by Nature. Finished by Hand.</h1>
+        <p class="mx-auto max-w-2xl font-sans text-sm leading-relaxed text-brand-navy/75">
+          Handmade jute, seagrass, bamboo and natural-fibre home décor from Bangladesh, supplied to retailers,
+          importers, interior designers and hospitality businesses across the UK, Europe and North America.
+        </p>
+        <p class="mt-4 font-sans text-xs text-brand-navy/60">{products.length} products &middot; Issued {issued} &middot; Pricing available on request</p>
+      </header>
+
+      {[...groups.entries()].map(([category, items]) => (
+        <section class="catalogue-section mb-10">
+          <h2 class="mb-5 border-l-4 border-brand-gold pl-3 font-serif text-2xl font-bold">{category}</h2>
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 print:grid-cols-2">
+            {items.map((p) => {
+              const img = primaryImage(p);
+              const specs = specsFor(p);
+              return (
+                <article class="catalogue-item flex gap-4 border border-brand-navy/10 p-3 rounded-[2px]">
+                  <div class="flex h-32 w-32 shrink-0 items-center justify-center bg-white">
+                    {img ? (
+                      <Img src={img} alt={p.name} widths={[240, 320]} sizes="128px" class="h-full w-full object-contain" />
+                    ) : (
+                      <span class="font-sans text-[10px] uppercase tracking-widest text-brand-navy/40">Photo soon</span>
+                    )}
+                  </div>
+                  <div class="min-w-0 flex-1 font-sans">
+                    <h3 class="mb-1 font-serif text-base font-bold leading-snug">
+                      <a href={`/product/${encodeURIComponent(p.sku)}`}>{p.name}</a>
+                    </h3>
+                    <p class="mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-navy/60">SKU: {p.sku}</p>
+                    <dl class="space-y-0.5 text-xs leading-snug">
+                      {specs.map((s) => (
+                        <div class="flex gap-1.5">
+                          <dt class="shrink-0 font-semibold text-brand-navy/70">{s.label}:</dt>
+                          <dd class="text-brand-navy/85">{s.value}</dd>
+                        </div>
+                      ))}
+                      <div class="flex gap-1.5">
+                        <dt class="shrink-0 font-semibold text-brand-navy/70">MOQ:</dt>
+                        <dd class="font-bold">{moqFor(p)}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+
+      <!-- যোগাযোগ — ক্যাটালগের শেষ পাতা -->
+      <footer class="catalogue-item mt-12 border-t border-brand-navy/15 pt-8 text-center font-sans text-sm">
+        <h2 class="mb-3 font-serif text-2xl font-bold">Request a Wholesale Quote</h2>
+        <p class="mx-auto mb-4 max-w-xl leading-relaxed text-brand-navy/75">
+          Tell us your company name, country, the products you're interested in and your estimated quantity —
+          we'll reply with pricing and next steps. Product configurations can be discussed for wholesale orders.
+        </p>
+        <p class="font-bold">wholesale@jutoriahome.com &middot; jutoriahome.com/wholesale</p>
+        <p class="mt-1 text-brand-navy/75">UK: +44 7311 127176 &middot; Bangladesh (WhatsApp): +880 1833-093349</p>
+        <p class="mt-4 text-xs text-brand-navy/50">JUTORIA is a brand of Sir Commerce Group Ltd (UK). Specifications may vary slightly as all items are handmade.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // "Download PDF" → ব্রাউজারের প্রিন্ট ডায়ালগ, যেখানে "Save as PDF" বেছে নেওয়া যায়।
+    // ছবিগুলো loading="lazy" — স্ক্রল না করা ছবি প্রিন্টের সময় ফাঁকা আসতে পারে, তাই আগে
+    // সবগুলোকে eager করে লোড শেষ হওয়া পর্যন্ত অপেক্ষা (সর্বোচ্চ ৮ সেকেন্ড), তারপর প্রিন্ট।
+    const button = document.getElementById('catalogue-print') as HTMLButtonElement | null;
+    button?.addEventListener('click', async () => {
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing…';
+      const imgs = Array.from(document.querySelectorAll('img'));
+      imgs.forEach((img) => (img.loading = 'eager'));
+      const loaded = Promise.all(
+        imgs.map((img) => (img.complete ? Promise.resolve() : new Promise((r) => { img.onload = img.onerror = () => r(null); }))),
+      );
+      await Promise.race([loaded, new Promise((r) => setTimeout(r, 8000))]);
+      button.disabled = false;
+      button.textContent = label;
+      window.print();
+    });
+  </script>
+</BaseLayout>

@@ -5,6 +5,7 @@
 // করা হলো (আগে এই per-page override react-helmet-async দিয়ে হতো — এখন আর দরকার নেই,
 // প্রতিটা .astro পেজ নিজের frontmatter থেকেই আসল মান পাস করে)।
 import '../styles/global.css';
+import { META_DOMAIN_VERIFICATION } from '../lib/siteConfig';
 
 interface Props {
   title: string;
@@ -67,6 +68,8 @@ const {
         document.head.appendChild(s);
       });
     </script>
+    <!-- Meta Business Suite-এর ডোমেইন ভেরিফিকেশন (lib/siteConfig.ts-এ মান বসালে তবেই রেন্ডার হয়) -->
+    {META_DOMAIN_VERIFICATION && <meta name="facebook-domain-verification" content={META_DOMAIN_VERIFICATION} />}
     <slot name="head" />
   </head>
   <body>

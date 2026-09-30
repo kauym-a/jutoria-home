@@ -123,3 +123,19 @@ Each phone number should have both a `tel:` link and a `wa.me/` WhatsApp link
 The chat assistant's WhatsApp number is a fourth place to keep in sync:
 `astro-site/src/lib/chat/engine.ts` → `WHATSAPP_NUMBER` (currently the main UK
 line, +44 7311 127176).
+
+## Social profiles, Meta tags & catalogue — `astro-site/src/lib/siteConfig.ts`
+
+- `SOCIAL_PROFILES` is the single source for the footer social icons **and** the
+  Organization JSON-LD `sameAs`. Leave a platform's `href` empty until the account
+  exists — it is then hidden everywhere (LinkedIn is empty until the company page
+  is created).
+- `META_DOMAIN_VERIFICATION` (the `content` value from Business Suite → Brand
+  safety → Domains) and `META_PIXEL_ID` render nothing while empty. The Pixel only
+  loads after the visitor accepts the cookie notice (`components/MetaPixel.astro`,
+  UK/EU consent); a successful inquiry fires `fbq('track','Lead')`.
+- `/catalogue` (`pages/catalogue.astro`) is built from live products at build time
+  and saved as PDF via the browser. It shows a **whitelist** of spec fields only —
+  `excel_fields` also holds EXW/FOB/CFR prices, which must never be public. The
+  supplier PDFs in `reference/product-catalog/` contain prices and the supplier's
+  address — don't publish them.

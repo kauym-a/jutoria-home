@@ -5,6 +5,8 @@
 // বসায় — এই ফাইলটা শুধু ডেটা তৈরি করে, কোনো JSX রেন্ডার করে না।
 // ============================================================
 
+import { ACTIVE_SOCIAL_PROFILES } from './siteConfig';
+
 export const SITE_URL = 'https://jutoriahome.com';
 export const SITE_NAME = 'JUTORIA';
 
@@ -36,16 +38,8 @@ export function organizationJsonLd() {
       contactType: 'sales',
       email: 'wholesale@jutoriahome.com',
     },
-    sameAs: [
-      'https://facebook.com/jutoriahome',
-      'https://instagram.com/jutoria.home',
-      'https://threads.net/@jutoriahome',
-      'https://tiktok.com/@jutoriahome',
-      'https://youtube.com/@jutoriahome',
-      'https://www.pinterest.com/jutoriahome',
-      'https://linkedin.com/company/jutoriahome',
-      'https://x.com/jutoriahomecom',
-    ],
+    // সোশ্যাল প্রোফাইলের একক উৎস lib/siteConfig.ts — খালি URL-গুলো নিজে থেকে বাদ পড়ে।
+    sameAs: ACTIVE_SOCIAL_PROFILES.map((p) => p.href),
   };
 }
 

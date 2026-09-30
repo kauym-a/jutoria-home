@@ -7,6 +7,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import Icon from '../components/Icon.astro';
 import Img from '../components/Img.astro';
 import InquiryForm from '../components/InquiryForm.astro';
+import { CATALOG_URL } from '../lib/siteConfig';
 
 const AUDIENCES = [
   { icon: 'store', name: 'Retailers', desc: 'Home décor and lifestyle stores looking for a natural-fiber range to add to their shelves.' },
@@ -68,6 +69,10 @@ const FAQS = [
           </a>
           <a href="/products" class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
             Explore Products
+          </a>
+          <!-- বিল্ড-টাইমে লাইভ প্রোডাক্ট থেকে তৈরি ক্যাটালগ (pages/catalogue.astro) — সেখান থেকে PDF সেভ করা যায় -->
+          <a href={CATALOG_URL} class="inline-flex items-center justify-center gap-2 bg-transparent border border-brand-ivory/30 text-brand-ivory px-8 py-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-300 hover:border-brand-ivory hover:bg-brand-ivory/10 rounded-[2px]">
+            <Icon name="download" size={15} /> Download Catalogue
           </a>
         </div>
       </div>
