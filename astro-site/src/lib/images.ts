@@ -28,7 +28,7 @@ export type OptimizedImage = { src: string; srcset?: string };
 export const REMOTE_CACHE_DIR = path.resolve('node_modules/.astro/jutoria-img');
 const ORIGINALS_DIR = path.join(REMOTE_CACHE_DIR, 'originals');
 const DIMS_FILE = path.join(REMOTE_CACHE_DIR, 'dims.json');
-const WEBP_QUALITY = 80;
+const DEFAULT_QUALITY = 80;
 
 // এই বিল্ডে যেসব /_img/ ফাইল রেফার হয়েছে — astro.config.mjs-এর ইন্টিগ্রেশন শুধু এগুলোই কপি
 // করে (ক্যাশে মুছে ফেলা প্রোডাক্টের পুরনো ফাইল থাকলেও সেগুলো আর ডিপ্লয় হয় না)। পেজ রেন্ডার আর
@@ -69,7 +69,7 @@ function loadOriginal(url: string, key: string): Promise<Buffer> {
   });
 }
 
-async function optimizeRemote(url: string, widths: number[]): Promise<OptimizedImage> {
+async function optimizeRemote(url: string, widths: number[], quality: number): Promise<OptimizedImage> {
   const key = hashOf(url);
   if (!dims[key]) {
     const meta = await sharp(await loadOriginal(url, key)).metadata();
@@ -81,20 +81,23 @@ async function optimizeRemote(url: string, widths: number[]): Promise<OptimizedI
   const usable = widths.filter((w) => w <= dims[key].width);
   const targets = usable.length ? usable : [dims[key].width];
 
+  // ডিফল্ট কোয়ালিটির ফাইলনেম আগের মতোই (ক্যাশ অপরিবর্তিত); অন্য কোয়ালিটিতে আলাদা নাম।
+  const nameFor = (w: number) => `${key}-${w}${quality === DEFAULT_QUALITY ? '' : `-q${quality}`}.webp`;
+
   await Promise.all(
     targets.map((w) => {
-      const name = `${key}-${w}.webp`;
+      const name = nameFor(w);
       const out = path.join(REMOTE_CACHE_DIR, name);
       return once(`out:${name}`, async () => {
         if (!fs.existsSync(out)) {
-          await sharp(await loadOriginal(url, key)).resize({ width: w }).webp({ quality: WEBP_QUALITY }).toFile(out);
+          await sharp(await loadOriginal(url, key)).resize({ width: w }).webp({ quality }).toFile(out);
         }
         usedFiles.add(name);
       });
     }),
   );
 
-  const urlFor = (w: number) => `/_img/${key}-${w}.webp`;
+  const urlFor = (w: number) => `/_img/${nameFor(w)}`;
   return {
     src: urlFor(targets[targets.length - 1]),
     srcset: targets.length > 1 ? targets.map((w) => `${urlFor(w)} ${w}w`).join(', ') : undefined,
@@ -105,16 +108,22 @@ const localImages = import.meta.glob<ImageMetadata>('/src/assets/site/**/*.{webp
   import: 'default',
 });
 
-export async function optimizeImage(url: string | null | undefined, widths: number[]): Promise<OptimizedImage | null> {
+// quality: ডিফল্ট ৮০ (প্রোডাক্ট ছবি — ক্রেতারা খুঁটিয়ে দেখেন)। গ্রেডিয়েন্ট ওভারলের নিচের ফুল-ব্লিড হিরো
+// ছবিতে ৬৫ ব্যবহার হয় — দৃশ্যত পার্থক্য নেই, কিন্তু ফাইল ~২৫% ছোট (LCP ছবি)।
+export async function optimizeImage(
+  url: string | null | undefined,
+  widths: number[],
+  quality = DEFAULT_QUALITY,
+): Promise<OptimizedImage | null> {
   if (!url) return null;
   try {
     if (/^https?:\/\//i.test(url)) {
       // dev সার্ভারে /_img/ সার্ভ হয় না (কপিটা শুধু বিল্ডের শেষে হয়) — মূল URL-ই যথেষ্ট।
-      return import.meta.env.DEV ? { src: url } : await optimizeRemote(url, widths);
+      return import.meta.env.DEV ? { src: url } : await optimizeRemote(url, widths, quality);
     }
     const loadLocal = localImages[`/src/assets/site${url.split('?')[0]}`];
     if (!loadLocal) return { src: url };
-    const img = await getImage({ src: await loadLocal(), width: widths[widths.length - 1], widths, format: 'webp' });
+    const img = await getImage({ src: await loadLocal(), width: widths[widths.length - 1], widths, format: 'webp', quality });
     return { src: img.src, srcset: img.srcSet.attribute || undefined };
   } catch (err) {
     console.warn(`[build] Image optimization failed, using original: ${url}`, err);

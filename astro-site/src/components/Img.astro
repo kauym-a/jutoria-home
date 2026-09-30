@@ -18,10 +18,12 @@ interface Props {
   fetchpriority?: 'high' | 'low' | 'auto';
   width?: number | string;
   height?: number | string;
+  /** WebP কোয়ালিটি — ডিফল্ট ৮০; গ্রেডিয়েন্ট ওভারলের নিচের হিরোতে ৬৫ (lib/images.ts দেখুন)। */
+  quality?: number;
 }
 
-const { src, widths, sizes, loading = 'lazy', ...rest } = Astro.props;
-const img = await optimizeImage(src, widths);
+const { src, widths, sizes, loading = 'lazy', quality, ...rest } = Astro.props;
+const img = await optimizeImage(src, widths, quality);
 ---
 
 <img src={img?.src ?? src} srcset={img?.srcset} sizes={img?.srcset ? sizes : undefined} loading={loading} decoding="async" {...rest} />

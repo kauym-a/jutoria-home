@@ -34,7 +34,7 @@ const { material, next, relatedProducts } = Astro.props as {
 // হিরো আগে CSS background-image ছিল — Lighthouse-এ LCP হিসেবে ধরা পড়েছিল কিন্তু
 // fetchpriority দেওয়া যায় না, আর ফুল-সাইজ Firebase ছবি (~২৯০KB) নামতে ~২.৮s লাগত।
 // এখন অপ্টিমাইজ করা <img fetchpriority="high">।
-const hero = await optimizeImage(material.image, [640, 800, 1024, 1600]);
+const hero = await optimizeImage(material.image, [640, 800, 1024, 1600], 65);
 
 const breadcrumbLd = breadcrumbJsonLd([
   { name: 'Home', path: '/' },

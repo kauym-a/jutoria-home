@@ -28,7 +28,7 @@ const { category, next, relatedProducts } = Astro.props as {
   relatedProducts: Awaited<ReturnType<typeof fetchActiveProducts>>;
 };
 
-const hero = await optimizeImage(category.image, [640, 800, 1024, 1600]);
+const hero = await optimizeImage(category.image, [640, 800, 1024, 1600], 65);
 
 const breadcrumbLd = breadcrumbJsonLd([
   { name: 'Home', path: '/' },
