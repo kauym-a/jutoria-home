@@ -120,6 +120,6 @@ Each phone number should have both a `tel:` link and a `wa.me/` WhatsApp link
 (digits only, no `+`, no spaces/dashes). WhatsApp/LinkedIn glyphs come from
 `components/SocialIcon.astro` (lucide has no brand icons).
 
-⚠️ The chat assistant's WhatsApp number (`src/lib/chat/engine.ts`,
-`WHATSAPP_NUMBER`) is still the placeholder `8801XXXXXXXXX` carried over from
-the old site — replace it with the real WhatsApp Business number.
+The chat assistant's WhatsApp number is a fourth place to keep in sync:
+`astro-site/src/lib/chat/engine.ts` → `WHATSAPP_NUMBER` (currently the main UK
+line, +44 7311 127176).

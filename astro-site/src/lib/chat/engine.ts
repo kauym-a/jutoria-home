@@ -6,9 +6,10 @@ import { companyKnowledge } from '../../data/assistantKnowledge';
 // হুবহু। কোনো external AI API লাগে না। এই মডিউল (products.json সহ ~৩৫KB) চ্যাট প্যানেলে
 // প্রথম মেসেজ পাঠানোর মুহূর্তেই dynamic import হয় — পেজ লোডে ডাউনলোড হয় না।
 
-// ⚠️ মূল ফাইলের মতোই প্লেসহোল্ডার — আসল WhatsApp Business নম্বর বসাতে হবে (দেশের কোড সহ,
-// + বা 00 ছাড়া)। ChatPanel.astro-র "Chat on WhatsApp" বাটনও এই একই নম্বর ব্যবহার করে।
-export const WHATSAPP_NUMBER = '8801XXXXXXXXX';
+// চ্যাটের WhatsApp নম্বর — Sir Commerce Group Ltd-এর মূল UK লাইন (+44 7311 127176), সাইটের
+// অন্য সব জায়গায় (Contact, Corporate Information, ফুটার) এটাই প্রথম নম্বর। দেশের কোড সহ,
+// + বা স্পেস ছাড়া। ChatPanel.astro-র "Chat on WhatsApp" বাটনও এই একই নম্বর ব্যবহার করে।
+export const WHATSAPP_NUMBER = '447311127176';
 
 export function buildWhatsAppLink(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
