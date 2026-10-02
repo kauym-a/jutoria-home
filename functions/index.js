@@ -37,7 +37,7 @@ async function triggerRebuild(reason) {
     body: JSON.stringify({ event_type: 'content-updated', client_payload: { reason } }),
   });
   if (!res.ok) {
-    // throw করলে Cloud Functions লগে এরর হিসেবে দেখায়; প্রতি ঘণ্টার শিডিউলড রিবিল্ড সেফটি নেট
+    // throw করলে Cloud Functions লগে এরর হিসেবে দেখায়; শিডিউলড রিবিল্ড (কয়েক ঘণ্টা পর পর) সেফটি নেট
     // হিসেবে থাকায় একটা ব্যর্থ ট্রিগারে পরিবর্তন হারিয়ে যায় না, শুধু দেরিতে লাইভ হয়।
     throw new Error(`GitHub dispatch failed: ${res.status} ${await res.text()}`);
   }

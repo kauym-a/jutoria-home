@@ -79,7 +79,8 @@ Hostinger, then purges Cloudflare. It runs on:
 - push to `master`
 - `repository_dispatch` (`content-updated`) — sent by the Cloud Function below
   whenever a product/category is saved in the Admin Panel (~1-2 min to live)
-- hourly schedule — safety net; skips uploading if nothing changed
+- schedule (requested hourly, but GitHub actually runs it only every ~4-7
+  hours on this repo) — slow safety net only; skips uploading if nothing changed
 - manual: GitHub → Actions → Deploy to Hostinger → Run workflow
 
 Admin edits therefore appear on the public site after a rebuild, not instantly.

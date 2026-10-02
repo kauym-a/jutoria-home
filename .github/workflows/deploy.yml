@@ -5,8 +5,9 @@ name: Deploy to Hostinger
 #   - push to master           — কোড পরিবর্তন
 #   - repository_dispatch      — Admin-এ প্রোডাক্ট/ক্যাটাগরি সেভ হলেই Firebase Cloud Function
 #                                (functions/index.js) এটা ট্রিগার করে → ~১-২ মিনিটে লাইভ
-#   - schedule (প্রতি ঘণ্টায়)   — সেফটি নেট: Cloud Function না থাকলে/ব্যর্থ হলেও সর্বোচ্চ ১ ঘণ্টায়
-#                                পরিবর্তন লাইভ হয়; সাইট না বদলালে কিছুই আপলোড/পার্জ হয় না
+#   - schedule (ঘণ্টায় একবার চাওয়া হয়, কিন্তু GitHub পাবলিক রিপোতে বাস্তবে ৪-৭ ঘণ্টা পর পর
+#                                চালায়) — শুধু সেফটি নেট, দ্রুত আপডেটের ভরসা Cloud Function;
+#                                সাইট না বদলালে কিছুই আপলোড/পার্জ হয় না
 #   - workflow_dispatch        — GitHub → Actions → "Run workflow" বাটন দিয়ে হাতে
 on:
   push:
