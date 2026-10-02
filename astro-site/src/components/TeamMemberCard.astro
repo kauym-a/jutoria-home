@@ -1,0 +1,64 @@
+---
+// Corporate Information-এর Leadership Team-এর সাধারণ কার্ড (প্রতিষ্ঠাতার কার্ড আলাদা, বড় —
+// corporate-information.astro-তেই)। ⚠️ ফোন/ইমেইল CLAUDE.md-এর "Contact info" নিয়ম মেনে চলে।
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+import SocialIcon from './SocialIcon.astro';
+
+export type TeamMember = {
+  name: string;
+  title: string;
+  desc: string;
+  location: string;
+  phone: string;
+  email: string;
+  linkedin?: string;
+  photo: string;
+  /** শিক্ষাপ্রতিষ্ঠান — শুধু প্রতিষ্ঠানের নাম (ডিগ্রি নয়, যতক্ষণ না যাচাই করা তথ্য আসে)। */
+  education?: string;
+};
+
+interface Props {
+  person: TeamMember;
+}
+
+const { person } = Astro.props;
+---
+
+<div class="bg-white border border-brand-navy/10 rounded-[2px] overflow-hidden text-center shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+  <Img
+    src={person.photo}
+    widths={[320, 480, 640]}
+    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+    alt={`${person.name}, ${person.title} at JUTORIA`}
+    class="w-full aspect-[4/5] object-cover object-top"
+  />
+  <div class="p-6">
+    <h3 class="font-serif font-bold text-brand-navy leading-snug mb-1">{person.name}</h3>
+    <p class="font-sans text-xs font-bold text-[#8a6a29] uppercase tracking-wide mb-2">{person.title}</p>
+    {person.education && (
+      <p class="mb-2 inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/60">
+        <Icon name="graduation-cap" size={14} strokeWidth={1.75} class="shrink-0" />
+        {person.education}
+      </p>
+    )}
+    {person.linkedin && (
+      <a href={person.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${person.name} on LinkedIn`} class="mx-auto mb-3 flex w-fit items-center justify-center p-1 text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]">
+        <SocialIcon platform="linkedin" class="h-4 w-4" />
+      </a>
+    )}
+    <p class="font-sans text-xs text-brand-navy/60 leading-relaxed mb-3">{person.desc}</p>
+    <span class="inline-block font-sans text-[10px] font-bold tracking-[0.15em] uppercase text-brand-navy/50 mb-4">{person.location}</span>
+    <div class="flex flex-col gap-1.5 pt-4 border-t border-brand-navy/10">
+      <a href={`tel:${person.phone.replace(/[^+\d]/g, '')}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+        <Icon name="phone" size={13} strokeWidth={1.75} class="shrink-0" /> {person.phone}
+      </a>
+      <a href={`mailto:${person.email}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+        <Icon name="mail" size={13} strokeWidth={1.75} class="shrink-0" /> {person.email}
+      </a>
+      <a href={`https://wa.me/${person.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+        <SocialIcon platform="whatsapp" class="h-[13px] w-[13px] shrink-0" /> WhatsApp
+      </a>
+    </div>
+  </div>
+</div>

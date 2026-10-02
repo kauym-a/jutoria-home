@@ -6,16 +6,34 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import Icon from '../components/Icon.astro';
 import Img from '../components/Img.astro';
 import SocialIcon from '../components/SocialIcon.astro';
+import TeamMemberCard, { type TeamMember } from '../components/TeamMemberCard.astro';
 // LinkedIn কোম্পানি পেজ এখনো নেই — siteConfig-এ URL বসালে প্রতিষ্ঠাতার কার্ডে আইকন নিজে থেকেই ফিরে আসবে।
 import { LINKEDIN_COMPANY_URL } from '../lib/siteConfig';
 
-const LEADERSHIP_TEAM = [
-  { name: 'S M Rashed Ahammad', title: 'Founder / Managing Director', desc: 'Company ownership and overall leadership', location: 'Bangladesh', phone: '+880 1745-249997', email: 'rashed@jutoriahome.com', linkedin: LINKEDIN_COMPANY_URL, photo: '/team/founder-managing-director.webp' },
-  { name: 'Mohammed Shamsher Ali', title: 'UK Sales Director', desc: 'Leading UK sales operations and business development', location: 'United Kingdom', phone: '+44 7446 863995', email: 'shamsher@jutoriahome.com', linkedin: '', photo: '/team/uk-sales-director.webp' },
-  { name: 'S M Nasif Ali', title: 'UK & Bangladesh Marketing Director', desc: 'Overseeing marketing and operations across the UK and Bangladesh markets', location: 'United Kingdom & Bangladesh', phone: '+880 1324-438566', email: 'nasif@jutoriahome.com', linkedin: '', photo: '/team/uk-bangladesh-marketing-director.webp' },
-  { name: 'Wafi Rahman Ananna', title: 'UK Warehouse Director', desc: 'UK fulfillment / warehouse operations', location: 'United Kingdom', phone: '+44 7435 945500', email: 'wafi@jutoriahome.com', linkedin: '', photo: '/team/uk-warehouse-director.webp' },
-  { name: 'Mst Kazi Sanzida Ahammad', title: 'Product Designer & Supply Chain Director', desc: 'Product design leadership and supply chain strategy', location: 'Bangladesh', phone: '+880 1714-567000', email: 'sanjida@jutoriahome.com', linkedin: '', photo: '/team/product-designer-marketing-director.webp' },
+// Leadership Team — ব্যবসায়িক প্রয়োজনে (UK ক্রেতাদের জন্য) UK-ভিত্তিক সদস্যরা আগে, তারপর বাংলাদেশ।
+// ক্রম ফিডব্যাক অনুযায়ী: Shamsher → Wafi → Nasif (UK), Sanzida → প্রতিষ্ঠাতা (বাংলাদেশ)।
+// প্রতিষ্ঠাতা শেষে থাকলেও তাঁর কার্ড আলাদা ও বড় (দুই কলাম চওড়া, বার্তাসহ), যাতে শীর্ষ পদ
+// হিসেবে স্পষ্টভাবে হাইলাইট থাকে — শুধু ক্রমে পিছিয়ে দিলে সেটা পদাবনতির মতো দেখাত।
+const UK_TEAM: TeamMember[] = [
+  { name: 'Mohammed Shamsher Ali', title: 'UK Sales Director', desc: 'Leading UK sales operations and business development', location: 'United Kingdom', phone: '+44 7446 863995', email: 'shamsher@jutoriahome.com', photo: '/team/uk-sales-director.webp' },
+  { name: 'Wafi Rahman Ananna', title: 'UK Warehouse Director', desc: 'UK fulfillment / warehouse operations', location: 'United Kingdom', phone: '+44 7435 945500', email: 'wafi@jutoriahome.com', photo: '/team/uk-warehouse-director.webp' },
+  { name: 'S M Nasif Ali', title: 'UK & Bangladesh Marketing Director', desc: 'Overseeing marketing and operations across the UK and Bangladesh markets', location: 'United Kingdom & Bangladesh', phone: '+880 1324-438566', email: 'nasif@jutoriahome.com', photo: '/team/uk-bangladesh-marketing-director.webp', education: 'University of Brighton' },
 ];
+const BANGLADESH_TEAM: TeamMember[] = [
+  { name: 'Mst Kazi Sanzida Ahammad', title: 'Product Designer & Supply Chain Director', desc: 'Product design leadership and supply chain strategy', location: 'Bangladesh', phone: '+880 1714-567000', email: 'sanjida@jutoriahome.com', photo: '/team/product-designer-marketing-director.webp' },
+];
+// প্রতিষ্ঠাতার বার্তা — সাইটের বিদ্যমান ভাষা থেকে খসড়া, প্রতিষ্ঠান-মালিকের অনুমোদিত (খসড়া ১)।
+const FOUNDER = {
+  name: 'S M Rashed Ahammad',
+  title: 'Founder / Managing Director',
+  location: 'Bangladesh',
+  phone: '+880 1745-249997',
+  email: 'rashed@jutoriahome.com',
+  linkedin: LINKEDIN_COMPANY_URL,
+  photo: '/team/founder-managing-director.webp',
+  message:
+    "JUTORIA began with a simple belief: the natural fibers of Bangladesh and the skill of our artisans deserve a place in the world's finest homes. Every piece we make carries that tradition forward — made by hand, with purpose, for conscious living.",
+};
 
 const waLink = 'inline-flex items-center gap-1.5 font-sans text-sm text-brand-ivory/70 hover:text-brand-gold transition-colors';
 const HALF = '(min-width: 1024px) 45vw, calc(100vw - 48px)';
@@ -178,40 +196,60 @@ const HALF = '(min-width: 1024px) 45vw, calc(100vw - 48px)';
           The team behind JUTORIA's operations across the United Kingdom and Bangladesh.
         </p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-        {LEADERSHIP_TEAM.map((person) => (
-          <div class="bg-white border border-brand-navy/10 rounded-[2px] overflow-hidden text-center shadow-premium hover:shadow-premium-hover transition-shadow duration-300">
+      {/* ── United Kingdom ── */}
+      <div class="flex items-center gap-4 mb-8">
+        <span class="font-sans text-[11px] font-bold tracking-[0.24em] uppercase text-brand-navy/70 whitespace-nowrap">United Kingdom</span>
+        <div class="h-px flex-1 bg-brand-navy/15" />
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
+        {UK_TEAM.map((person) => <TeamMemberCard person={person} />)}
+      </div>
+
+      {/* ── Bangladesh — প্রতিষ্ঠাতার কার্ড দুই কলাম চওড়া, একই সারিতে, শেষে ── */}
+      <div class="flex items-center gap-4 mb-8">
+        <span class="font-sans text-[11px] font-bold tracking-[0.24em] uppercase text-brand-navy/70 whitespace-nowrap">Bangladesh</span>
+        <div class="h-px flex-1 bg-brand-navy/15" />
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {BANGLADESH_TEAM.map((person) => <TeamMemberCard person={person} />)}
+
+        <article class="sm:col-span-2 bg-white border border-brand-gold/40 rounded-[2px] overflow-hidden shadow-premium hover:shadow-premium-hover transition-shadow duration-300 flex flex-col md:flex-row">
+          <div class="relative md:w-[44%] shrink-0 aspect-[4/5] md:aspect-auto">
             <Img
-              src={person.photo}
-              widths={[320, 480, 640]}
-              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-              alt={`${person.name}, ${person.title} at JUTORIA`}
-              class="w-full aspect-[4/5] object-cover object-top"
+              src={FOUNDER.photo}
+              widths={[320, 480, 640, 800]}
+              sizes="(min-width: 1024px) 28vw, (min-width: 768px) 40vw, calc(100vw - 48px)"
+              alt={`${FOUNDER.name}, ${FOUNDER.title} at JUTORIA`}
+              class="absolute inset-0 h-full w-full object-cover object-top"
             />
-            <div class="p-6">
-              <h3 class="font-serif font-bold text-brand-navy leading-snug mb-1">{person.name}</h3>
-              <p class="font-sans text-xs font-bold text-[#8a6a29] uppercase tracking-wide mb-2">{person.title}</p>
-              {person.linkedin && (
-                <a href={person.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${person.name} on LinkedIn`} class="mx-auto mb-3 flex w-fit items-center justify-center p-1 text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]">
+          </div>
+          <div class="flex flex-1 flex-col justify-center p-8 md:p-10">
+            <span class="mb-4 inline-flex w-fit items-center rounded-[2px] bg-brand-navy px-3 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-brand-gold">
+              {FOUNDER.title}
+            </span>
+            <h3 class="font-serif text-2xl md:text-3xl font-bold text-brand-navy leading-tight mb-5">{FOUNDER.name}</h3>
+            <blockquote class="relative mb-6 border-l-2 border-brand-gold pl-5">
+              <p class="font-serif text-base md:text-lg italic leading-relaxed text-brand-navy/80">“{FOUNDER.message}”</p>
+            </blockquote>
+            <span class="mb-5 inline-block font-sans text-[10px] font-bold tracking-[0.15em] uppercase text-brand-navy/50">{FOUNDER.location}</span>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 border-t border-brand-navy/10">
+              <a href={`tel:${FOUNDER.phone.replace(/[^+\d]/g, '')}`} class="inline-flex items-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                <Icon name="phone" size={13} strokeWidth={1.75} class="shrink-0" /> {FOUNDER.phone}
+              </a>
+              <a href={`mailto:${FOUNDER.email}`} class="inline-flex items-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                <Icon name="mail" size={13} strokeWidth={1.75} class="shrink-0" /> {FOUNDER.email}
+              </a>
+              <a href={`https://wa.me/${FOUNDER.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
+                <SocialIcon platform="whatsapp" class="h-[13px] w-[13px] shrink-0" /> WhatsApp
+              </a>
+              {FOUNDER.linkedin && (
+                <a href={FOUNDER.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${FOUNDER.name} on LinkedIn`} class="inline-flex items-center text-brand-navy/40 transition-colors duration-200 hover:text-[#0A66C2]">
                   <SocialIcon platform="linkedin" class="h-4 w-4" />
                 </a>
               )}
-              <p class="font-sans text-xs text-brand-navy/60 leading-relaxed mb-3">{person.desc}</p>
-              <span class="inline-block font-sans text-[10px] font-bold tracking-[0.15em] uppercase text-brand-navy/50 mb-4">{person.location}</span>
-              <div class="flex flex-col gap-1.5 pt-4 border-t border-brand-navy/10">
-                <a href={`tel:${person.phone.replace(/[^+\d]/g, '')}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
-                  <Icon name="phone" size={13} strokeWidth={1.75} class="shrink-0" /> {person.phone}
-                </a>
-                <a href={`mailto:${person.email}`} class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
-                  <Icon name="mail" size={13} strokeWidth={1.75} class="shrink-0" /> {person.email}
-                </a>
-                <a href={`https://wa.me/${person.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 font-sans text-xs text-brand-navy/70 hover:text-brand-gold transition-colors">
-                  <SocialIcon platform="whatsapp" class="h-[13px] w-[13px] shrink-0" /> WhatsApp
-                </a>
-              </div>
             </div>
           </div>
-        ))}
+        </article>
       </div>
     </div>
   </section>
